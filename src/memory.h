@@ -198,9 +198,19 @@ void removeDir(const char * path) { sdmemory::removeDir(SD, path); }
 
 void readFile(const char * path) { sdmemory::readFile(SD, path); }
 
-void writeFile(const char * path, const char * message) { sdmemory::writeFile(SD, path, message); }
+void writeFile(const char * path, String message)
+{
+    char messageArray[256];
+    message.toCharArray(messageArray,256);
+    sdmemory::writeFile(SD, path, messageArray);
+}
 
-void appendFile(const char * path, const char * message) { sdmemory::appendFile(SD, path, message); }
+void appendFile(const char * path, String message)
+{
+    char messageArray[256];
+    message.toCharArray(messageArray,256);
+    sdmemory::appendFile(SD, path, messageArray);
+}
 
 void renameFile(const char * path1, const char * path2) { sdmemory::renameFile(SD, path1, path2); }
 
