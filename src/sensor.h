@@ -8,11 +8,11 @@ class sensor
 private:
     int m_pin;
     sensorType m_type;
-    int data;
+    int m_data;
 public:
     sensor(int pin, sensorType type);
     void initialize();
-    int read();
+    int readRaw();
 };
 
 //template <class T>
@@ -20,7 +20,7 @@ sensor::sensor(int pin, sensorType type)
 {
     m_pin = pin;
     m_type = type;
-    data = -1;
+    m_data = -1;
 }
 
 
@@ -31,7 +31,7 @@ void sensor::initialize()
 }
 
 //template <class T>
-int sensor::read()
+int sensor::readRaw()
 {   
     switch (m_type)
     {
@@ -42,10 +42,16 @@ int sensor::read()
         return analogRead(m_pin);
         break;
     case dummy:
-        return data++; 
+        return m_data++; 
         break;
     default:
         return -1;
         break;
     }
 }
+
+// Sensors to be used:
+//  Voltage (V)
+//  Current (A)
+//  Water Flow ()
+//  Temperature (C)

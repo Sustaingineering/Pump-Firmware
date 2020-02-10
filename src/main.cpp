@@ -39,7 +39,7 @@ void setup()
 void loop()
 {
 
-  data = String("Data = ") + String(simSen.read());
+  data = String("Data = ") + String(simSen.readRaw());
   timeStamp = rtc.getTime();
   message = data + String("\t") + timeStamp + String("\n");
   memory::appendFile("/logs.txt", message);
