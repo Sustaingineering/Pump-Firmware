@@ -6,13 +6,17 @@
 #include <Arduino.h>
 #include "watch.h"
 #include "memory.h"
+#include "sensor.h"
 
 watch rtc(false);
 String data;
 String timeStamp;
 String message;
+sensor simSen(0,dummy);
 
-void setup() {
+void setup()
+{
+
   Serial.begin(57600);
   Serial.println("Hello Sustaingineering!");
   
@@ -24,15 +28,21 @@ void setup() {
   memory::sdInitialize();
   Serial.println("*****************************************");
   
-  memory::writeFile("/logs.txt", "Hello, this is Sustaingineering!");
+  memory::writeFile("/logs.txt", "Hello, this is Sustaingineering!\n");
+
+  simSen.initialize();
   
   Serial.println("Setup Done!");
+  
 }
 
-void loop() {
-  data = String("Some Data = 4738756473826783");
+void loop()
+{
+
+  data = String("Data = ") + String(simSen.read());
   timeStamp = rtc.getTime();
   message = data + String("\t") + timeStamp + String("\n");
   memory::appendFile("/logs.txt", message);
   delay(1000);
+  
 }
