@@ -7,12 +7,15 @@
 #include "watch.h"
 #include "memory.h"
 #include "sensor.h"
+#include "Temp.h"
 
 watch rtc(false);
 String data;
 String timeStamp;
 String message;
-sensor simSen(0,dummy);
+temp thermocouple(4);
+
+//sensor simSen(0,dummy);
 
 void setup()
 {
@@ -29,10 +32,15 @@ void setup()
   Serial.println("*******Initializing MicroSD Card...******");
   memory::sdInitialize();
   Serial.println("*****************************************");
+
+  delay(1000);
+  Serial.println("*******Initializing Thermocouple...******");
+  thermocouple.initialize();
+  Serial.println("*****************************************");
   
   memory::writeFile("/logs.txt", "Hello, this is Sustaingineering!\n");
 
-  simSen.initialize();
+  //simSen.initialize();
   
   Serial.println("Setup Done!");
   
@@ -40,8 +48,7 @@ void setup()
 
 void loop()
 {
-
-  data = String("Data = ") + String(simSen.readRaw());
+  data = String("Temp = ") + String(thermocouple.readRaw());
   timeStamp = rtc.getTime();
   message = data + String("\t") + timeStamp + String("\n");
   Serial.print(message);
