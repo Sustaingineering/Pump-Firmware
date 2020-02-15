@@ -20,10 +20,12 @@ void setup()
   Serial.begin(57600);
   Serial.println("Hello Sustaingineering!");
   
+  delay(1000);
   Serial.println("***********Initializing RTC...***********");
   rtc.initialize();
   Serial.println("*****************************************");
   
+  delay(1000);
   Serial.println("*******Initializing MicroSD Card...******");
   memory::sdInitialize();
   Serial.println("*****************************************");
@@ -42,7 +44,9 @@ void loop()
   data = String("Data = ") + String(simSen.readRaw());
   timeStamp = rtc.getTime();
   message = data + String("\t") + timeStamp + String("\n");
+  Serial.print(message);
   memory::appendFile("/logs.txt", message);
+  //memory::readFile("/logs.txt");
   delay(1000);
   
 }
