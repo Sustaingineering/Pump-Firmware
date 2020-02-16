@@ -11,7 +11,7 @@
 			"path": "Examples\\RTC"
 		},
 		{
-			"path": "Examples\\Temperature-ESP32-Demo"
+			"path": "Examples\\Temperature"
 		}
 	],
 	"settings": {}
