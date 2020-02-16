@@ -5,7 +5,7 @@
  * SCL -> D22
  * SDA -> D21
  */
-
+#pragma once
 #include <Arduino.h>
 #include "RTClib.h"
 
@@ -17,7 +17,7 @@ private:
 public:
     watch(bool need2SetTime);
     void initialize();
-    String  getTime();
+    String  getTimeStamp();
 };
 
 watch::watch(bool need2SetTime): m_rtc()
@@ -32,15 +32,18 @@ void watch::initialize()
         Serial.println("RTC is NOT running!");
     if (m_need2SetTime)
         m_rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    Serial.print("Current Time: ");
+    Serial.print(m_rtc.now().timestamp(DateTime::TIMESTAMP_FULL));
+    Serial.println();
     // January 21, 2014 at 3am you would call:
     // m_rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
 }
 
-String watch::getTime()
+String watch::getTimeStamp()
 {
     if (m_rtc.isrunning()) {
         DateTime time = m_rtc.now();
-        return String("DateTime::TIMESTAMP_FULL:\t")+time.timestamp(DateTime::TIMESTAMP_FULL);
+        return String("\t") + time.timestamp(DateTime::TIMESTAMP_FULL);
     }
     else
     {

@@ -22,7 +22,7 @@
  * readFile     ("/foo.txt");
  * testFileIO   ("/test.txt");
  */
-
+#pragma once
 #include <Arduino.h>
 #include "FS.h"
 #include "SD.h"
@@ -246,5 +246,6 @@ void sdInitialize()
     Serial.printf("SD Card Size: %lluMB\n", cardSize);
     Serial.printf("Total space: %lluMB\n", SD.totalBytes() / (1024 * 1024));
     Serial.printf("Used space: %lluMB\n", SD.usedBytes() / (1024 * 1024));
+    listDir("/", 0);
 }
 } // namespace memory

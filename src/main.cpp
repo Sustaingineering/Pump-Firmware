@@ -1,5 +1,5 @@
 /*
- * Used pins: D22 D21 D23 D5 D18 D19 
+ * Used pins: D22 D21 D23 D5 D18 D19 D4
  * Unused pins: 
  */
 
@@ -7,53 +7,46 @@
 #include "watch.h"
 #include "memory.h"
 #include "sensor.h"
-#include "Temp.h"
+#include "temp.h"
 
 watch rtc(false);
-String data;
-String timeStamp;
 String message;
-temp thermocouple(4);
-
-//sensor simSen(0,dummy);
+//temp thermocouple(4);
+sensor counter(0, soft, "Counter", "T");
 
 void setup()
 {
-
+  pinMode(2,OUTPUT);
   Serial.begin(57600);
-  Serial.println("Hello Sustaingineering!");
+  Serial.println("\nHello Sustaingineering!\n");
   
   delay(1000);
-  Serial.println("***********Initializing RTC...***********");
+  Serial.println("***********Initializing RTC**************");
   rtc.initialize();
-  Serial.println("*****************************************");
+  Serial.println("*****************************************\n");
   
   delay(1000);
-  Serial.println("*******Initializing MicroSD Card...******");
+  Serial.println("*******Initializing MicroSD Card*********");
   memory::sdInitialize();
-  Serial.println("*****************************************");
+  Serial.println("*****************************************\n");
 
-  delay(1000);
-  Serial.println("*******Initializing Thermocouple...******");
-  thermocouple.initialize();
-  Serial.println("*****************************************");
+  // delay(1000);
+  // Serial.println("*******Initializing Thermocouple*********");
+  // thermocouple.initialize();
+  // Serial.println("*****************************************\n");
   
   memory::writeFile("/logs.txt", "Hello, this is Sustaingineering!\n");
 
-  //simSen.initialize();
+  counter.initialize();
   
-  Serial.println("Setup Done!");
-  
+  Serial.println("Setup Done!\n");
 }
 
 void loop()
 {
-  data = String("Temp = ") + String(thermocouple.readRaw());
-  timeStamp = rtc.getTime();
-  message = data + String("\t") + timeStamp + String("\n");
+  message = counter.read() + String("\t") + 
+            rtc.getTimeStamp() + String("\n");
   Serial.print(message);
   memory::appendFile("/logs.txt", message);
-  //memory::readFile("/logs.txt");
-  delay(1000);
-  
+  Serial.println(); delay(900); digitalWrite(2,HIGH); delay(100); digitalWrite(2,LOW);
 }

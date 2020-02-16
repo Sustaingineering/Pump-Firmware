@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"name": "ESP32-Firmware",
+			"path": "."
+		},
+		{
+			"path": "Examples\\SD"
+		},
+		{
+			"path": "Examples\\RTC"
+		},
+		{
+			"path": "Examples\\Temperature-ESP32-Demo"
+		}
+	],
+	"settings": {}
+}
