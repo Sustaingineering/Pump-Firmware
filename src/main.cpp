@@ -35,7 +35,7 @@ void setup()
   // thermocouple.initialize();
   // Serial.println("*****************************************\n");
   
-  memory::writeFile("/logs.txt", "Hello, this is Sustaingineering!\n");
+  //memory::writeFile("/logs.txt", "Hello, this is Sustaingineering!\n");
 
   counter.initialize();
   

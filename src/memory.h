@@ -198,18 +198,34 @@ void removeDir(const char * path) { sdmemory::removeDir(SD, path); }
 
 void readFile(const char * path) { sdmemory::readFile(SD, path); }
 
-void writeFile(const char * path, String message)
+void writeFile(String path, String message)
 {
-    char messageArray[256];
-    message.toCharArray(messageArray,256);
-    sdmemory::writeFile(SD, path, messageArray);
+    char *pathArray;
+    char *messageArray;
+    int pathLen = path.length() + 1;
+    int messageLen = message.length() + 1;
+    pathArray = new char[pathLen];
+    messageArray = new char[messageLen];
+    path.toCharArray(pathArray, pathLen);
+    message.toCharArray(messageArray, messageLen);
+    sdmemory::writeFile(SD, pathArray, messageArray);
+    delete[] pathArray;
+    delete[] messageArray;
 }
 
-void appendFile(const char * path, String message)
+void appendFile(String path, String message)
 {
-    char messageArray[256];
-    message.toCharArray(messageArray,256);
-    sdmemory::appendFile(SD, path, messageArray);
+    char *pathArray;
+    char *messageArray;
+    int pathLen = path.length() + 1;
+    int messageLen = message.length() + 1;
+    pathArray = new char[pathLen];
+    messageArray = new char[messageLen];
+    path.toCharArray(pathArray, pathLen);
+    message.toCharArray(messageArray, messageLen);
+    sdmemory::appendFile(SD, pathArray, messageArray);
+    delete[] pathArray;
+    delete[] messageArray;
 }
 
 void renameFile(const char * path1, const char * path2) { sdmemory::renameFile(SD, path1, path2); }
