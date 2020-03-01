@@ -1,7 +1,25 @@
 /*
- * Used pins: D22 D21 D23 D5 D18 D19 D4
- * Unused pins: 
- */
+  ___________________
+o|EN              D23|*
+o|VP(36)          D22|*
+o|VN(39)       (1)TX0|x
+o|D34          (3)RX0|x
+o|D35             D21|*
+o|D32   [ESP32]   D19|*
+o|D33             D18|*
+o|D25              D5|*
+o|D26         (17)TX2|*
+o|D27         (16)RX2|*
+o|D14              D4|*
+o|D12              D2|x
+o|D13             D15|o
+o|GND             GND|*
+o|VIN_____________3V3|*
+
+(o): unused.
+(*): used.
+(x): cannot be used.
+*/
 
 #include <Arduino.h>
 #include "watch.h"
