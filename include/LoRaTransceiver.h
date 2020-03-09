@@ -118,19 +118,24 @@ packet LoRaTransceiver::receive()
     String LoRaData;
     // try to parse packet
     int packetSize = LoRa.parsePacket();
-    if (packetSize) {
-    // received a packet
-    Serial.print("Received packet '");
+    bool isReceived = 0;
+    while (!isReceived)
+    {
+        if (packetSize) {
+        // received a packet
+        Serial.print("Received packet '");
 
-    // read packet
-    while (LoRa.available()) {
-        LoRaData = LoRa.readString();
-        Serial.print(LoRaData);
-    }
+        // read packet
+        while (LoRa.available()) {
+            LoRaData = LoRa.readString();
+            Serial.print(LoRaData);
+        }
 
-    // print RSSI of packet
-    Serial.print("' with RSSI ");
-    Serial.println(LoRa.packetRssi());
+        // print RSSI of packet
+        Serial.print("' with RSSI ");
+        Serial.println(LoRa.packetRssi());
+        isReceived = 1;
+        }
     }
     packet received;
     received.type = LoRaData.charAt(0);
