@@ -1,11 +1,11 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-enum dataType { voltage, current, temperature, flow, count};
+//enum dataType { voltage, current, temperature, flow, count};
 
 struct packet
 {
-    char type;
+    char type; //'r': request packet, 'v': voltage, 'i': current, 't': temperature, 'f': flow, 'c': count.
     int data;
 };
 
@@ -15,15 +15,17 @@ private:
     const int mk_ss;
     const int mk_rst;
     const int mk_dio0;
-    const int mk_syncWord;
+    int mk_syncWord;
 public:
-    LoRaTransceiver(int ss, int rst, int dio0, int syncWord);
+    LoRaTransceiver(int, int, int, int);
     void initialize();
-    void send(packet toSend);
-    String receive();
+    void request(packet*, int);
+    void respond(packet*);
+    void send(packet);
+    packet receive();
 };
 
-LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord): 
+LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord = -1): 
  mk_ss(ss)
 ,mk_rst(rst)
 ,mk_dio0(dio0)
@@ -50,15 +52,27 @@ void LoRaTransceiver::initialize()
   Serial.println("LoRa Initializing OK!");
 }
 
-void LoRaTransceiver::send(packet toSend)
+void LoRaTransceiver::request(packet *packets, int syncWord = -1)
 {
+    if (syncWord != -1)
+    {
+        mk_syncWord = syncWord;
+        LoRa.setSyncWord(mk_syncWord);
+    }
+    else if (mk_syncWord == -1)
+    {
+        Serial.print("Error: Sync Word was NEVER Specified!");
+    }
+
     //Send LoRa packet to receiver
     LoRa.beginPacket();
-    LoRa.print(String(toSend.type) + String(toSend.data, 10));
+    LoRa.print('r');
     LoRa.endPacket();
+    //Receive
+    packets[0] = receive();
 }
 
-String LoRaTransceiver::receive()
+void LoRaTransceiver::respond(packet *packets)
 {
     String LoRaData;
     // try to parse packet
@@ -77,5 +91,50 @@ String LoRaTransceiver::receive()
     Serial.print("' with RSSI ");
     Serial.println(LoRa.packetRssi());
     }
-    return LoRaData;
+    if (LoRaData.charAt(0) == 'r')
+    {
+        //send
+        send(packets[0]);
+        return;
+    }
+    else
+    {
+        Serial.print("Invalid Request!\n");
+        return;
+    }
+}
+
+void LoRaTransceiver::send(packet toSend)
+{
+    //Send LoRa packet to receiver
+    LoRa.beginPacket();
+    LoRa.print(toSend.type);
+    LoRa.print(toSend.data);
+    LoRa.endPacket();
+}
+
+packet LoRaTransceiver::receive()
+{
+    String LoRaData;
+    // try to parse packet
+    int packetSize = LoRa.parsePacket();
+    if (packetSize) {
+    // received a packet
+    Serial.print("Received packet '");
+
+    // read packet
+    while (LoRa.available()) {
+        LoRaData = LoRa.readString();
+        Serial.print(LoRaData);
+    }
+
+    // print RSSI of packet
+    Serial.print("' with RSSI ");
+    Serial.println(LoRa.packetRssi());
+    }
+    packet received;
+    received.type = LoRaData.charAt(0);
+    LoRaData.remove(0);
+    received.data = LoRaData.toInt();
+    return received;
 }
