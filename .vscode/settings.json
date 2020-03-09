@@ -7,6 +7,9 @@
         "unordered_set": "cpp",
         "vector": "cpp",
         "initializer_list": "cpp",
-        "ctime": "cpp"
+        "ctime": "cpp",
+        "*.tcc": "cpp",
+        "memory": "cpp",
+        "random": "cpp"
     }
 }
