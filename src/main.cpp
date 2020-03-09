@@ -24,13 +24,14 @@ o|VIN_____________3V3|*
 #include <Arduino.h>
 #include "watch.h"
 #include "memory.h"
-#include "sensor.h"
+#include "farmSensor.h"
 #include "temp.h"
+#include "LoRaTransceiver.h"
 
 watch rtc(false);
 String message;
 //temp thermocouple(4);
-sensor counter(0, soft, "Counter", "T");
+farmSensor counter(0, soft, "Counter", "T");
 
 void setup()
 {

@@ -4,7 +4,7 @@
 enum sensorType { digital, analog, soft };
 
 //template <class T>
-class sensor 
+class farmSensor 
 {
 private:
     int m_pin;
@@ -13,14 +13,14 @@ private:
     sensorType m_type;
     int m_data;
 public:
-    sensor(int pin, sensorType type, String name, String unit);
+    farmSensor(int pin, sensorType type, String name, String unit);
     void initialize();
     int readRaw();
     String read();
 };
 
 //template <class T>
-sensor::sensor(int pin, sensorType type, String name, String unit)
+farmSensor::farmSensor(int pin, sensorType type, String name, String unit)
 {
     m_pin = pin;
     m_type = type;
@@ -31,13 +31,13 @@ sensor::sensor(int pin, sensorType type, String name, String unit)
 
 
 //template <class T>
-void sensor::initialize()
+void farmSensor::initialize()
 {
     pinMode(m_pin, INPUT);
 }
 
 //template <class T>
-int sensor::readRaw()
+int farmSensor::readRaw()
 {   
     switch (m_type)
     {
@@ -56,7 +56,7 @@ int sensor::readRaw()
     }
 }
 
-String sensor::read()
+String farmSensor::read()
 {
     int raw = readRaw();
     return m_name + String(": ") + String(raw) + String(" (") + m_unit + String(")");
