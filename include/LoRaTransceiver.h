@@ -12,6 +12,7 @@ struct packet
 class LoRaTransceiver
 {
 private:
+    SPIClass m_hspi;
     const int mk_ss;
     const int mk_rst;
     const int mk_dio0;
@@ -25,15 +26,16 @@ public:
     packet receive();
 };
 
-LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord = -1): 
- mk_ss(ss)
+LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord = -1):
+ m_hspi(HSPI)
+,mk_ss(ss)
 ,mk_rst(rst)
 ,mk_dio0(dio0)
 ,mk_syncWord(syncWord) 
 {}
 
 void LoRaTransceiver::initialize()
-{
+{   
   //setup LoRa transceiver module
   LoRa.setPins(mk_ss, mk_rst, mk_dio0);
   
@@ -41,6 +43,7 @@ void LoRaTransceiver::initialize()
   //433E6 for Asia
   //866E6 for Europe
   //915E6 for North America
+  LoRa.setSPI(m_hspi);
   while (!LoRa.begin(915E6)) {
     Serial.println(".");
     delay(500);
