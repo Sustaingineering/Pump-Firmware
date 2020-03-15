@@ -11,6 +11,11 @@
         "*.tcc": "cpp",
         "memory": "cpp",
         "random": "cpp",
-        "istream": "cpp"
+        "istream": "cpp",
+        "fstream": "cpp",
+        "iosfwd": "cpp",
+        "limits": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp"
     }
 }

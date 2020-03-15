@@ -1,17 +1,17 @@
 /*
             ___________________
-          o|EN              D23|* VSPI MOSI
-          o|VP(36)          D22|*
-          o|VN(39)       (1)TX0|x
-          o|D34          (3)RX0|x
+          ?|EN              D23|* VSPI MOSI
+          ?|VP(D36)         D22|*
+          ?|VN(D39)     (D1)TX0|x
+          o|D34         (D3)RX0|x
           o|D35             D21|*
           o|D32   [ESP32]   D19|* VSPI MISO
           o|D33             D18|* VSPI CLK
           o|D25              D5|* VSPI CS
-          *|D26         (17)TX2|*
-          *|D27         (16)RX2|*
+          *|D26        (D17)TX2|*
+          *|D27        (D16)RX2|*
 HSPI CLK  *|D14              D4|*
-HSPI MISO *|D12              D2|*
+HSPI MISO *|D12              D2|* BUILTIN_LED
 HSPI MOSI *|D13             D15|* HSPI CS
           o|GND             GND|*
           o|VIN_____________3V3|*
@@ -19,6 +19,7 @@ HSPI MOSI *|D13             D15|* HSPI CS
 (o): unused.
 (*): used.
 (x): cannot be used.
+(?): WTF
 */
 
 #include <Arduino.h>
@@ -28,11 +29,15 @@ HSPI MOSI *|D13             D15|* HSPI CS
 #include "temp.h"
 #include "LoRaTransceiver.h"
 
-watch rtc(false);
+int counterData;
+// Sensors data holders go here.
 String message;
-//temp thermocouple(4);
-farmSensor counter(0, soft, "Counter", "T");
+
+watch rtc(false);
 LoRaTransceiver receiver(15, 27, 26, 0xF3);
+farmSensor counter(0, soft, "Counter", "T");
+//temp thermocouple(4);
+// Sensors Constructors go here.
 
 void setup()
 {
@@ -40,38 +45,42 @@ void setup()
   Serial.begin(57600);
   Serial.println("\nHello Sustaingineering!\n");
   
-  delay(1000);
-  Serial.println("***********Initializing RTC**************");
+  Serial.println("Initializing RTC...");
   rtc.initialize();
-  Serial.println("*****************************************\n");
+  Serial.println("RTC Initialized.\n");
   
-  delay(1000);
-  Serial.println("*******Initializing MicroSD Card*********");
+  Serial.println("Initializing MicroSD Card...");
   memory::sdInitialize();
-  Serial.println("*****************************************\n");
+  Serial.println("MicroSD Card Initialized.\n");
 
-  // delay(1000);
-  // Serial.println("*******Initializing Thermocouple*********");
-  // thermocouple.initialize();
-  // Serial.println("*****************************************\n");
-
-  counter.initialize();
-
-  delay(1000);
-  Serial.println("**********Initializing LoRa**************");
+  Serial.println("Initializing LoRa...");
   receiver.initialize();
-  Serial.println("*****************************************\n");
+  Serial.println("LoRa Initialized.\n");
+
+  Serial.println("Initializing Counter...");
+  counter.initialize();
+  Serial.println("Counter Initialized.");
+
+  //Serial.println("Initializing Thermocouple...");
+  //thermocouple.initialize();
+  //Serial.println("Thermocouple Initialized\n");
+
+  // Sensors Initializers go here.
   
   Serial.println("Setup Done!\n");
 }
 
 void loop()
 {
-  message = counter.read() + String("\t") + 
-            rtc.getTimeStamp() + String("\n");
+  message = counter.read(&counterData) + String("\t");
+  message += rtc.getTimeStamp() + String("\n");
   Serial.print(message);
   memory::appendFile("/logs.txt", message);
-  receiver.send({'c', counter.readRaw()});
+  receiver.send({'c', counterData});
 
-  Serial.println(); delay(900); digitalWrite(2,HIGH); delay(100); digitalWrite(2,LOW);
+  Serial.println();
+  delay(900);
+  digitalWrite(BUILTIN_LED, HIGH);
+  delay(100);
+  digitalWrite(BUILTIN_LED, LOW);
 }

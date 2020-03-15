@@ -1,3 +1,12 @@
+/*
+ * RESET -> Orange -> D27
+ * NSS   -> Yellow -> D15
+ * SCK   -> Grey   -> D14
+ * MOSI  -> Green  -> D13
+ * MISO  -> Blue   -> D12
+ * DIO0  -> White  -> D26
+ */
+
 #include <SPI.h>
 #include <LoRa.h>
 
@@ -114,6 +123,7 @@ void LoRaTransceiver::send(packet toSend)
     LoRa.print(toSend.type);
     LoRa.print(toSend.data);
     LoRa.endPacket();
+    Serial.print("Sent: "); Serial.print(toSend.type); Serial.println(toSend.data);
 }
 
 packet LoRaTransceiver::receive()

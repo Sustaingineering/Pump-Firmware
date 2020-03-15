@@ -12,11 +12,11 @@ private:
     String m_unit;
     sensorType m_type;
     int m_data;
+    int readRaw();
 public:
     farmSensor(int pin, sensorType type, String name, String unit);
     void initialize();
-    int readRaw();
-    String read();
+    String read(int *p_data);
 };
 
 //template <class T>
@@ -56,9 +56,10 @@ int farmSensor::readRaw()
     }
 }
 
-String farmSensor::read()
+String farmSensor::read(int *p_data)
 {
     int raw = readRaw();
+    *p_data = raw;
     return m_name + String(": ") + String(raw) + String(" (") + m_unit + String(")");
 }
 
