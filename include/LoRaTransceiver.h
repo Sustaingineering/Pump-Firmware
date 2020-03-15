@@ -25,7 +25,7 @@ private:
     const int mk_ss;
     const int mk_rst;
     const int mk_dio0;
-    int mk_syncWord;
+    int m_syncWord;
 public:
     LoRaTransceiver(int, int, int, int);
     void initialize();
@@ -40,7 +40,7 @@ LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord = -1):
 ,mk_ss(ss)
 ,mk_rst(rst)
 ,mk_dio0(dio0)
-,mk_syncWord(syncWord) 
+,m_syncWord(syncWord) 
 {}
 
 void LoRaTransceiver::initialize()
@@ -60,7 +60,7 @@ void LoRaTransceiver::initialize()
   // Change sync word (0xF3) to match the receiver
   // The sync word assures you don't get LoRa messages from other LoRa transceivers
   // ranges from 0-0xFF
-  LoRa.setSyncWord(mk_syncWord);
+  LoRa.setSyncWord(m_syncWord);
   Serial.println("LoRa Initializing OK!");
 }
 
@@ -68,42 +68,24 @@ void LoRaTransceiver::request(packet *packets, int syncWord = -1)
 {
     if (syncWord != -1)
     {
-        mk_syncWord = syncWord;
-        LoRa.setSyncWord(mk_syncWord);
+        m_syncWord = syncWord;
+        LoRa.setSyncWord(m_syncWord);
     }
-    else if (mk_syncWord == -1)
+    else if (m_syncWord == -1)
     {
         Serial.print("Error: Sync Word was NEVER Specified!");
     }
 
-    //Send LoRa packet to receiver
-    LoRa.beginPacket();
-    LoRa.print('r');
-    LoRa.endPacket();
+    send({'r', 0});
     //Receive
     packets[0] = receive();
 }
 
 void LoRaTransceiver::respond(packet *packets)
 {
-    String LoRaData;
-    // try to parse packet
-    int packetSize = LoRa.parsePacket();
-    if (packetSize) {
-    // received a packet
-    Serial.print("Received packet '");
-
-    // read packet
-    while (LoRa.available()) {
-        LoRaData = LoRa.readString();
-        Serial.print(LoRaData);
-    }
-
-    // print RSSI of packet
-    Serial.print("' with RSSI ");
-    Serial.println(LoRa.packetRssi());
-    }
-    if (LoRaData.charAt(0) == 'r')
+    packet request;
+    request = receive();
+    if (request.type == 'r')
     {
         //send
         send(packets[0]);
@@ -129,11 +111,11 @@ void LoRaTransceiver::send(packet toSend)
 packet LoRaTransceiver::receive()
 {
     String LoRaData;
-    // try to parse packet
-    int packetSize = LoRa.parsePacket();
     bool isReceived = 0;
     while (!isReceived)
     {
+        // try to parse packet
+        int packetSize = LoRa.parsePacket();
         if (packetSize) {
         // received a packet
         Serial.print("Received packet '");
