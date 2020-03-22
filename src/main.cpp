@@ -41,7 +41,7 @@ farmSensor counter(0, soft, "Counter", "T");
 
 void setup()
 {
-  pinMode(2,OUTPUT);
+  pinMode(BUILTIN_LED, OUTPUT);
   Serial.begin(57600);
   Serial.println("\nHello Sustaingineering!\n");
   

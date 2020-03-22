@@ -10,7 +10,18 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-//enum dataType { voltage, current, temperature, flow, count};
+// timeout for receiving any response after making a request
+#define REQUEST_TIMEOUT 1000
+
+// timeout for staying in receive mode before sampling the sensors
+#define RESPOND_TIMEOUT 2000
+
+/*
+ * Delay between receiving request and sending the data 
+ * to ensure that requester has switched to receiving mode
+*/
+#define SEND_DELAY 500
+
 
 struct packet
 {
@@ -79,18 +90,18 @@ packet LoRaTransceiver::request(int syncWord = -1)
     send({'r', 0});
     //Receive
     packet received;
-    received =  receive(1000);
+    received =  receive(REQUEST_TIMEOUT);
     return received;
 }
 
 void LoRaTransceiver::respond(packet toSend)
 {
     packet request;
-    request = receive(1000);
+    request = receive(RESPOND_TIMEOUT);
     if (request.type == 'r')
     {
         //send
-        delay(500);
+        delay(SEND_DELAY);
         send(toSend);
         return;
     }
@@ -116,7 +127,7 @@ packet LoRaTransceiver::receive(int timeout)
     String LoRaData = "e0";
     bool isReceived = 0;
     Serial.println ("Waiting to receive...");
-    int start = millis();
+    unsigned long start = millis();
     while (!isReceived & ((millis()-start) <= timeout))
     {
         // try to parse packet
