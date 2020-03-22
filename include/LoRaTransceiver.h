@@ -29,10 +29,10 @@ private:
 public:
     LoRaTransceiver(int, int, int, int);
     void initialize();
-    void request(packet*, int);
-    void respond(packet*);
+    packet request(int);
+    void respond(packet);
     void send(packet);
-    packet receive();
+    packet receive(int);
 };
 
 LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord = -1):
@@ -64,7 +64,7 @@ void LoRaTransceiver::initialize()
   Serial.println("LoRa Initializing OK!");
 }
 
-void LoRaTransceiver::request(packet *packets, int syncWord = -1)
+packet LoRaTransceiver::request(int syncWord = -1)
 {
     if (syncWord != -1)
     {
@@ -78,17 +78,20 @@ void LoRaTransceiver::request(packet *packets, int syncWord = -1)
 
     send({'r', 0});
     //Receive
-    packets[0] = receive();
+    packet received;
+    received =  receive(1000);
+    return received;
 }
 
-void LoRaTransceiver::respond(packet *packets)
+void LoRaTransceiver::respond(packet toSend)
 {
     packet request;
-    request = receive();
+    request = receive(1000);
     if (request.type == 'r')
     {
         //send
-        send(packets[0]);
+        delay(500);
+        send(toSend);
         return;
     }
     else
@@ -108,11 +111,13 @@ void LoRaTransceiver::send(packet toSend)
     Serial.print("Sent: "); Serial.print(toSend.type); Serial.println(toSend.data);
 }
 
-packet LoRaTransceiver::receive()
+packet LoRaTransceiver::receive(int timeout)
 {
-    String LoRaData;
+    String LoRaData = "e0";
     bool isReceived = 0;
-    while (!isReceived)
+    Serial.println ("Waiting to receive...");
+    int start = millis();
+    while (!isReceived & ((millis()-start) <= timeout))
     {
         // try to parse packet
         int packetSize = LoRa.parsePacket();
@@ -134,7 +139,7 @@ packet LoRaTransceiver::receive()
     }
     packet received;
     received.type = LoRaData.charAt(0);
-    LoRaData.remove(0);
+    LoRaData.setCharAt(0, ' ');
     received.data = LoRaData.toInt();
     return received;
 }

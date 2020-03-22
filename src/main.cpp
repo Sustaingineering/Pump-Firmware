@@ -76,11 +76,9 @@ void loop()
   message += rtc.getTimeStamp() + String("\n");
   Serial.print(message);
   memory::appendFile("/logs.txt", message);
-  receiver.send({'c', counterData});
+  digitalWrite(BUILTIN_LED, LOW);
+  receiver.respond({'c', counterData});
+  digitalWrite(BUILTIN_LED, HIGH);
 
   Serial.println();
-  delay(900);
-  digitalWrite(BUILTIN_LED, HIGH);
-  delay(100);
-  digitalWrite(BUILTIN_LED, LOW);
 }
