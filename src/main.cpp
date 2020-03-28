@@ -22,6 +22,8 @@ HSPI MOSI *|D13             D15|* HSPI CS
 (?): WTF
 */
 
+// this is a git experiment with Tim and Ryan
+
 #include <Arduino.h>
 #include "watch.h"
 #include "memory.h"
