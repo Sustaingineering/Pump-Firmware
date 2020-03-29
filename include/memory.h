@@ -1,4 +1,10 @@
 /*
+ * This header file define the class that controls SD Card module
+ * Tarek Al Ayoubi
+ * Sustaingeering UBC
+ */
+
+/*
  * SD Card -> ESP32
  * 5V      -> 3V3
  * GND     -> GND
@@ -22,6 +28,7 @@
  * readFile     ("/foo.txt");
  * testFileIO   ("/test.txt");
  */
+
 #pragma once
 #include <Arduino.h>
 #include "FS.h"

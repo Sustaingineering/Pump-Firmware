@@ -1,10 +1,17 @@
 /*
+ * This header file define the class that controls RTC module
+ * Tarek Al Ayoubi
+ * Sustaingeering UBC
+ */
+
+/*
  * RTC -> ESP32 
  * VCC -> 3V3
  * GND -> GND
  * SCL -> D22
  * SDA -> D21
  */
+
 #pragma once
 #include <Arduino.h>
 #include <RTClib.h>

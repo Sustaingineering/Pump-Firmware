@@ -1,4 +1,10 @@
 /*
+ * This header file define the class that controls LoRa module
+ * Tarek Al Ayoubi
+ * Sustaingeering UBC
+ */
+
+/*
  * RESET -> Orange -> D27
  * NSS   -> Yellow -> D15
  * SCK   -> Grey   -> D14
@@ -7,6 +13,7 @@
  * DIO0  -> White  -> D26
  */
 
+#pragma once
 #include <SPI.h>
 #include <LoRa.h>
 

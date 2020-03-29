@@ -1,3 +1,9 @@
+/*
+ * This header file define the class that controls Temperature sensor
+ * Tarek Al Ayoubi
+ * Sustaingeering UBC
+ */
+
 #pragma once
 #include <OneWire.h> 
 #include <DallasTemperature.h>

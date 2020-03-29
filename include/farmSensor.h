@@ -1,3 +1,9 @@
+/*
+ * This header file define the class that controls generic sensors, analog, digital and simulated sensor
+ * Tarek Al Ayoubi
+ * Sustaingeering UBC
+ */
+
 #pragma once
 #include <Arduino.h>
 
