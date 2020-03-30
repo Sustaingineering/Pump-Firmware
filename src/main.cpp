@@ -1,10 +1,10 @@
 /*
             ___________________
           ?|EN              D23|* VSPI MOSI
-          ?|VP(D36)         D22|*
+          ?|VP(D36)         D22|* I2C SCL
           ?|VN(D39)     (D1)TX0|x
           o|D34         (D3)RX0|x
-          o|D35             D21|*
+          o|D35             D21|* I2C SDA
           o|D32   [ESP32]   D19|* VSPI MISO
           o|D33             D18|* VSPI CLK
           o|D25              D5|* VSPI CS

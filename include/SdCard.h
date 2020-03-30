@@ -1,7 +1,7 @@
 /*
- * This header file defines the class that controls SD Card module
- * Tarek Al Ayoubi
- * Sustaingeering UBC
+ * Content: class that controls SD Card module
+ * Author : Tarek Al Ayoubi
+ * Team   : Sustaingineering UBC
  */
 
 /*

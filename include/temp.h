@@ -1,7 +1,7 @@
 /*
- * This header file define the class that controls Temperature sensor
- * Tarek Al Ayoubi
- * Sustaingeering UBC
+ * Content: class that controls Temperature sensor
+ * Author : Tarek Al Ayoubi
+ * Team   : Sustaingineering UBC
  */
 
 #pragma once

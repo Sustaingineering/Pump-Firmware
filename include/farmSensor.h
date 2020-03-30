@@ -1,7 +1,7 @@
 /*
- * This header file define the class that controls generic sensors, analog, digital and simulated sensor
- * Tarek Al Ayoubi
- * Sustaingeering UBC
+ * Content: class that controls generic sensors, analog, digital and simulated sensor
+ * Author : Tarek Al Ayoubi
+ * Team   : Sustaingineering UBC
  */
 
 #pragma once

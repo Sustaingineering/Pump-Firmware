@@ -1,7 +1,7 @@
 /*
- * This header file define the class that controls LoRa module
- * Tarek Al Ayoubi
- * Sustaingeering UBC
+ * Content: class that controls LoRa module
+ * Author : Tarek Al Ayoubi
+ * Team   : Sustaingineering UBC
  */
 
 /*
