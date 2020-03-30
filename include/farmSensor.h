@@ -66,7 +66,7 @@ String farmSensor::read(int *p_data)
 {
     int raw = readRaw();
     *p_data = raw;
-    return m_name + String(": ") + String(raw) + String(" (") + m_unit + String(")");
+    return m_name + String(": ") + String(raw) + String(" (") + m_unit + String(")") + String(" | ");
 }
 
 // Sensors to be used:

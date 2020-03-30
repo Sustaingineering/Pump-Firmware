@@ -24,7 +24,7 @@ HSPI MOSI *|D13             D15|* HSPI CS
 
 #include <Arduino.h>
 #include "watch.h"
-#include "memory.h"
+#include "SdCard.h"
 #include "farmSensor.h"
 #include "temp.h"
 #include "LoRaTransceiver.h"
@@ -40,6 +40,7 @@ packet packets[NUMBER_OF_PACKETS];
 
 //Global Objects
 watch rtc(false);
+SdCard memory;
 LoRaTransceiver receiver(15, 27, 26, 0xF3);
 farmSensor counter1(0, soft, "Counter1", "T");
 farmSensor counter2(0, soft, "Counter2", "T");
@@ -59,7 +60,7 @@ void setup()
   Serial.println("RTC Initialized.\n");
   
   Serial.println("Initializing MicroSD Card...");
-  memory::sdInitialize();
+  memory.initialize();
   Serial.println("MicroSD Card Initialized.\n");
 
   Serial.println("Initializing LoRa...");
@@ -79,15 +80,15 @@ void loop()
 {
   //Sampling Sensors
   digitalWrite(BUILTIN_LED, HIGH);
-  message  = counter1.read(&counterData1) + String("\t");
-  message += counter2.read(&counterData2) + String("\t");
-  message += counter3.read(&counterData3) + String("\t");
-  message += counter4.read(&counterData4) + String("\t");
+  message  = counter1.read(&counterData1);
+  message += counter2.read(&counterData2);
+  message += counter3.read(&counterData3);
+  message += counter4.read(&counterData4);
   message += rtc.getTimeStamp() + String("\n");
   
   //Writing on Sd Card
   Serial.print(message);
-  memory::appendFile("/logs.txt", message);
+  memory.appendFile("/logs.txt", message);
   digitalWrite(BUILTIN_LED, LOW);
   
   //Waiting for a request on LoRa

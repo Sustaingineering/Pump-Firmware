@@ -50,7 +50,7 @@ String watch::getTimeStamp()
 {
     if (m_rtc.isrunning()) {
         DateTime time = m_rtc.now();
-        return String("\t") + time.timestamp(DateTime::TIMESTAMP_FULL);
+        return time.timestamp(DateTime::TIMESTAMP_FULL);
     }
     else
     {
