@@ -30,11 +30,6 @@ HSPI MOSI *|D13             D15|* HSPI CS
 #include "LoRaTransceiver.h"
 
 //Global Variables
-int counterData1;
-int counterData2;
-int counterData3;
-int counterData4;
-// Sensors data holders go here.
 String message;
 packet packets[NUMBER_OF_PACKETS];
 
@@ -42,10 +37,10 @@ packet packets[NUMBER_OF_PACKETS];
 watch rtc(false);
 SdCard memory;
 LoRaTransceiver receiver(15, 27, 26, 0xF3);
-farmSensor counter1(0, soft, "Counter1", "T");
-farmSensor counter2(0, soft, "Counter2", "T");
-farmSensor counter3(0, soft, "Counter3", "T");
-farmSensor counter4(0, soft, "Counter4", "T");
+farmSensor counter1(0, counter, "Counter1", "T", 'c');
+farmSensor counter2(0, counter, "Counter2", "T", 'd');
+farmSensor counter3(0, counter, "Counter3", "T", 'e');
+farmSensor counter4(0, counter, "Counter4", "T", 'f');
 //temp thermocouple(4);
 //Sensors Constructors go here.
 
@@ -80,10 +75,10 @@ void loop()
 {
   //Sampling Sensors
   digitalWrite(BUILTIN_LED, HIGH);
-  message  = counter1.read(&counterData1);
-  message += counter2.read(&counterData2);
-  message += counter3.read(&counterData3);
-  message += counter4.read(&counterData4);
+  message  = counter1.read();
+  message += counter2.read();
+  message += counter3.read();
+  message += counter4.read();
   message += rtc.getTimeStamp() + String("\n");
   
   //Writing on Sd Card
@@ -92,10 +87,10 @@ void loop()
   digitalWrite(BUILTIN_LED, LOW);
   
   //Waiting for a request on LoRa
-  packets[0].type = 'c'; packets[0].data = counterData1;
-  packets[1].type = 'd'; packets[1].data = counterData2;
-  packets[2].type = 'e'; packets[2].data = counterData3;
-  packets[3].type = 'f'; packets[3].data = counterData4;
+  packets[0] = counter1.pack();
+  packets[1] = counter2.pack();
+  packets[2] = counter3.pack();
+  packets[3] = counter4.pack();
   receiver.respond(packets, NUMBER_OF_PACKETS);
   
   Serial.println();

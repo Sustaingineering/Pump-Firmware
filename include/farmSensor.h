@@ -6,8 +6,9 @@
 
 #pragma once
 #include <Arduino.h>
+#include "LoRaTransceiver.h"
 
-enum sensorType { digital, analog, soft };
+enum sensorType { digital, analog, counter };
 
 //template <class T>
 class farmSensor 
@@ -17,21 +18,24 @@ private:
     String m_name;
     String m_unit;
     sensorType m_type;
+    char m_shortcut;
     int m_data;
     int readRaw();
 public:
-    farmSensor(int pin, sensorType type, String name, String unit);
+    farmSensor(int pin, sensorType type, String name, String unit, char shortcut);
     void initialize();
-    String read(int *p_data);
+    String read();
+    packet pack();
 };
 
 //template <class T>
-farmSensor::farmSensor(int pin, sensorType type, String name, String unit)
+farmSensor::farmSensor(int pin, sensorType type, String name, String unit, char shortcut)
 {
     m_pin = pin;
     m_type = type;
     m_name = name;
     m_unit = unit;
+    m_shortcut = shortcut;
     m_data = -1;
 }
 
@@ -53,7 +57,7 @@ int farmSensor::readRaw()
     case analog:
         return analogRead(m_pin);
         break;
-    case soft:
+    case counter:
         return m_data++; 
         break;
     default:
@@ -62,11 +66,18 @@ int farmSensor::readRaw()
     }
 }
 
-String farmSensor::read(int *p_data)
+String farmSensor::read()
 {
-    int raw = readRaw();
-    *p_data = raw;
-    return m_name + String(": ") + String(raw) + String(" (") + m_unit + String(")") + String(" | ");
+    m_data = readRaw();
+    return m_name + String(": ") + String(m_data) + String(" (") + m_unit + String(")") + String(" | ");
+}
+
+packet farmSensor::pack()
+{
+    packet ret;
+    ret.type = m_shortcut;
+    ret.data = m_data;
+    return ret;
 }
 
 // Sensors to be used:
