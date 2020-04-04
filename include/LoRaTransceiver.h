@@ -30,7 +30,7 @@
 #define SEND_DELAY 500
 
 //Numer of Packets to exchange
-#define NUMBER_OF_PACKETS 4
+#define NUMBER_OF_PACKETS 6
 
 
 struct packet
@@ -51,7 +51,7 @@ public:
     LoRaTransceiver(int, int, int, int);
     void initialize();
     void request(packet*, int,int);
-    void respond(packet*, int);
+    bool respond(packet*, int);
     void send(packet*, int);
     void receive(packet*, int, int);
 };
@@ -102,7 +102,7 @@ void LoRaTransceiver::request(packet *received, int amount, int syncWord = -1)
     receive(received, amount, REQUEST_TIMEOUT);
 }
 
-void LoRaTransceiver::respond(packet *toSend, int amount)
+bool LoRaTransceiver::respond(packet *toSend, int amount)
 {
     packet request;
     receive(&request, 1, RESPOND_TIMEOUT);
@@ -111,7 +111,7 @@ void LoRaTransceiver::respond(packet *toSend, int amount)
         //send
         delay(SEND_DELAY);
         send(toSend, amount);
-        return;
+        return true;
     }
     else
     {
@@ -119,7 +119,7 @@ void LoRaTransceiver::respond(packet *toSend, int amount)
         Serial.print(request.type);
         Serial.print(request.data);
         Serial.println("'");
-        return;
+        return false;
     }
 }
 
@@ -128,6 +128,7 @@ void LoRaTransceiver::send(packet* toSend, int amount)
     //Send LoRa packet to receiver
     for (int i = 0; i < amount; i++)
     {
+        delay(1); // for stability: sender must be behind receiver to guarantee the transaction.
         LoRa.beginPacket();
         LoRa.print(toSend[i].type);
         LoRa.print(toSend[i].data);
