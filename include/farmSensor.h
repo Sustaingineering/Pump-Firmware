@@ -58,7 +58,7 @@ int farmSensor::readRaw()
         return analogRead(m_pin);
         break;
     case counter:
-        return m_data++; 
+        return m_data + 1; 
         break;
     default:
         return -1;
