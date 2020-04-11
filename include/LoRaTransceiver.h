@@ -87,6 +87,7 @@ void LoRaTransceiver::initialize()
 
 void LoRaTransceiver::request(packet *received, int amount, int syncWord = -1)
 {
+    LoRa.begin(915E6);
     if (syncWord != -1)
     {
         m_syncWord = syncWord;
@@ -100,10 +101,12 @@ void LoRaTransceiver::request(packet *received, int amount, int syncWord = -1)
     send(&request, 1);
     //Receive
     receive(received, amount, REQUEST_TIMEOUT);
+    LoRa.end();
 }
 
 bool LoRaTransceiver::respond(packet *toSend, int amount)
 {
+    LoRa.begin(915E6);
     packet request;
     receive(&request, 1, RESPOND_TIMEOUT);
     if (request.type == 'r')
@@ -121,6 +124,7 @@ bool LoRaTransceiver::respond(packet *toSend, int amount)
         Serial.println("'");
         return false;
     }
+    LoRa.end();
 }
 
 void LoRaTransceiver::send(packet* toSend, int amount)

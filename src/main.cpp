@@ -23,7 +23,7 @@ HSPI MOSI *|D13             D15|* HSPI CS
 */
 
 #include <Arduino.h>
-#include "wacthdog.h"
+#include "Restarter.h"
 #include "watch.h"
 #include "SdCard.h"
 #include "farmSensor.h"
@@ -36,7 +36,7 @@ String message;
 packet packets[NUMBER_OF_PACKETS];
 
 //Global Objects
-watchdog autoRST(5);
+Restarter restarter(5);
 watch rtc(false);
 SdCard memory;
 LoRaTransceiver receiver(15, 27, 26, 0xF3);
@@ -93,7 +93,7 @@ void loop()
   memory.appendFile("/logs.txt", message);
   digitalWrite(BUILTIN_LED, LOW);
   
-  //Waiting for a request on LoRa
+  //Responding to a request from LoRa
   packets[0] = counter1.pack();
   packets[1] = counter2.pack();
   packets[2] = counter3.pack();
@@ -101,6 +101,6 @@ void loop()
   packets[4] = counter5.pack();
   packets[5] = counter6.pack();
   LoRaStatus = receiver.respond(packets, NUMBER_OF_PACKETS);
-  autoRST.takeAction(LoRaStatus);
+  restarter.takeAction(LoRaStatus);
   Serial.println();
 }
