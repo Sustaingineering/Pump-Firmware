@@ -9,7 +9,7 @@
 #include <DallasTemperature.h>
 
 //testing pull request Apr.10
-//test
+//test #2
 class temp
 {
 private:
