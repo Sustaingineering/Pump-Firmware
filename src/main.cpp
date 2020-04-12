@@ -1,6 +1,6 @@
 /*
             ___________________
-          ?|EN              D23|* VSPI MOSI
+           |EN              D23|* VSPI MOSI
           ?|VP(D36)         D22|* I2C SCL
           ?|VN(D39)     (D1)TX0|x
           o|D34         (D3)RX0|x
@@ -19,7 +19,7 @@ HSPI MOSI *|D13             D15|* HSPI CS
 (o): unused.
 (*): used.
 (x): cannot be used.
-(?): WTF
+(?): WTF.
 */
 
 #include <Arduino.h>
@@ -39,14 +39,13 @@ packet packets[NUMBER_OF_PACKETS];
 Restarter restarter(5);
 watch rtc(false);
 SdCard memory;
-LoRaTransceiver receiver(15, 27, 26, 0xF3);
+LoRaTransceiver responder(15, 27, 26, 0xF3);
 farmSensor counter1(0, counter, "Counter1", "T", 'c');
 farmSensor counter2(0, counter, "Counter2", "T", 'd');
 farmSensor counter3(0, counter, "Counter3", "T", 'e');
 farmSensor counter4(0, counter, "Counter4", "T", 'f');
 farmSensor counter5(0, counter, "Counter4", "T", 'g');
 farmSensor counter6(0, counter, "Counter4", "T", 'h');
-//temp thermocouple(4);
 //Sensors Constructors go here.
 
 void setup()
@@ -64,14 +63,10 @@ void setup()
   Serial.println("MicroSD Card Initialized.\n");
 
   Serial.println("Initializing LoRa...");
-  receiver.initialize();
+  responder.initialize();
   Serial.println("LoRa Initialized.\n");
 
-  //Serial.println("Initializing Thermocouple...");
-  //thermocouple.initialize();
-  //Serial.println("Thermocouple Initialized\n");
-
-  // Sensors Initializers go here.
+  //Sensors Initializers go here.
   
   Serial.println("Setup Done!\n");
 }
@@ -100,7 +95,7 @@ void loop()
   packets[3] = counter4.pack();
   packets[4] = counter5.pack();
   packets[5] = counter6.pack();
-  LoRaStatus = receiver.respond(packets, NUMBER_OF_PACKETS);
+  LoRaStatus = responder.respond(packets, NUMBER_OF_PACKETS);
   restarter.takeAction(LoRaStatus);
   Serial.println();
 }

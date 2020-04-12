@@ -42,22 +42,24 @@ struct packet
 class LoRaTransceiver
 {
 private:
+    LoRaClass m_LoRa;
     SPIClass m_hspi;
     const int mk_ss;
     const int mk_rst;
     const int mk_dio0;
     int m_syncWord;
+    void send(packet*, int);
+    void receive(packet*, int, int);
 public:
     LoRaTransceiver(int, int, int, int);
     void initialize();
     void request(packet*, int,int);
     bool respond(packet*, int);
-    void send(packet*, int);
-    void receive(packet*, int, int);
 };
 
 LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord = -1):
- m_hspi(HSPI)
+ m_LoRa()
+,m_hspi(HSPI)
 ,mk_ss(ss)
 ,mk_rst(rst)
 ,mk_dio0(dio0)
@@ -67,31 +69,31 @@ LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord = -1):
 void LoRaTransceiver::initialize()
 {   
   //setup LoRa transceiver module
-  LoRa.setPins(mk_ss, mk_rst, mk_dio0);
+  m_LoRa.setPins(mk_ss, mk_rst, mk_dio0);
   
   //replace the LoRa.begin(---E-) argument with your location's frequency 
   //433E6 for Asia
   //866E6 for Europe
   //915E6 for North America
-  LoRa.setSPI(m_hspi);
-  while (!LoRa.begin(915E6)) {
+  m_LoRa.setSPI(m_hspi);
+  while (!m_LoRa.begin(915E6)) {
     Serial.println(".");
     delay(500);
   }
   // Change sync word (0xF3) to match the receiver
   // The sync word assures you don't get LoRa messages from other LoRa transceivers
   // ranges from 0-0xFF
-  LoRa.setSyncWord(m_syncWord);
+  m_LoRa.setSyncWord(m_syncWord);
   Serial.println("LoRa Initializing OK!");
 }
 
 void LoRaTransceiver::request(packet *received, int amount, int syncWord = -1)
 {
-    LoRa.begin(915E6);
+    m_LoRa.begin(915E6);
     if (syncWord != -1)
     {
         m_syncWord = syncWord;
-        LoRa.setSyncWord(m_syncWord);
+        m_LoRa.setSyncWord(m_syncWord);
     }
     else if (m_syncWord == -1)
     {
@@ -101,12 +103,12 @@ void LoRaTransceiver::request(packet *received, int amount, int syncWord = -1)
     send(&request, 1);
     //Receive
     receive(received, amount, REQUEST_TIMEOUT);
-    LoRa.end();
+    m_LoRa.end();
 }
 
 bool LoRaTransceiver::respond(packet *toSend, int amount)
 {
-    LoRa.begin(915E6);
+    m_LoRa.begin(915E6);
     packet request;
     receive(&request, 1, RESPOND_TIMEOUT);
     if (request.type == 'r')
@@ -124,7 +126,7 @@ bool LoRaTransceiver::respond(packet *toSend, int amount)
         Serial.println("'");
         return false;
     }
-    LoRa.end();
+    m_LoRa.end();
 }
 
 void LoRaTransceiver::send(packet* toSend, int amount)
@@ -133,10 +135,10 @@ void LoRaTransceiver::send(packet* toSend, int amount)
     for (int i = 0; i < amount; i++)
     {
         delay(1); // for stability: sender must be behind receiver to guarantee the transaction.
-        LoRa.beginPacket();
-        LoRa.print(toSend[i].type);
-        LoRa.print(toSend[i].data);
-        LoRa.endPacket();
+        m_LoRa.beginPacket();
+        m_LoRa.print(toSend[i].type);
+        m_LoRa.print(toSend[i].data);
+        m_LoRa.endPacket();
         Serial.print("Sent: "); Serial.print(toSend[i].type); Serial.println(toSend[i].data);
     }
 }
@@ -154,22 +156,22 @@ void LoRaTransceiver::receive(packet *received, int amount, int timeout)
         while (!isReceived & ((millis()-start) <= timeout))
         {
             // try to parse packet
-            int packetSize = LoRa.parsePacket();
+            int packetSize = m_LoRa.parsePacket();
             if (packetSize)
             {
                 // received a packet
                 Serial.print("Received packet '");
 
                 // read packet
-                while (LoRa.available())
+                while (m_LoRa.available())
                 {
-                    LoRaData = LoRa.readString();
+                    LoRaData = m_LoRa.readString();
                     Serial.print(LoRaData);
                 }
 
                 // print RSSI of packet
                 Serial.print("' with RSSI ");
-                Serial.println(LoRa.packetRssi());
+                Serial.println(m_LoRa.packetRssi());
                 isReceived = 1;
             }
         }
