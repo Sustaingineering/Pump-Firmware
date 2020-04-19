@@ -1,20 +1,20 @@
 /*
-            ___________________
-           |EN              D23|* VSPI MOSI
-          ?|VP(D36)         D22|* I2C SCL
-          ?|VN(D39)     (D1)TX0|x
-          o|D34         (D3)RX0|x
-          o|D35             D21|* I2C SDA
-          o|D32   [ESP32]   D19|* VSPI MISO
-          o|D33             D18|* VSPI CLK
-          o|D25              D5|* VSPI CS
-          *|D26        (D17)TX2|*
-          *|D27        (D16)RX2|*
-HSPI CLK  *|D14              D4|*
-HSPI MISO *|D12              D2|* BUILTIN_LED
-HSPI MOSI *|D13             D15|* HSPI CS
-          o|GND             GND|*
-          o|VIN_____________3V3|*
+                    _________________________
+                   |EN          MOSI:VSPI:D23|* -> SD:MOSI
+                  ?|D36:VP        SCL:I2C:D22|* -> RTC:SCL
+                  ?|D39:VN   [ESP32]   TX0:D1|x
+                  o|D34                RX0:D3|x
+                  o|D35           SDA:I2C:D21|* -> RTC:SDA
+                  o|D32         MISO:VSPI:D19|* -> SD:MISO
+                  o|D33          CLK:VSPI:D18|* -> SD:SCK
+                  o|D25            CS:VSPI:D5|* -> SD:SS
+     LoRa:DIO0 <- *|D26               TX2:D17|o
+    LoRa:RESET <- *|D27               RX2:D16|o
+      LoRa:SCK <- *|D14:HSPI:CLK           D4|o
+     LoRa:MISO <- *|D12:HSPI:MISO          D2|* -> BUILTIN_LED
+     LoRa:MOSI <- *|D13:HSPI:MOSI CS:HSPI:D15|* -> LoRa:NSS
+                  o|GND                   GND|*
+                  o|VIN___________________3V3|*
 
 (o): unused.
 (*): used.
@@ -30,6 +30,9 @@ HSPI MOSI *|D13             D15|* HSPI CS
 #include "temp.h"
 #include "LoRaTransceiver.h"
 
+#define PUMP_ID 0
+#define LoRa_SECRET_WORD 0xF3
+
 //Global Variables
 bool LoRaStatus;
 String message;
@@ -39,7 +42,7 @@ packet packets[NUMBER_OF_PACKETS];
 Restarter restarter(5);
 watch rtc(false);
 SdCard memory;
-LoRaTransceiver responder(15, 27, 26, 0xF3);
+LoRaTransceiver responder(15, 27, 26, LoRa_SECRET_WORD, PUMP_ID);
 farmSensor counter1(0, counter, "Counter1", "T", 'c');
 farmSensor counter2(0, counter, "Counter2", "T", 'd');
 farmSensor counter3(0, counter, "Counter3", "T", 'e');
@@ -85,7 +88,7 @@ void loop()
   
   //Writing on Sd Card
   Serial.print(message);
-  memory.appendFile("/logs.txt", message);
+  memory.appendFile("/" + rtc.getDate() + ".txt", message);
   digitalWrite(BUILTIN_LED, LOW);
   
   //Responding to a request from LoRa
@@ -96,6 +99,6 @@ void loop()
   packets[4] = counter5.pack();
   packets[5] = counter6.pack();
   LoRaStatus = responder.respond(packets, NUMBER_OF_PACKETS);
-  restarter.takeAction(LoRaStatus);
+  //restarter.takeAction(LoRaStatus);
   Serial.println();
 }
