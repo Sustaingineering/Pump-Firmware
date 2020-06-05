@@ -55,9 +55,9 @@ SdCard::SdCard():
 
 void SdCard::initialize()
 {
-     if(!m_SD.begin(5, m_spi, 4000000U, "/sd", 5)){
-        Serial.println("Card Mount Failed");
-        return;
+    while(!m_SD.begin(5, m_spi, 4000000U, "/sd", 5)){
+        Serial.println("Card Mount Failed. Trying again in 1 sec.");
+        delay(1000);
     }
     uint8_t cardType = m_SD.cardType();
 

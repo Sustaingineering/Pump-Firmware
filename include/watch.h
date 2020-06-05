@@ -24,7 +24,8 @@ private:
 public:
     watch(bool need2SetTime);
     void initialize();
-    String  getTimeStamp();
+    String getTimeStamp();
+    String getDate();
 };
 
 watch::watch(bool need2SetTime): m_rtc()
@@ -51,6 +52,19 @@ String watch::getTimeStamp()
     if (m_rtc.isrunning()) {
         DateTime time = m_rtc.now();
         return time.timestamp(DateTime::TIMESTAMP_FULL);
+    }
+    else
+    {
+        return String("m_rtc is not running");
+    }
+}
+
+String watch::getDate()
+{
+    if (m_rtc.isrunning())
+    {
+    DateTime time = m_rtc.now();
+    return time.timestamp(DateTime::TIMESTAMP_DATE);
     }
     else
     {
