@@ -98,12 +98,7 @@ void loop()
   packets[3] = counter4.pack();
   packets[4] = counter5.pack();
   packets[5] = counter6.pack();
-<<<<<<< HEAD
-  LoRaStatus = receiver.respond(packets, NUMBER_OF_PACKETS);
-  restarter.takeAction(LoRaStatus);
-=======
   LoRaStatus = responder.respond(packets, NUMBER_OF_PACKETS);
   //restarter.takeAction(LoRaStatus);
->>>>>>> master
   Serial.println();
 }
