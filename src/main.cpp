@@ -23,12 +23,12 @@
 */
 
 // Hardware connected to ESP32 is true. Otherwise false.
-#define CENTRAL   1
-#define RTC       0
-#define SDCARD    0
+#define CENTRAL   0
+#define RTC       1
+#define SDCARD    1
 #define LORA      1
 #define GSM       0
-#define COUNTERS  0
+#define COUNTERS  1
 #define VOLTAGE   0
 #define CURRENT   0
 #define TEMP      0
