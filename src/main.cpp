@@ -23,14 +23,16 @@
 */
 
 // Hardware connected to ESP32 is true. Otherwise false.
-#define RTC       true
-#define SDCARD    true
-#define LORA      true
-#define COUNTERS  true
-#define VOLTAGE   false
-#define CURRENT   false
-#define TEMP      false
-#define FLOW      false
+#define CENTRAL   1
+#define RTC       0
+#define SDCARD    0
+#define LORA      1
+#define GSM       0
+#define COUNTERS  0
+#define VOLTAGE   0
+#define CURRENT   0
+#define TEMP      0
+#define FLOW      0
 
 #include <Arduino.h>
 #include "Restarter.h"
@@ -57,8 +59,12 @@ SdCard memory;
 #define LoRa_SECRET_WORD 0xF3
 bool LoRaStatus;
 packet packets[NUMBER_OF_PACKETS];
+#if CENTRAL
+LoRaTransceiver requester(15, 27, 26, LoRa_SECRET_WORD);
+#else
 LoRaTransceiver responder(15, 27, 26, LoRa_SECRET_WORD, PUMP_ID);
-#endif
+#endif //CENTRALL
+#endif //LORA
 
 #if COUNTERS
 farmSensor counter1(0, counter, "Counter1", "T", 'c');
@@ -90,9 +96,13 @@ void setup()
 
 #if LORA
   Serial.println("Initializing LoRa...");
+#if CENTRAL
+  requester.initialize();
+#else
   responder.initialize();
+#endif // CENTRAL
   Serial.println("LoRa Initialized.\n");
-#endif
+#endif // LORA
 
   //Sensors Initializers go here.
   
@@ -101,10 +111,10 @@ void setup()
 
 void loop()
 {
+  message = "";
   //Sampling Sensors
-  digitalWrite(BUILTIN_LED, HIGH);
 #if COUNTERS
-  message  = counter1.read();
+  message += counter1.read();
   message += counter2.read();
   message += counter3.read();
   message += counter4.read();
@@ -124,9 +134,21 @@ void loop()
   memory.appendFile("/" + rtc.getDate() + ".txt", message);
 #endif
 
-  digitalWrite(BUILTIN_LED, LOW);
-
 #if LORA
+#if CENTRAL
+  // make requests
+  requester.request(0, packets, NUMBER_OF_PACKETS);
+  Serial.print("received = [");
+  for (int i = 0; i < NUMBER_OF_PACKETS; i++)
+  {
+    Serial.print(packets[i].type);
+    Serial.print(packets[i].data);
+    if (i != (NUMBER_OF_PACKETS - 1))
+      Serial.print(", ");
+  }
+  Serial.print("]");
+  delay(100);
+#else //CENTRAL
   //Responding to a request from LoRa
   packets[0] = counter1.pack();
   packets[1] = counter2.pack();
@@ -135,9 +157,10 @@ void loop()
   packets[4] = counter5.pack();
   packets[5] = counter6.pack();
   LoRaStatus = responder.respond(packets, NUMBER_OF_PACKETS);
-#else
+#endif //CENTRAL
+#else //LORA
   delay(1000);
-#endif
+#endif //LORA
 
   //restarter.takeAction(LoRaStatus);
   Serial.println();

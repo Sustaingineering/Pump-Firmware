@@ -36,7 +36,7 @@
 struct packet
 {
     char type; //'r': request packet, 'v': voltage, 'i': current, 't': temperature, 'f': flow, 'c': count.
-    int data;
+    float data;
 };
 
 class LoRaTransceiver
@@ -44,7 +44,7 @@ class LoRaTransceiver
 private:
     LoRaClass m_LoRa;
     SPIClass m_hspi;
-    const int mk_id;
+    const float mk_id;
     const int mk_ss;
     const int mk_rst;
     const int mk_dio0;
@@ -52,13 +52,13 @@ private:
     void send(packet*, int);
     void receive(packet*, int, int);
 public:
-    LoRaTransceiver(int, int, int, int, int);
+    LoRaTransceiver(int, int, int, int, float);
     void initialize();
-    bool request(int, packet*, int);
+    bool request(float, packet*, int);
     bool respond(packet*, int);
 };
 
-LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord, int id = -1):
+LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord, float id = -1.0):
  m_LoRa()
 ,m_hspi(HSPI)
 ,mk_id(id)
@@ -89,14 +89,16 @@ void LoRaTransceiver::initialize()
   Serial.println("LoRa Initializing OK!");
 }
 
-bool LoRaTransceiver::request(int id, packet *received, int amount)
+bool LoRaTransceiver::request(float id, packet *received, int amount)
 {
+    digitalWrite(BUILTIN_LED, LOW);
     m_LoRa.begin(915E6);
     packet request = {'r', id};
     send(&request, 1);
     //Receive
     receive(received, amount, REQUEST_TIMEOUT);
     m_LoRa.end();
+    digitalWrite(BUILTIN_LED, HIGH);
     for (int i = 0; i < amount; i++)
     {
         if (received[i].type != 'e')
@@ -107,6 +109,7 @@ bool LoRaTransceiver::request(int id, packet *received, int amount)
 
 bool LoRaTransceiver::respond(packet *toSend, int amount)
 {
+    digitalWrite(BUILTIN_LED, LOW);
     m_LoRa.begin(915E6);
     packet request;
     receive(&request, 1, RESPOND_TIMEOUT);
@@ -118,6 +121,8 @@ bool LoRaTransceiver::respond(packet *toSend, int amount)
             delay(SEND_DELAY);
             send(toSend, amount);
         }
+        m_LoRa.end();
+        digitalWrite(BUILTIN_LED, HIGH);
         return true;
     }
     else
@@ -126,9 +131,10 @@ bool LoRaTransceiver::respond(packet *toSend, int amount)
         Serial.print(request.type);
         Serial.print(request.data);
         Serial.println("'");
+        m_LoRa.end();
+        digitalWrite(BUILTIN_LED, HIGH);
         return false;
     }
-    m_LoRa.end();
 }
 
 void LoRaTransceiver::send(packet* toSend, int amount)
@@ -179,6 +185,6 @@ void LoRaTransceiver::receive(packet *received, int amount, int timeout)
         }
         received[i].type = LoRaData.charAt(0);
         LoRaData.setCharAt(0, ' ');
-        received[i].data = LoRaData.toInt();
+        received[i].data = LoRaData.toFloat();
     }
 }

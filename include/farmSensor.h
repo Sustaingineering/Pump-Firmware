@@ -19,8 +19,8 @@ private:
     String m_unit;
     sensorType m_type;
     char m_shortcut;
-    int m_data;
-    int readRaw();
+    float m_data;
+    float readRaw();
 public:
     farmSensor(int pin, sensorType type, String name, String unit, char shortcut);
     void initialize();
@@ -36,7 +36,7 @@ farmSensor::farmSensor(int pin, sensorType type, String name, String unit, char 
     m_name = name;
     m_unit = unit;
     m_shortcut = shortcut;
-    m_data = -1;
+    m_data = 0.0;
 }
 
 
@@ -47,21 +47,21 @@ void farmSensor::initialize()
 }
 
 //template <class T>
-int farmSensor::readRaw()
+float farmSensor::readRaw()
 {   
     switch (m_type)
     {
     case digital:
-        return digitalRead(m_pin);
+        return (float)digitalRead(m_pin);
         break;
     case analog:
-        return analogRead(m_pin);
+        return (float)analogRead(m_pin);
         break;
     case counter:
-        return m_data + 1; 
+        return m_data + 0.1; 
         break;
     default:
-        return -1;
+        return -1.0;
         break;
     }
 }
