@@ -147,7 +147,7 @@ void loop()
       Serial.print(", ");
   }
   Serial.print("]");
-  delay(100);
+  delay(100); //JAIDEN: REPLACE THIS DELAY WITH GSM CODE THAT SENDS SMS 
 #else //CENTRAL
   //Responding to a request from LoRa
   packets[0] = counter1.pack();
