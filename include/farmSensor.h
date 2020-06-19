@@ -14,16 +14,18 @@ enum sensorType { digital, analog, counter };
 class farmSensor 
 {
 private:
+    sensorType m_type;
+protected:
     int m_pin;
     String m_name;
     String m_unit;
-    sensorType m_type;
     char m_shortcut;
     float m_data;
-    float readRaw();
+    virtual float readRaw();
 public:
+    farmSensor(){}
     farmSensor(int pin, sensorType type, String name, String unit, char shortcut);
-    void initialize();
+    virtual void initialize();
     String read();
     packet pack();
 };
