@@ -5,11 +5,25 @@
 #include "SdCard.h"
 #include "farmSensor.h"
 #include "temp.h"
+#include "volt.h"
+#include "current.h"
 #include "LoRaTransceiver.h"
 
 //Global Objects
 //Restarter restarter(5);
 String message;
+
+#if CURRENT
+current hall_effect(12);
+#endif
+
+#if VOLTAGE
+volt volt_divider(12, 1000, 1000);
+#endif
+
+#if TEMP
+temp thermocouple(4); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
+#endif
 
 #if RTC
 watch rtc(false);
@@ -46,6 +60,24 @@ void setup()
   pinMode(BUILTIN_LED, OUTPUT);
   Serial.begin(115200);
   Serial.println("\nHello Sustaingineering!\n");
+
+#if CURRENT
+  Serial.println("Initializing Current Sensor...");
+  hall_effect.initialize();
+  Serial.println("Current Sensor Initialized.\n");
+#endif
+
+#if VOLTAGE
+  Serial.println("Initializing Voltage Sensor...");
+  volt_divider.initialize();
+  Serial.println("Voltage Sensor Initialized.\n");
+#endif
+  
+#if TEMP
+  Serial.println("Initializing Thermocouple...");
+  thermocouple.initialize();
+  Serial.println("Thermocouple Initialized.\n");
+#endif
   
 #if RTC
   Serial.println("Initializing RTC...");
@@ -85,6 +117,18 @@ void loop()
   message += counter4.read();
   message += counter5.read();
   message += counter6.read();
+#endif
+
+#if CURRENT
+  message += hall_effect.read();
+#endif
+
+#if VOLTAGE
+  message += volt_divider.read();
+#endif
+
+#if TEMP
+  message += thermocouple.read();
 #endif
 
 #if RTC
