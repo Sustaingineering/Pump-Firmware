@@ -1,40 +1,5 @@
-/*
-                    _________________________
-                   |EN          MOSI:VSPI:D23|* -> SD:MOSI
-                  ?|D36:VP        SCL:I2C:D22|* -> RTC:SCL
-                  ?|D39:VN   [ESP32]   TX0:D1|x
-                  o|D34                RX0:D3|x
-                  o|D35           SDA:I2C:D21|* -> RTC:SDA
-                  o|D32         MISO:VSPI:D19|* -> SD:MISO
-                  o|D33          CLK:VSPI:D18|* -> SD:SCK
-                  o|D25            CS:VSPI:D5|* -> SD:SS
-     LoRa:DIO0 <- *|D26               TX2:D17|o
-    LoRa:RESET <- *|D27               RX2:D16|o
-      LoRa:SCK <- *|D14:HSPI:CLK           D4|o
-     LoRa:MISO <- *|D12:HSPI:MISO          D2|* -> BUILTIN_LED
-     LoRa:MOSI <- *|D13:HSPI:MOSI CS:HSPI:D15|* -> LoRa:NSS
-                  o|GND                   GND|*
-                  o|VIN___________________3V3|*
-
-(o): unused.
-(*): used.
-(x): cannot be used.
-(?): WTF.
-*/
-
-// Hardware connected to ESP32 is true. Otherwise false.
-#define CENTRAL   0
-#define RTC       1
-#define SDCARD    1
-#define LORA      1
-#define GSM       0
-#define COUNTERS  1
-#define VOLTAGE   0
-#define CURRENT   0
-#define TEMP      0
-#define FLOW      0
-
 #include <Arduino.h>
+#include "config.h"
 #include "Restarter.h"
 #include "watch.h"
 #include "SdCard.h"
@@ -59,11 +24,11 @@ SdCard memory;
 #define LoRa_SECRET_WORD 0xF3
 bool LoRaStatus;
 packet packets[NUMBER_OF_PACKETS];
-#if CENTRAL
+#if GSM
 LoRaTransceiver requester(15, 27, 26, LoRa_SECRET_WORD);
 #else
 LoRaTransceiver responder(15, 27, 26, LoRa_SECRET_WORD, PUMP_ID);
-#endif //CENTRALL
+#endif //GSM
 #endif //LORA
 
 #if COUNTERS
@@ -96,11 +61,11 @@ void setup()
 
 #if LORA
   Serial.println("Initializing LoRa...");
-#if CENTRAL
+#if GSM
   requester.initialize();
 #else
   responder.initialize();
-#endif // CENTRAL
+#endif // GSM
   Serial.println("LoRa Initialized.\n");
 #endif // LORA
 
@@ -135,7 +100,7 @@ void loop()
 #endif
 
 #if LORA
-#if CENTRAL
+#if GSM
   // make requests
   requester.request(0, packets, NUMBER_OF_PACKETS);
   Serial.print("received = [");
@@ -148,7 +113,7 @@ void loop()
   }
   Serial.print("]");
   delay(100); //JAIDEN: REPLACE THIS DELAY WITH GSM CODE THAT SENDS SMS 
-#else //CENTRAL
+#else //GSM
   //Responding to a request from LoRa
   packets[0] = counter1.pack();
   packets[1] = counter2.pack();
@@ -157,7 +122,7 @@ void loop()
   packets[4] = counter5.pack();
   packets[5] = counter6.pack();
   LoRaStatus = responder.respond(packets, NUMBER_OF_PACKETS);
-#endif //CENTRAL
+#endif //GSM
 #else //LORA
   delay(1000);
 #endif //LORA
