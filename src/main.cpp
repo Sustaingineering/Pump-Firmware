@@ -11,6 +11,7 @@
 #include "current.h"
 #include "Flow.h"
 #include "LoRaTransceiver.h"
+#include "counter.h"
 
 //Global Objects
 //Restarter restarter(5);
@@ -53,12 +54,12 @@ LoRaTransceiver responder(15, 27, 26, LoRa_SECRET_WORD, PUMP_ID);
 #endif //LORA
 
 #if COUNTERS
-farmSensor counter1(0, counter, "Counter1", "T", 'c');
-farmSensor counter2(0, counter, "Counter2", "T", 'd');
-farmSensor counter3(0, counter, "Counter3", "T", 'e');
-farmSensor counter4(0, counter, "Counter4", "T", 'f');
-farmSensor counter5(0, counter, "Counter4", "T", 'g');
-farmSensor counter6(0, counter, "Counter4", "T", 'h');
+counter counter1(0, "Counter1", "T", 'c');
+counter counter2(0, "Counter2", "T", 'd');
+counter counter3(0, "Counter3", "T", 'e');
+counter counter4(0, "Counter4", "T", 'f');
+counter counter5(0, "Counter4", "T", 'g');
+counter counter6(0, "Counter4", "T", 'h');
 #endif
 //Sensors Constructors go here.
 

@@ -8,7 +8,7 @@
 #include <Arduino.h>
 #include "LoRaTransceiver.h"
 
-enum sensorType { digital, analog, counter };
+enum sensorType { digital, analog };
 
 //template <class T>
 class farmSensor 
@@ -55,16 +55,10 @@ float farmSensor::readRaw()
     {
     case digital:
         return (float)digitalRead(m_pin);
-        break;
     case analog:
         return (float)analogRead(m_pin);
-        break;
-    case counter:
-        return m_data + 0.1; 
-        break;
     default:
-        return -1.0;
-        break;
+        return nanf("Unexpected sensor type");
     }
 }
 
