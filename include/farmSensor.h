@@ -23,7 +23,7 @@ private:
     float readRaw();
 public:
     farmSensor(int pin, sensorType type, String name, String unit, char shortcut);
-    void initialize();
+    virtual void initialize();
     String read();
     packet pack();
 };
