@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include <thread>
+#include <mutex>
 #include "config.h"
 #include "Restarter.h"
 #include "watch.h"
@@ -7,6 +9,7 @@
 #include "temp.h"
 #include "volt.h"
 #include "current.h"
+#include "Flow.h"
 #include "LoRaTransceiver.h"
 
 //Global Objects
@@ -23,6 +26,10 @@ volt volt_divider(12, 1000, 1000);
 
 #if TEMP
 temp thermocouple(4); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
+#endif
+
+#if FLOW
+flow waterflow(34,"WaterFlow", "L/min", 'f');
 #endif
 
 #if RTC
@@ -78,7 +85,13 @@ void setup()
   thermocouple.initialize();
   Serial.println("Thermocouple Initialized.\n");
 #endif
-  
+
+#if FLOW
+  Serial.println("Initializing Waterflow...");
+  waterflow.initialize();
+  Serial.println("WaterFlow Initialized.\n");
+#endif
+
 #if RTC
   Serial.println("Initializing RTC...");
   rtc.initialize();
@@ -129,6 +142,10 @@ void loop()
 
 #if TEMP
   message += thermocouple.read();
+#endif
+
+#if FLOW
+  message += waterflow.read();
 #endif
 
 #if RTC

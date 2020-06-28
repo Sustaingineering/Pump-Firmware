@@ -18,7 +18,10 @@
         "sstream": "cpp",
         "streambuf": "cpp",
         "new": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "system_error": "cpp",
+        "thread": "cpp",
+        "mutex": "cpp"
     },
     "cmake.configureOnOpen": false
 }
