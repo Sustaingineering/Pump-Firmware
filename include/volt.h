@@ -1,7 +1,7 @@
 
 /*
  * Content: class that measures voltage using voltage dividers
- * Author : Forbes Choy
+ * Authors : Forbes Choy, Timothy Nguyen
  * Team   : Sustaingineering UBC
  */
 
@@ -9,9 +9,63 @@
 #include <Arduino.h>
 #include <farmSensor.h>
 
+/* ------------------------- Tim Testing Inheritance ------------------------ */
 
-class volt
+class volt : public farmSensor {
+
+    private:
+    int m_RH; // voltage divider, higher resistor value [ohms]
+    int m_RL; // voltage divider, lower resistor value [ohms]
+
+    public:
+        static const int adc_res = 4095; // ESP32 ADC resolution is 12 bits
+        volt(int pin, sensorType type, String name, String unit, char shortcut, int RL, int RH);
+        void initialize();
+        float readRaw(); // overriding 4 functions from farmSensor class
+        String read();  
+        packet pack();
+        
+};
+
+/* constructor */
+volt::volt(int pin, sensorType type, String name, String unit, char shortcut, int RL, int RH): 
+            farmSensor(pin, type, name, unit, shortcut), m_RH(RH), m_RL(RL) {}
+
+/* overriding */
+void volt::initialize()
 {
+    pinMode(m_pin, INPUT);
+}
+
+
+/* overriding */
+float volt::readRaw(){
+    return analogRead(m_pin) * (3.9 / adc_res) * ((m_RH + m_RL) / m_RL);
+}
+
+/* overriding */
+String volt::read()
+{
+    m_data = readRaw(); // voltage read
+    return String("Voltage") + String(": ") + String(m_data) + String(" (") + String("V") + String(")") + String(" | ");
+}
+
+/* overriding */
+packet volt::pack()
+{
+    packet ret;
+    ret.type = 'v';
+    ret.data = m_data;
+    return ret;
+}
+
+
+
+
+/* ------------------------- Original Code From Forbes ------------------------ */
+
+/**
+class volt
 private:
     int pin; //analog pin number (the GPIO pin number) for data reading 
     int RH; //voltage divider, higher resistor value [ohms]
@@ -61,3 +115,4 @@ String volt::read()
     m_data = readRaw(); //voltage read
     return String("Voltage") + String(": ") + String(m_data) + String(" (") + String("V") + String(")") + String(" | ");
 }
+*/
