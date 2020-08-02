@@ -1,7 +1,7 @@
 
 /*
  * Content: class that measures voltage using voltage dividers
- * Authors : Forbes Choy
+ * Author : Forbes Choy
  * Team   : Sustaingineering UBC
  */
 
