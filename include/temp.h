@@ -16,12 +16,10 @@ class temp: public farmSensor{
         OneWire m_oneWire;
         DallasTemperature m_sensors; 
     protected:
-        float readRaw();
+        float readRaw() override;
     public: 
         temp(int pin, sensorType type, String name, String unit, char shortcut);
-        void initialize();
-        packet pack();
-        String read();
+        void initialize() override;
 
 };
 
@@ -40,19 +38,6 @@ float temp::readRaw()
     return m_sensors.getTempCByIndex(0);
 }
 
-packet temp::pack()
-{
-    packet ret;
-    ret.type = 't';
-    ret.data = m_data;
-    return ret;
-}
-
-String temp::read()
-{
-    m_data = readRaw(); //temperature read
-    return String("Temperature") + String(": ") + String(m_data) + String(" (") + String("degrees Celsius") + String(")") + String(" | ");
-}
 
 
 /* ------------------------- Original Code By Tarek ------------------------- */
