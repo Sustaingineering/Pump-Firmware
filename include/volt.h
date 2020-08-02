@@ -1,7 +1,7 @@
 
 /*
  * Content: class that measures voltage using voltage dividers
- * Authors : Forbes Choy, Timothy Nguyen
+ * Authors : Forbes Choy
  * Team   : Sustaingineering UBC
  */
 
@@ -9,22 +9,16 @@
 #include <Arduino.h>
 #include <farmSensor.h>
 
-/* ------------------------- Tim Testing Inheritance ------------------------ */
-
 class volt : public farmSensor {
-
-    private:
+private:
     int m_RH; // voltage divider, higher resistor value [ohms]
     int m_RL; // voltage divider, lower resistor value [ohms]
-
-    public:
-        static const int adc_res = 4095; // ESP32 ADC resolution is 12 bits
-        volt(int pin, sensorType type, String name, String unit, char shortcut, int RL, int RH);
-        void initialize();
-        float readRaw(); // overriding 4 functions from farmSensor class
-        String read();  
-        packet pack();
-        
+protected:
+    float readRaw() override; 
+public:
+    static const int adc_res = 4095; // ESP32 ADC resolution is 12 bits
+    volt(int pin, sensorType type, String name, String unit, char shortcut, int RL, int RH);
+    void initialize() override;
 };
 
 /* constructor */
@@ -42,24 +36,6 @@ void volt::initialize()
 float volt::readRaw(){
     return analogRead(m_pin) * (3.9 / adc_res) * ((m_RH + m_RL) / m_RL);
 }
-
-/* overriding */
-String volt::read()
-{
-    m_data = readRaw(); // voltage read
-    return String("Voltage") + String(": ") + String(m_data) + String(" (") + String("V") + String(")") + String(" | ");
-}
-
-/* overriding */
-packet volt::pack()
-{
-    packet ret;
-    ret.type = 'v';
-    ret.data = m_data;
-    return ret;
-}
-
-
 
 
 /* ------------------------- Original Code From Forbes ------------------------ */
