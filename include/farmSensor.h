@@ -26,8 +26,8 @@ public:
     farmSensor(){}
     farmSensor(int pin, sensorType type, String name, String unit, char shortcut);
     virtual void initialize();
-    virtual String read(); // unsure if virtual is needed
-    virtual packet pack();
+    String read(); // unsure if virtual is needed
+    packet pack();
 };
 
 //template <class T>
