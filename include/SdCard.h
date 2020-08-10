@@ -20,6 +20,7 @@
 #include "SD.h"
 #include "SPI.h"
 #include "vfs_api.h"
+#include "config.h"
 
 class SdCard {
 private:
@@ -50,12 +51,12 @@ public:
 
 SdCard::SdCard():
  m_SD(FSImplPtr(new VFSImpl()))
-,m_spi(VSPI)
+,m_spi(SDCARD_SPI_INTERFACE)
 {}
 
 void SdCard::initialize()
 {
-    while(!m_SD.begin(5, m_spi, 4000000U, "/sd", 5)){
+    while(!m_SD.begin(SDCARD_SELECT_PIN, m_spi, 4000000U, "/sd", 5)){
         Serial.println("Card Mount Failed. Trying again in 1 sec.");
         delay(1000);
     }

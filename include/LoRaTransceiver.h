@@ -16,6 +16,7 @@
 #pragma once
 #include <SPI.h>
 #include <LoRa.h>
+#include "config.h"
 
 // timeout for receiving any response after making a request
 #define REQUEST_TIMEOUT 1000
@@ -60,7 +61,7 @@ public:
 
 LoRaTransceiver::LoRaTransceiver(int ss, int rst, int dio0, int syncWord, float id = -1.0):
  m_LoRa()
-,m_hspi(HSPI)
+,m_hspi(LORA_SPI_INTERFACE)
 ,mk_id(id)
 ,mk_ss(ss)
 ,mk_rst(rst)

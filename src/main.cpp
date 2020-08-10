@@ -1,6 +1,4 @@
 #include <Arduino.h>
-#include <thread>
-#include <mutex>
 #include "config.h"
 #include "Restarter.h"
 #include "watch.h"
@@ -18,19 +16,19 @@
 String message;
 
 #if CURRENT
-current hall_effect(12);
+current hall_effect(CURRENT_PIN);
 #endif
 
 #if VOLTAGE
-volt volt_divider(12, 1000, 1000);
+volt volt_divider(VOLT_PIN, 1000, 1000);
 #endif
 
 #if TEMP
-temp thermocouple(4); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
+temp thermocouple(TEMP_PIN); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
 #endif
 
 #if FLOW
-flow waterflow(34,"WaterFlow", "L/min", 'f');
+flow waterflow(FLOW_PIN,"WaterFlow", "L/min", 'f');
 #endif
 
 #if RTC
@@ -42,14 +40,12 @@ SdCard memory;
 #endif
 
 #if LORA
-#define PUMP_ID 0
-#define LoRa_SECRET_WORD 0xF3
 bool LoRaStatus;
 packet packets[NUMBER_OF_PACKETS];
 #if GSM
-LoRaTransceiver requester(15, 27, 26, LoRa_SECRET_WORD);
+LoRaTransceiver requester(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SECRET_WORD);
 #else
-LoRaTransceiver responder(15, 27, 26, LoRa_SECRET_WORD, PUMP_ID);
+LoRaTransceiver responder(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SECRET_WORD, LORA_PUMP_ID);
 #endif //GSM
 #endif //LORA
 
@@ -61,7 +57,6 @@ counter counter4(0, "Counter4", "T", 'f');
 counter counter5(0, "Counter4", "T", 'g');
 counter counter6(0, "Counter4", "T", 'h');
 #endif
-//Sensors Constructors go here.
 
 void setup()
 {
