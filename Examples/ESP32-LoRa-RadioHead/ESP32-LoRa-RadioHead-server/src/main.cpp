@@ -14,7 +14,7 @@
 // Singleton instance of the radio driver
 //RH_RF95 rf95;
 //RH_RF95 rf95(5, 2); // Rocket Scream Mini Ultra Pro with the RFM95W
-RH_RF95 rf95(5, 22); // Adafruit Feather M0 with RFM95 
+RH_RF95 rf95(5, 26); // Adafruit Feather M0 with RFM95 
 
 // Need this on Arduino Zero with SerialUSB port (eg RocketScream Mini Ultra Pro)
 //#define Serial SerialUSB
@@ -35,9 +35,9 @@ void setup()
     Serial.println("init failed");  
   // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
   rf95.setFrequency(915.0);
-  rf95.setTxPower(20, false);
+  rf95.setTxPower(2, false);
   // You can change the modulation parameters with eg
-  // rf95.setModemConfig(RH_RF95::Bw500Cr45Sf128);
+  rf95.setModemConfig(RH_RF95::Bw125Cr48Sf4096);
 
 // The default transmitter power is 13dBm, using PA_BOOST.
   // If you are using RFM95/96/97/98 modules which uses the PA_BOOST transmitter pin, then 
@@ -67,7 +67,7 @@ void loop()
      Serial.println(rf95.lastRssi(), DEC);
       
       // Send a reply
-      uint8_t data[] = "And hello back to you";
+      uint8_t data[] = "hello back";
       rf95.send(data, sizeof(data));
       rf95.waitPacketSent();
       Serial.println("Sent a reply");
