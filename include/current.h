@@ -14,11 +14,8 @@
 class current: public farmSensor
 {
 private:
-    int m_pin; //analog pin number (the GPIO pin number) for data reading
-    float m_data; //changed to float instead of integer
- 
-protected:
     float readRaw() override; //returns currentage of source (NOT THE DIVIDER) in decimal value
+protected:
  
 public:
     //constants declarations (cannot declare static const floats in .h files, need .cpp --> 3.9 defined in readRaw())
