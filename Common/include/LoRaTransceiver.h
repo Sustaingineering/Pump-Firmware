@@ -17,6 +17,7 @@
 #include <SPI.h>
 #include <LoRa.h>
 #include "config.h"
+#include "farmSensor.h"
 
 // timeout for receiving any response after making a request
 #define REQUEST_TIMEOUT 1000
@@ -32,13 +33,6 @@
 
 //Numer of Packets to exchange
 #define NUMBER_OF_PACKETS 6
-
-
-struct packet
-{
-    char type; //'r': request packet, 'v': voltage, 'i': current, 't': temperature, 'f': flow, 'c': count.
-    float data;
-};
 
 class LoRaTransceiver
 {

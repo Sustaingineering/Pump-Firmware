@@ -1,6 +1,7 @@
 #include <Arduino.h>
-#include "config.h"
-#include "Restarter.h"
+#include "PinConfig.h"
+#ifndef electron
+//#include "Restarter.h"
 #include "watch.h"
 #include "SdCard.h"
 #include "farmSensor.h"
@@ -9,7 +10,9 @@
 #include "current.h"
 #include "Flow.h"
 #include "LoRaTransceiver.h"
+#endif
 #include "counter.h"
+
 
 //Global Objects
 //Restarter restarter(5);
@@ -31,7 +34,7 @@ temp thermocouple(TEMP_PIN, digital, "Temperature", "Celsius", 't'); //pretty sl
 flow waterflow(FLOW_PIN,"WaterFlow", "L/min", 'f');
 #endif
 
-#if RTC
+#if ERTC
 watch rtc(false);
 #endif
 
@@ -88,7 +91,7 @@ void setup()
   Serial.println("WaterFlow Initialized.\n");
 #endif
 
-#if RTC
+#if ERTC
   Serial.println("Initializing RTC...");
   rtc.initialize();
   Serial.println("RTC Initialized.\n");
@@ -144,7 +147,7 @@ void loop()
   message += waterflow.read();
 #endif
 
-#if RTC
+#if ERTC
   message += rtc.getTimeStamp();
 #endif
 

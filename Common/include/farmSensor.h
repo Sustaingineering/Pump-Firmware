@@ -6,9 +6,14 @@
 
 #pragma once
 #include <Arduino.h>
-#include "LoRaTransceiver.h"
 
 enum sensorType { digital, analog };
+
+struct packet
+{
+    char type; //'r': request packet, 'v': voltage, 'i': current, 't': temperature, 'f': flow, 'c': count.
+    float data;
+};
 
 //template <class T>
 class farmSensor 
