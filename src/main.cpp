@@ -24,7 +24,7 @@ volt volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 1000, 1000);
 #endif
 
 #if TEMP
-temp thermocouple(TEMP_PIN); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
+temp thermocouple(TEMP_PIN, digital, "Temperature", "Celsius", 't'); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
 #endif
 
 #if FLOW
