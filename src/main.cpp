@@ -16,7 +16,7 @@
 String message;
 
 #if CURRENT
-current hall_effect(CURRENT_PIN);
+current hall_effect(CURRENT_PIN, "Current", "Amps", 'i');
 #endif
 
 #if VOLTAGE
