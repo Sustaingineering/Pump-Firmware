@@ -30,10 +30,10 @@
 #define LORA      1
 #define GSM       0
 #define COUNTERS  1
-#define VOLTAGE   0
-#define CURRENT   0
-#define TEMP      0
-#define FLOW      0
+#define VOLTAGE   1
+#define CURRENT   1
+#define TEMP      1
+#define FLOW      1
 
 // Pins Definitions:
 #define SDCARD_SPI_INTERFACE VSPI
