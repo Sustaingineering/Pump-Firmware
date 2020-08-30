@@ -13,6 +13,7 @@
 #endif
 #include "counter.h"
 
+#define PUMP_ID 0
 
 //Global Objects
 //Restarter restarter(5);
@@ -48,7 +49,7 @@ packet packets[NUMBER_OF_PACKETS];
 #if GSM
 LoRaTransceiver requester(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SECRET_WORD);
 #else
-LoRaTransceiver responder(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SECRET_WORD, LORA_PUMP_ID);
+LoRaTransceiver responder(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SECRET_WORD, PUMP_ID);
 #endif //GSM
 #endif //LORA
 
@@ -160,7 +161,7 @@ void loop()
 #endif
 
 #if LORA
-#if GSM
+#ifdef electron 
   // make requests
   requester.request(0, packets, NUMBER_OF_PACKETS);
   Serial.print("received = [");
@@ -172,8 +173,8 @@ void loop()
       Serial.print(", ");
   }
   Serial.print("]");
-  delay(100); //JAIDEN: REPLACE THIS DELAY WITH GSM CODE THAT SENDS SMS 
-#else //GSM
+  delay(100);
+#else //electron
   //Responding to a request from LoRa
   packets[0] = counter1.pack();
   packets[1] = counter2.pack();
@@ -182,10 +183,15 @@ void loop()
   packets[4] = counter5.pack();
   packets[5] = counter6.pack();
   LoRaStatus = responder.respond(packets, NUMBER_OF_PACKETS);
-#endif //GSM
+#endif // electron
 #else //LORA
   delay(1000);
 #endif //LORA
+
+#ifdef electron
+String pumpId = "Pump" + String(PUMP_ID);
+Particle.publish(pumpId.c_str(), message.c_str(), PUBLIC);
+#endif
 
   //restarter.takeAction(LoRaStatus);
   Serial.println();

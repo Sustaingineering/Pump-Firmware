@@ -28,7 +28,6 @@
 #define ERTC       1
 #define SDCARD    1
 #define LORA      1
-#define GSM       0
 #define COUNTERS  1
 #define VOLTAGE   1
 #define CURRENT   1
@@ -43,7 +42,6 @@
 #define LORA_SELECT_PIN 15
 #define LORA_RST_PIN 27
 #define LORA_DIO0_PIN 26
-#define LORA_PUMP_ID 0
 #define LORA_SECRET_WORD 0xF3
 
 #define CURRENT_PIN 35
