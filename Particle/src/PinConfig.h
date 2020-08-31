@@ -1,7 +1,7 @@
 #pragma once
 #define electron
 #define BUILTIN_LED D7
-#define ERTC       0
+#define ERTC      1
 #define SDCARD    0
 #define LORA      0
 #define COUNTERS  1

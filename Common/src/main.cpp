@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include "PinConfig.h"
-#ifndef electron
 //#include "Restarter.h"
 #include "RealTimeClock.h"
+#ifndef electron
 #include "SdCard.h"
 #include "farmSensor.h"
 #include "temp.h"
