@@ -8,4 +8,9 @@ for /f %%F in ('ls Common\src') do mklink /H Particle\src\%%F Common\src\%%F
 
 mv Particle\src\main.cpp Particle\src\main.ino
 
+rm Particle\src\temp.cpp
+rm Particle\src\SdCard.cpp
+rm Particle\src\watch.cpp 
+rm Particle\src\LoRaTransceiver.cpp
+
 pause
