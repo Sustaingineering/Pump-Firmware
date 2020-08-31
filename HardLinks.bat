@@ -14,7 +14,6 @@ mv Particle\src\main.cpp Particle\src\main.ino
 
 rm Particle\src\temp.cpp
 rm Particle\src\SdCard.cpp
-rm Particle\src\watch.cpp 
 rm Particle\src\LoRaTransceiver.cpp
 
 pause

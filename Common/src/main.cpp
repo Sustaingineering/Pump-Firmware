@@ -2,7 +2,7 @@
 #include "PinConfig.h"
 #ifndef electron
 //#include "Restarter.h"
-#include "watch.h"
+#include "RealTimeClock.h"
 #include "SdCard.h"
 #include "farmSensor.h"
 #include "temp.h"
@@ -36,7 +36,7 @@ flow waterflow(FLOW_PIN,"WaterFlow", "L/min", 'f');
 #endif
 
 #if ERTC
-watch rtc(false);
+RealTimeClock rtc(false);
 #endif
 
 #if SDCARD
@@ -58,8 +58,8 @@ counter counter1(0, "Counter1", "T", 'c');
 counter counter2(0, "Counter2", "T", 'd');
 counter counter3(0, "Counter3", "T", 'e');
 counter counter4(0, "Counter4", "T", 'f');
-counter counter5(0, "Counter4", "T", 'g');
-counter counter6(0, "Counter4", "T", 'h');
+counter counter5(0, "Counter5", "T", 'g');
+counter counter6(0, "Counter6", "T", 'h');
 #endif
 
 void setup()

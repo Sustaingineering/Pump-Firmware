@@ -14,15 +14,14 @@
 
 #pragma once
 #include <Arduino.h>
-#include <RTClib.h>
 
-class watch
+class RealTimeClock
 {
 private:
-    RTC_DS1307 m_rtc;
-    bool m_need2SetTime;
+    class Impl;
+    Impl* m_pImpl;
 public:
-    watch(bool need2SetTime);
+    RealTimeClock(bool need2SetTime);
     void initialize();
     String getTimeStamp();
     String getDate();
