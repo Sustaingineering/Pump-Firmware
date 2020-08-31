@@ -1,4 +1,8 @@
-rm Particle\src\main.cpp
+for /f %%F in ('ls Common\include') do rm ESP32\include\%%F
+for /f %%F in ('ls Common\include') do rm Particle\src\%%F
+
+for /f %%F in ('ls Common\src') do rm ESP32\src\%%F
+for /f %%F in ('ls Common\src') do rm Particle\src\%%F
 
 for /f %%F in ('ls Common\include') do mklink /H ESP32\include\%%F Common\include\%%F
 for /f %%F in ('ls Common\include') do mklink /H Particle\src\%%F Common\include\%%F
