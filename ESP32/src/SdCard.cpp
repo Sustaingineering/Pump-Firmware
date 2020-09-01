@@ -1,17 +1,41 @@
 #include "SdCard.h"
+#include "FS.h"
+#include "SD.h"
+#include "SPI.h"
+#include "vfs_api.h"
+#include "PinConfig.h"
 
-SdCard::SdCard():
- m_SD(FSImplPtr(new VFSImpl()))
+class SdCard::Impl
+{
+private:
+    SDFS fs;
+    SPIClass m_spi;
+public:
+    Impl();
+    void initialize();
+    void listDir(const char * dirname, uint8_t levels);
+    void createDir(const char * path);
+    void removeDir(const char * path);
+    void readFile(const char * path);
+    void writeFile(const char * path, const char * message);
+    void appendFile(const char * path, const char * message);
+    void renameFile(const char * path1, const char * path2);
+    void deleteFile(const char * path);
+    void testFileIO(const char * path);
+};
+
+SdCard::Impl::Impl():
+ fs(FSImplPtr(new VFSImpl()))
 ,m_spi(SDCARD_SPI_INTERFACE)
 {}
 
-void SdCard::initialize()
+void SdCard::Impl::initialize()
 {
-    while(!m_SD.begin(SDCARD_SELECT_PIN, m_spi, 4000000U, "/sd", 5)){
+    while(!fs.begin(SDCARD_SELECT_PIN, m_spi, 4000000U, "/sd", 5)){
         Serial.println("Card Mount Failed. Trying again in 1 sec.");
         delay(1000);
     }
-    uint8_t cardType = m_SD.cardType();
+    uint8_t cardType = fs.cardType();
 
     if(cardType == CARD_NONE){
         Serial.println("No SD card attached");
@@ -29,79 +53,15 @@ void SdCard::initialize()
         Serial.println("UNKNOWN");
     }
 
-    uint64_t cardSize = m_SD.cardSize() / (1024 * 1024);
+    uint64_t cardSize = fs.cardSize() / (1024 * 1024);
     Serial.printf("SD Card Size: %lluMB\n", cardSize);
-    Serial.printf("Total space: %lluMB\n", m_SD.totalBytes() / (1024 * 1024));
-    Serial.printf("Used space: %lluMB\n", m_SD.usedBytes() / (1024 * 1024));
+    Serial.printf("Total space: %lluMB\n", fs.totalBytes() / (1024 * 1024));
+    Serial.printf("Used space: %lluMB\n", fs.usedBytes() / (1024 * 1024));
     listDir("/", 0);
 }
 
-void SdCard::listDir(const char * dirname, uint8_t levels)
+void SdCard::Impl::listDir(const char * dirname, uint8_t levels)
 {
-    listDir_(m_SD, dirname, levels);
-}
-
-void SdCard::createDir(const char * path)
-{
-    createDir_(m_SD, path);
-}
-
-void SdCard::removeDir(const char * path)
-{
-    removeDir_(m_SD, path);
-}
-
-void SdCard::readFile(const char * path)
-{
-    readFile_(m_SD, path);
-}
-
-void SdCard::writeFile(String path, String message)
-{
-    char *pathArray;
-    char *messageArray;
-    int pathLen = path.length() + 1;
-    int messageLen = message.length() + 1;
-    pathArray = new char[pathLen];
-    messageArray = new char[messageLen];
-    path.toCharArray(pathArray, pathLen);
-    message.toCharArray(messageArray, messageLen);
-    writeFile_(m_SD, pathArray, messageArray);
-    delete[] pathArray;
-    delete[] messageArray;
-}
-
-void SdCard::appendFile(String path, String message)
-{
-    char *pathArray;
-    char *messageArray;
-    int pathLen = path.length() + 1;
-    int messageLen = message.length() + 1;
-    pathArray = new char[pathLen];
-    messageArray = new char[messageLen];
-    path.toCharArray(pathArray, pathLen);
-    message.toCharArray(messageArray, messageLen);
-    appendFile_(m_SD, pathArray, messageArray);
-    delete[] pathArray;
-    delete[] messageArray;
-}
-
-void SdCard::renameFile(const char * path1, const char * path2)
-{
-    renameFile_(m_SD, path1, path2);
-}
-
-void SdCard::deleteFile(const char * path)
-{
-    deleteFile_(m_SD, path);
-}
-
-void SdCard::testFileIO(const char * path)
-{
-    testFileIO_(m_SD, path);
-}
-
-void SdCard::listDir_(fs::FS &fs, const char * dirname, uint8_t levels){
     Serial.printf("Listing directory: %s\n", dirname);
 
     File root = fs.open(dirname);
@@ -120,7 +80,7 @@ void SdCard::listDir_(fs::FS &fs, const char * dirname, uint8_t levels){
             Serial.print("  DIR : ");
             Serial.println(file.name());
             if(levels){
-                listDir_(fs, file.name(), levels -1);
+                listDir(file.name(), levels -1);
             }
         } else {
             Serial.print("  FILE: ");
@@ -132,7 +92,8 @@ void SdCard::listDir_(fs::FS &fs, const char * dirname, uint8_t levels){
     }
 }
 
-void SdCard::createDir_(fs::FS &fs, const char * path){
+void SdCard::Impl::createDir(const char * path)
+{
     Serial.printf("Creating Dir: %s\n", path);
     if(fs.mkdir(path)){
         Serial.println("Dir created");
@@ -141,7 +102,8 @@ void SdCard::createDir_(fs::FS &fs, const char * path){
     }
 }
 
-void SdCard::removeDir_(fs::FS &fs, const char * path){
+void SdCard::Impl::removeDir(const char * path)
+{
     Serial.printf("Removing Dir: %s\n", path);
     if(fs.rmdir(path)){
         Serial.println("Dir removed");
@@ -150,7 +112,8 @@ void SdCard::removeDir_(fs::FS &fs, const char * path){
     }
 }
 
-void SdCard::readFile_(fs::FS &fs, const char * path){
+void SdCard::Impl::readFile(const char * path)
+{
     Serial.printf("Reading file: %s\n", path);
 
     File file = fs.open(path);
@@ -166,7 +129,8 @@ void SdCard::readFile_(fs::FS &fs, const char * path){
     file.close();
 }
 
-void SdCard::writeFile_(fs::FS &fs, const char * path, const char * message){
+void SdCard::Impl::writeFile(const char * path, const char * message)
+{
     Serial.printf("Writing file: %s\n", path);
 
     File file = fs.open(path, FILE_WRITE);
@@ -182,7 +146,8 @@ void SdCard::writeFile_(fs::FS &fs, const char * path, const char * message){
     file.close();
 }
 
-void SdCard::appendFile_(fs::FS &fs, const char * path, const char * message){
+void SdCard::Impl::appendFile(const char * path, const char * message)
+{
     Serial.printf("Appending to file: %s\n", path);
 
     File file = fs.open(path, FILE_APPEND);
@@ -198,7 +163,8 @@ void SdCard::appendFile_(fs::FS &fs, const char * path, const char * message){
     file.close();
 }
 
-void SdCard::renameFile_(fs::FS &fs, const char * path1, const char * path2){
+void SdCard::Impl::renameFile(const char * path1, const char * path2)
+{
     Serial.printf("Renaming file %s to %s\n", path1, path2);
     if (fs.rename(path1, path2)) {
         Serial.println("File renamed");
@@ -207,7 +173,8 @@ void SdCard::renameFile_(fs::FS &fs, const char * path1, const char * path2){
     }
 }
 
-void SdCard::deleteFile_(fs::FS &fs, const char * path){
+void SdCard::Impl::deleteFile(const char * path)
+{
     Serial.printf("Deleting file: %s\n", path);
     if(fs.remove(path)){
         Serial.println("File deleted");
@@ -216,7 +183,8 @@ void SdCard::deleteFile_(fs::FS &fs, const char * path){
     }
 }
 
-void SdCard::testFileIO_(fs::FS &fs, const char * path){
+void SdCard::Impl::testFileIO(const char * path)
+{
     File file = fs.open(path);
     static uint8_t buf[512];
     size_t len = 0;
@@ -256,4 +224,57 @@ void SdCard::testFileIO_(fs::FS &fs, const char * path){
     end = millis() - start;
     Serial.printf("%u bytes written for %u ms\n", 2048 * 512, end);
     file.close();
+}
+
+SdCard::SdCard():
+m_pImpl(new SdCard::Impl())
+{}
+
+void SdCard::initialize()
+{
+    m_pImpl->initialize();
+}
+
+void SdCard::listDir(const char * dirname, uint8_t levels)
+{
+    m_pImpl->listDir(dirname, levels);
+}
+void SdCard::createDir(const char * path)
+{
+    m_pImpl->createDir(path);
+}
+
+void SdCard::removeDir(const char * path)
+{
+    m_pImpl->removeDir(path);
+}
+
+void SdCard::readFile(const char * path)
+{
+    m_pImpl->readFile(path);
+}
+
+void SdCard::writeFile(const char * path, const char * message)
+{
+    m_pImpl->writeFile(path, message);
+}
+
+void SdCard::appendFile(const char * path, const char * message)
+{
+    m_pImpl->appendFile(path, message);
+}
+
+void SdCard::renameFile(const char * path1, const char * path2)
+{
+    m_pImpl->renameFile(path1, path2);
+}
+
+void SdCard::deleteFile(const char * path)
+{
+    m_pImpl->deleteFile(path);
+}
+
+void SdCard::testFileIO(const char * path)
+{
+    m_pImpl->testFileIO(path);
 }
