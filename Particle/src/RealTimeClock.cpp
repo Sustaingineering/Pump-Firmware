@@ -22,6 +22,11 @@ String RealTimeClock::Impl::getTimeStamp()
     return Time.format(Time.now(), "%FT%X");
 }
 
+String RealTimeClock::Impl::getDate()
+{
+    return Time.format(Time.now(), "%F");
+}
+
 RealTimeClock::RealTimeClock(bool need2SetTime): m_pImpl(new RealTimeClock::Impl(need2SetTime))
 {}
 

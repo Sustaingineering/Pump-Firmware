@@ -1,0 +1,148 @@
+#include "SdCard.h"
+#include <SPI.h>
+#include "SdFat.h"
+#define SD_CS_PIN SS
+
+class SdCard::Impl
+{
+private:
+    SdFat m_Sd;
+public:
+    Impl();
+    void initialize();
+    void listDir(const char * dirname, uint8_t levels);
+    void createDir(const char * path);
+    void removeDir(const char * path);
+    void readFile(const char * path);
+    void writeFile(const char * path, const char * message);
+    void appendFile(const char * path, const char * message);
+    void renameFile(const char * path1, const char * path2);
+    void deleteFile(const char * path);
+    void testFileIO(const char * path);
+};
+
+SdCard::Impl::Impl():
+ m_Sd()
+{}
+
+void SdCard::Impl::initialize()
+{
+    Serial.print("Initializing SD card...");
+
+    if (!m_Sd.begin(SD_CS_PIN)) {
+    Serial.println("initialization failed!");
+    return;
+    }
+    Serial.println("initialization done.");
+    listDir(NULL, 0);
+}
+
+void SdCard::Impl::listDir(const char * /*dirname*/, uint8_t /*levels*/)
+{
+    m_Sd.ls(LS_SIZE);
+}
+
+void SdCard::Impl::createDir(const char * path)
+{
+    Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
+}
+
+void SdCard::Impl::removeDir(const char * path)
+{
+    Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
+}
+
+void SdCard::Impl::readFile(const char * path)
+{
+    Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
+}
+
+void SdCard::Impl::writeFile(const char * path, const char * message)
+{
+    Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
+}
+
+void SdCard::Impl::appendFile(const char * path, const char * message)
+{
+    Serial.printf("Appending to file: %s\n", path);
+
+    File file = m_Sd.open(path, FILE_WRITE);
+    if(!file){
+        Serial.println("Failed to open file for appending");
+        return;
+    }
+    if(file.print(message)){
+        Serial.println("Message appended");
+    } else {
+        Serial.println("Append failed");
+    }
+    file.close();
+}
+
+void SdCard::Impl::renameFile(const char * path1, const char * path2)
+{
+    Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
+}
+
+void SdCard::Impl::deleteFile(const char * path)
+{
+    Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
+}
+
+void SdCard::Impl::testFileIO(const char * path)
+{
+    Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
+}
+
+SdCard::SdCard():
+m_pImpl(new SdCard::Impl())
+{}
+
+void SdCard::initialize()
+{
+    m_pImpl->initialize();
+}
+
+void SdCard::listDir(const char * dirname, uint8_t levels)
+{
+    m_pImpl->listDir(dirname, levels);
+}
+void SdCard::createDir(const char * path)
+{
+    m_pImpl->createDir(path);
+}
+
+void SdCard::removeDir(const char * path)
+{
+    m_pImpl->removeDir(path);
+}
+
+void SdCard::readFile(const char * path)
+{
+    m_pImpl->readFile(path);
+}
+
+void SdCard::writeFile(const char * path, const char * message)
+{
+    m_pImpl->writeFile(path, message);
+}
+
+void SdCard::appendFile(const char * path, const char * message)
+{
+    m_pImpl->appendFile(path, message);
+}
+
+void SdCard::renameFile(const char * path1, const char * path2)
+{
+    m_pImpl->renameFile(path1, path2);
+}
+
+void SdCard::deleteFile(const char * path)
+{
+    m_pImpl->deleteFile(path);
+}
+
+void SdCard::testFileIO(const char * path)
+{
+    m_pImpl->testFileIO(path);
+}
