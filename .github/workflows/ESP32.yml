@@ -16,6 +16,6 @@ jobs:
         pip install platformio
     - name: Run PlatformIO
       run: |
-        .\HardLinks.bat
+        .\create_hard_links.bat
         cd ESP32
         platformio run -e esp32doit-devkit-v1
