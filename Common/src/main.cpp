@@ -2,8 +2,8 @@
 #include "PinConfig.h"
 //#include "Restarter.h"
 #include "RealTimeClock.h"
-#ifndef electron
 #include "SdCard.h"
+#ifndef electron
 #include "farmSensor.h"
 #include "temp.h"
 #include "volt.h"
@@ -55,11 +55,11 @@ LoRaTransceiver responder(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SEC
 
 #if COUNTERS
 counter counter1(0, "Counter1", "T", 'c');
-counter counter2(0, "Counter2", "T", 'd');
-counter counter3(0, "Counter3", "T", 'e');
-counter counter4(0, "Counter4", "T", 'f');
-counter counter5(0, "Counter5", "T", 'g');
-counter counter6(0, "Counter6", "T", 'h');
+counter counter2(1, "Counter2", "T", 'd');
+counter counter3(2, "Counter3", "T", 'e');
+counter counter4(3, "Counter4", "T", 'f');
+counter counter5(4, "Counter5", "T", 'g');
+counter counter6(5, "Counter6", "T", 'h');
 #endif
 
 void setup()
@@ -185,12 +185,12 @@ void loop()
   LoRaStatus = responder.respond(packets, NUMBER_OF_PACKETS);
 #endif // electron
 #else //LORA
-  delay(1000);
+  delay(10000);
 #endif //LORA
 
 #ifdef electron
-String pumpId = "Pump" + String(PUMP_ID);
-Particle.publish(pumpId.c_str(), message.c_str(), PUBLIC);
+String pumpId = String(PUMP_ID);
+Particle.publish(pumpId.c_str(), message.c_str(), PRIVATE);
 #endif
 
   //restarter.takeAction(LoRaStatus);

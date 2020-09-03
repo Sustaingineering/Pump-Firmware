@@ -35,7 +35,8 @@ float farmSensor::readRaw()
 String farmSensor::read()
 {
     m_data = readRaw();
-    return m_name + String(": ") + String(m_data) + String(" (") + m_unit + String(")") + String(" | ");
+    // return m_name + String(": ") + String(m_data) + String(" (") + m_unit + String(")") + String(" | ");
+    return String(m_data, 2) + String(",");
 }
 
 packet farmSensor::pack()

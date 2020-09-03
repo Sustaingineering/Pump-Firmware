@@ -19,7 +19,7 @@ void RealTimeClock::Impl::initialize()
 
 String RealTimeClock::Impl::getTimeStamp()
 {
-    return Time.format(Time.now(), "%FT%X");
+    return String((int)Time.now());
 }
 
 String RealTimeClock::Impl::getDate()

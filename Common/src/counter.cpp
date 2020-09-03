@@ -6,7 +6,7 @@ counter::counter(int pin, String name, String unit, char shortcut)
     m_name = name;
     m_unit = unit;
     m_shortcut = shortcut;
-    m_data = 0.0;
+    m_data = 1.0 * pin;
 }
 
 void counter::initialize()
