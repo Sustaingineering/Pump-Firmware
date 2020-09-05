@@ -7,8 +7,9 @@
 #define COUNTERS  1
 #define VOLTAGE   1
 #define CURRENT   1
-#define TEMP      0
+#define TEMP      1
 #define FLOW      0
 
 #define VOLT_PIN    B2
 #define CURRENT_PIN B3
+#define TEMP_PIN    B4
