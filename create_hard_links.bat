@@ -24,7 +24,6 @@ for /f %%F in ('ls Common\src') do (
 echo Renaming Particle\src\main.cpp to Particle\src\main.ino 
 mv Particle\src\main.cpp Particle\src\main.ino
 
-rm Particle\src\temp.cpp
 rm Particle\src\LoRaTransceiver.cpp
 
 pause

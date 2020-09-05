@@ -25,7 +25,7 @@
 #pragma once
 
 // Hardware connected to ESP32 is true. Otherwise false.
-#define ERTC       1
+#define ERTC      1
 #define SDCARD    1
 #define LORA      1
 #define COUNTERS  1

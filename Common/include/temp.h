@@ -5,17 +5,16 @@
  */
 
 #pragma once
-#include <OneWire.h> 
-#include <DallasTemperature.h>
 #include "farmSensor.h"
 
-class temp: public farmSensor{
+class temp : public IFarmSensor
+{
 private:
-    OneWire m_oneWire;
-    DallasTemperature m_sensors; 
-protected:
-    float readRaw() override;
+    class Impl;
+    Impl* m_pImpl;
 public: 
     temp(int pin, sensorType type, String name, String unit, char shortcut);
     void initialize() override;
+    String read() override;
+    packet pack() override;
 };

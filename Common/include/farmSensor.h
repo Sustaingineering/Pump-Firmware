@@ -6,17 +6,9 @@
 
 #pragma once
 #include <Arduino.h>
+#include "IFarmSensor.h"
 
-enum sensorType { digital, analog };
-
-struct packet
-{
-    char type; //'r': request packet, 'v': voltage, 'i': current, 't': temperature, 'f': flow, 'c': count.
-    float data;
-};
-
-//template <class T>
-class farmSensor 
+class farmSensor : public IFarmSensor
 {
 private:
     sensorType m_type;
@@ -30,9 +22,9 @@ protected:
 public:
     farmSensor(){}
     farmSensor(int pin, sensorType type, String name, String unit, char shortcut);
-    virtual void initialize();
-    String read();
-    packet pack();
+    void initialize() override;
+    String read() override;
+    packet pack() override;
 };
 
 // Sensors to be used:
