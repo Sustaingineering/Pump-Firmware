@@ -11,6 +11,15 @@ farmSensor::farmSensor(int pin, sensorType type, String name, String unit, char 
     m_data = 0.0;
 }
 
+farmSensor::farmSensor(int pin, String name, String unit, char shortcut)
+{
+    m_pin = pin;
+    m_name = name;
+    m_unit = unit;
+    m_shortcut = shortcut;
+    m_data = 0.0;
+}
+
 
 //template <class T>
 void farmSensor::initialize()

@@ -22,6 +22,7 @@ protected:
 public:
     farmSensor(){}
     farmSensor(int pin, sensorType type, String name, String unit, char shortcut);
+    farmSensor(int pin, String name, String unit, char shortcut);
     void initialize() override;
     String read() override;
     packet pack() override;

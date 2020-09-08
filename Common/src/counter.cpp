@@ -1,11 +1,7 @@
 #include "counter.h"
 
-counter::counter(int pin, String name, String unit, char shortcut)
+counter::counter(int pin,  String name, String unit, char shortcut):farmSensor(pin, name, unit, shortcut)
 {
-    m_pin = pin;
-    m_name = name;
-    m_unit = unit;
-    m_shortcut = shortcut;
     m_data = 1.0 * pin;
 }
 
