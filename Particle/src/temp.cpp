@@ -37,21 +37,8 @@ void temp::Impl::initialize()
 
 float temp::Impl::readRaw()
 {
-    if (m_sensor.read())
-    {
-        return m_sensor.celsius();
-    }
-    else
-    {
-        if (m_sensor.searchDone())
-        {
-            return nanf("ERROR: No More Addresses");
-        } 
-        else
-        {
-            return nanf("ERROR: Something Went Wrong!");
-        }
-    }
+    while (!m_sensor.read());
+    return m_sensor.celsius();
 }
 
 temp::temp(int pin, sensorType type, String name, String unit, char shortcut):
