@@ -20,7 +20,6 @@ protected:
     float m_data;
     virtual float readRaw();
 public:
-    farmSensor(){}
     farmSensor(int pin, sensorType type, String name, String unit, char shortcut);
     farmSensor(int pin, String name, String unit, char shortcut);
     void initialize() override;
