@@ -1,13 +1,8 @@
 #include "current.h"
 
-current::current(int pin, String name, String unit, char shortcut)
-{
-  m_pin = pin;
-  m_name = name;
-  m_unit = unit;
-  m_shortcut = shortcut;
-  m_data = 0.0;
-}
+current::current(int pin, String name, String unit, char shortcut):
+        farmSensor(pin,name,unit,shortcut)
+{}
  
  
 void current::initialize()
