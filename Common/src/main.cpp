@@ -10,6 +10,8 @@
 #ifndef electron
 #include "Flow.h"
 #include "LoRaTransceiver.h"
+#else
+#include "Gsm.h"
 #endif
 #include "counter.h"
 
@@ -18,6 +20,10 @@
 //Global Objects
 //Restarter restarter(5);
 String message;
+
+#ifdef electron
+Gsm gsm;
+#endif
 
 #if CURRENT
 current hall_effect(CURRENT_PIN, "Current", "Amps", 'i');
@@ -185,12 +191,11 @@ void loop()
   LoRaStatus = responder.respond(packets, NUMBER_OF_PACKETS);
 #endif // electron
 #else //LORA
-  delay(10000);
+  delay(1000);
 #endif //LORA
 
 #ifdef electron
-String pumpId = String(PUMP_ID);
-Particle.publish(pumpId.c_str(), message.c_str(), PRIVATE);
+  gsm.Publish(String(PUMP_ID), message);
 #endif
 
   //restarter.takeAction(LoRaStatus);
