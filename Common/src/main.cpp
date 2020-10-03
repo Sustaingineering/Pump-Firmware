@@ -46,7 +46,7 @@ RealTimeClock rtc(false);
 #endif
 
 #if SDCARD
-SdCard memory;
+SdCard memory(SDCARD_SELECT_PIN);
 #endif
 
 #if LORA

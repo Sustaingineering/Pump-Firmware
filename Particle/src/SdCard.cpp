@@ -1,14 +1,15 @@
 #include "SdCard.h"
 #include <SPI.h>
 #include "SdFat.h"
-#define SD_CS_PIN SS
+
 
 class SdCard::Impl
 {
 private:
     SdFat m_Sd;
+    int m_SdCsPin;
 public:
-    Impl();
+    Impl(int);
     void initialize();
     void listDir(const char * dirname, uint8_t levels);
     void createDir(const char * path);
@@ -21,15 +22,15 @@ public:
     void testFileIO(const char * path);
 };
 
-SdCard::Impl::Impl():
- m_Sd()
+SdCard::Impl::Impl(int SdCsPin):
+ m_Sd(), m_SdCsPin(SdCsPin)
 {}
 
 void SdCard::Impl::initialize()
-{
+{ 
     Serial.print("Initializing SD card...");
 
-    if (!m_Sd.begin(SD_CS_PIN)) {
+    if (!m_Sd.begin(m_SdCsPin)) {
     Serial.println("initialization failed!");
     return;
     }
@@ -94,8 +95,8 @@ void SdCard::Impl::testFileIO(const char * path)
     Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
 }
 
-SdCard::SdCard():
-m_pImpl(new SdCard::Impl())
+SdCard::SdCard(const int SdCardSelectPin):
+m_pImpl(new SdCard::Impl(SdCardSelectPin))
 {}
 
 void SdCard::initialize()

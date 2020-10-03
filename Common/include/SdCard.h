@@ -21,8 +21,9 @@ class SdCard {
 private:
     class Impl;
     Impl* m_pImpl;
+    int SD_CS_PIN;
 public:
-    SdCard();
+    SdCard(const int SdCardSelectPin);
     void initialize();
     void listDir(const char * dirname, uint8_t levels);
     void createDir(const char * path);
