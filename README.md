@@ -5,3 +5,5 @@ Particle Electron and ESP32 firmware that collects data from sensors and sends i
 * Now you can clone.
 * Make sure that you see some files as symlinks in Windows Explorer.
 * Happy coding.
+\aoksdjfsdf;alkdfj;ajksdf
+
