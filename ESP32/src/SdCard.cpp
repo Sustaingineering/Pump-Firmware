@@ -10,8 +10,9 @@ class SdCard::Impl
 private:
     SDFS fs;
     SPIClass m_spi;
+    int m_SdCsPin;
 public:
-    Impl();
+    Impl(int);
     void initialize();
     void listDir(const char * dirname, uint8_t levels);
     void createDir(const char * path);
@@ -24,14 +25,14 @@ public:
     void testFileIO(const char * path);
 };
 
-SdCard::Impl::Impl():
+SdCard::Impl::Impl(int SdCsPin):
  fs(FSImplPtr(new VFSImpl()))
-,m_spi(SDCARD_SPI_INTERFACE)
+,m_spi(SDCARD_SPI_INTERFACE),m_SdCsPin(SdCsPin)
 {}
 
 void SdCard::Impl::initialize()
 {
-    while(!fs.begin(SDCARD_SELECT_PIN, m_spi, 4000000U, "/sd", 5)){
+    while(!fs.begin(m_SdCsPin, m_spi, 4000000U, "/sd", 5)){
         Serial.println("Card Mount Failed. Trying again in 1 sec.");
         delay(1000);
     }
@@ -226,8 +227,8 @@ void SdCard::Impl::testFileIO(const char * path)
     file.close();
 }
 
-SdCard::SdCard():
-m_pImpl(new SdCard::Impl())
+SdCard::SdCard(const int SdCardSelectPin):
+m_pImpl(new SdCard::Impl(SdCardSelectPin))
 {}
 
 void SdCard::initialize()
