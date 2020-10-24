@@ -13,3 +13,4 @@
 #define VOLT_PIN    B2
 #define CURRENT_PIN B3
 #define TEMP_PIN    B4
+#define SDCARD_SELECT_PIN SS
