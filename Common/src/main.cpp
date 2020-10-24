@@ -61,17 +61,18 @@ LoRaTransceiver responder(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SEC
 
 #if COUNTERS
   #define NUM_COUNTERS 6
-
   counter *counterArray[NUM_COUNTERS];
-  String name[10];
-  char letter = 'a';
-  
-  for (int i = 0; i < NUM_COUNTERS; i++)
+  void createCounters()
   {
-    sprintf(name, "Counter%d", i);
-    String counterName = strdup(name);
-    counterArray[i] = new counter(i, counterName, "T", letter);
-    a += 1;
+    char letter = 'a';
+
+    for (int j = 0; j < NUM_COUNTERS; j++)
+    {
+      String name = "Counter";
+      name += j;
+      counterArray[j] = new counter(j, name, "T", letter);
+      letter += 1;
+    }
   }
 #endif
 
@@ -127,8 +128,12 @@ void setup()
   Serial.println("LoRa Initialized.\n");
 #endif // LORA
 
+#if COUNTERS
+  createCounters();
+#endif
+
   //Sensors Initializers go here.
-  
+
   Serial.println("Setup Done!\n");
 }
 
