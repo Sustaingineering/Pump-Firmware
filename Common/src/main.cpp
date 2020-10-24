@@ -60,12 +60,20 @@ LoRaTransceiver responder(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SEC
 #endif //LORA
 
 #if COUNTERS
-counter counter1(0, "Counter1", "T", 'c');
-counter counter2(1, "Counter2", "T", 'd');
-counter counter3(2, "Counter3", "T", 'e');
-counter counter4(3, "Counter4", "T", 'f');
-counter counter5(4, "Counter5", "T", 'g');
-counter counter6(5, "Counter6", "T", 'h');
+  #define NUM_COUNTERS 6
+  counter *counterArray[NUM_COUNTERS];
+  void createCounters()
+  {
+    char letter = 'a';
+
+    for (int j = 0; j < NUM_COUNTERS; j++)
+    {
+      String name = "Counter";
+      name += j;
+      counterArray[j] = new counter(j, name, "T", letter);
+      letter += 1;
+    }
+  }
 #endif
 
 void setup()
@@ -120,8 +128,12 @@ void setup()
   Serial.println("LoRa Initialized.\n");
 #endif // LORA
 
+#if COUNTERS
+  createCounters();
+#endif
+
   //Sensors Initializers go here.
-  
+
   Serial.println("Setup Done!\n");
 }
 
@@ -130,12 +142,8 @@ void loop()
   message = "";
   //Sampling Sensors
 #if COUNTERS
-  message += counter1.read();
-  message += counter2.read();
-  message += counter3.read();
-  message += counter4.read();
-  message += counter5.read();
-  message += counter6.read();
+  for (int i = 0; i < NUM_COUNTERS; i++)
+    message += counterArray[i]->read();
 #endif
 
 #if CURRENT
