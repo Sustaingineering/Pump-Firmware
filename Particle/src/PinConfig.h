@@ -4,7 +4,7 @@
 #define ERTC      1
 #define SDCARD    1
 #define LORA      0
-#define COUNTERS  1
+#define COUNTERS  0
 #define VOLTAGE   1
 #define CURRENT   1
 #define TEMP      1
@@ -14,4 +14,4 @@
 #define CURRENT_PIN B3
 #define TEMP_PIN    B4
 #define SDCARD_SELECT_PIN SS
-#define MAX_V 3.6
+#define MAX_V 3.3
