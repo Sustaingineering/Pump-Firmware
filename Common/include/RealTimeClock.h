@@ -14,15 +14,17 @@
 
 #pragma once
 #include <Arduino.h>
+#include <sys/time.h>
+#include <time.h>
 
 class RealTimeClock
 {
 private:
     class Impl;
-    Impl* m_pImpl;
+    Impl *m_pImpl;
+
 public:
-    RealTimeClock(bool need2SetTime);
-    void initialize();
+    void initialize(time_t initialTime);
     String getTimeStamp();
     String getDate();
 };

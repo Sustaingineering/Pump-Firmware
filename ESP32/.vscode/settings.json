@@ -21,7 +21,8 @@
         "utility": "cpp",
         "system_error": "cpp",
         "thread": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "typeinfo": "cpp"
     },
     "cmake.configureOnOpen": false
 }
