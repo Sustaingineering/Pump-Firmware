@@ -51,3 +51,5 @@
 #define TEMP_PIN 4
 
 #define FLOW_PIN 34
+
+#define MAX_V 3.9

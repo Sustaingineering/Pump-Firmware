@@ -26,11 +26,11 @@ Gsm gsm;
 #endif
 
 #if CURRENT
-current hall_effect(CURRENT_PIN, "Current", "Amps", 'i');
+current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
 #endif
 
 #if VOLTAGE
-volt volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 1000, 1000);
+volt volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 1000, 1000, MAX_V);
 #endif
 
 #if TEMP
