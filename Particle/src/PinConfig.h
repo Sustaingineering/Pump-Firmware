@@ -14,3 +14,4 @@
 #define CURRENT_PIN B3
 #define TEMP_PIN    B4
 #define SDCARD_SELECT_PIN SS
+#define MAX_V 3.6
