@@ -7,6 +7,6 @@
         "chrono": "cpp",
         "thread": "cpp"
     },
-    "particle.firmwareVersion": "2.0.0-rc.3",
+    "particle.firmwareVersion": "2.0.0-rc.4",
     "particle.targetPlatform": "electron"
 }
