@@ -42,7 +42,7 @@ flow waterflow(FLOW_PIN,"WaterFlow", "L/min", 'f');
 #endif
 
 #if ERTC
-RealTimeClock rtc(false);
+RealTimeClock rtc;
 #endif
 
 #if SDCARD
@@ -112,7 +112,7 @@ void setup()
 
 #if ERTC
   Serial.println("Initializing RTC...");
-  rtc.initialize();
+  rtc.initialize(1604177282); //1:48
   Serial.println("RTC Initialized.\n");
 #endif
 
@@ -140,6 +140,7 @@ void setup()
 
   Serial.println("Setup Done!\n");
 }
+
 
 void loop()
 {
@@ -171,8 +172,6 @@ void loop()
 #endif
 
   message += String("\n");
-  Serial.print(message);
-  
 #if SDCARD
   //Writing on Sd Card
   memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), message.c_str());
