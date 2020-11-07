@@ -4,8 +4,8 @@
 #include "RealTimeClock.h"
 #include "SdCard.h"
 #include "farmSensor.h"
-#include "volt.h"
-#include "current.h"
+#include "Voltage.h"
+#include "Current.h"
 #include "temp.h"
 #ifndef electron
 #include "Flow.h"
@@ -13,7 +13,7 @@
 #else
 #include "Gsm.h"
 #endif
-#include "counter.h"
+#include "Counter.h"
 
 #define PUMP_ID 0
 
@@ -26,11 +26,11 @@ String message;
 #endif
 
 #if CURRENT
-    current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
+    Current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
 #endif
 
 #if VOLTAGE
-    volt volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 25000, 1000000, MAX_V);
+    Voltage volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 25000, 1000000, MAX_V);
 #endif
 
 #if TEMP
@@ -141,7 +141,7 @@ void loop()
     #if COUNTERS
         for (int i = 0; i < NUM_COUNTERS; i++)
         message += counterArray[i]->read();
-        
+
     #if CURRENT
         message += hall_effect.read();
     #endif
