@@ -169,9 +169,12 @@ void loop()
 
 #if ERTC
   message += rtc.getTimeStamp();
+  message += String("\n");
+  message += rtc.getDate();
 #endif
 
   message += String("\n");
+  Serial.println(message);
 #if SDCARD
   //Writing on Sd Card
   memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), message.c_str());

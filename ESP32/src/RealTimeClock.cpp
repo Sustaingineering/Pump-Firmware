@@ -28,11 +28,11 @@ String RealTimeClock::Impl::getTimeStamp()
 
 String RealTimeClock::Impl::getDate()
 {
-    // Return "Year, Month, Date"
+    // Return "Year, Month Date"
     struct tm localtime;
     getLocalTime(&localtime);
-    char buf[40];
-    strftime(buf, sizeof(buf), "%A, %B %d %Y %H:%M:%S", &localtime);
+    char buf[40]; 
+    strftime(buf, sizeof(buf), "%A, %b %d", &localtime);
     return String(buf);
 }
 
