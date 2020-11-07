@@ -30,7 +30,7 @@ current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
 #endif
 
 #if VOLTAGE
-volt volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 1000, 1000, MAX_V);
+volt volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 25000, 1000000, MAX_V);
 #endif
 
 #if TEMP
