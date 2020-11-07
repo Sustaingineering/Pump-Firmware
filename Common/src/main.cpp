@@ -82,6 +82,8 @@ void setup()
   Serial.begin(115200);
   Serial.println("\nHello Sustaingineering!\n");
 
+  gsm.initialize();
+  
 #if CURRENT
   Serial.println("Initializing Current Sensor...");
   hall_effect.initialize();
