@@ -82,7 +82,9 @@ void setup()
   Serial.begin(115200);
   Serial.println("\nHello Sustaingineering!\n");
 
+#ifdef electron
   gsm.initialize();
+#endif
   
 #if CURRENT
   Serial.println("Initializing Current Sensor...");

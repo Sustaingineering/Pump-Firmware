@@ -47,7 +47,6 @@ void Gsm::updatePublishInfo_()
 int Gsm::getTotalDataUsage_()
 {
     CellularData data;
-    Cellular.getDataUsage(data);
     if (!Cellular.getDataUsage(data)) {
         Serial.println("Error! Not able to get data.");
         return 0;
