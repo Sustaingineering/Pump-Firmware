@@ -1,6 +1,9 @@
 #include "RealTimeClock.h"
 #include <string.h>
 #include <string>
+#include <sys/time.h>
+#include <time.h>
+
 class RealTimeClock::Impl
 {
 public:
