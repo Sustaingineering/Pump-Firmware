@@ -23,7 +23,7 @@ private:
     Impl *m_pImpl;
 
 public:
-    void initialize(time_t initialTime);
+    void initialize(long initialTime);
     String getTimeStamp();
     String getDate();
 };
