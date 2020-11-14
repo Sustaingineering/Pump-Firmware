@@ -112,7 +112,7 @@ void setup()
 
 #if ERTC
   Serial.println("Initializing RTC...");
-  rtc.initialize(1604177282); //1:48
+  rtc.initialize(1604177282); //Oct 31, 2020 - 1:48
   Serial.println("RTC Initialized.\n");
 #endif
 
@@ -169,11 +169,8 @@ void loop()
 
 #if ERTC
   message += rtc.getTimeStamp();
-  message += String("\n");
-  message += rtc.getDate();
 #endif
 
-  message += String("\n");
   Serial.println(message);
 #if SDCARD
   //Writing on Sd Card
