@@ -14,8 +14,7 @@
 
 #pragma once
 #include <Arduino.h>
-#include <sys/time.h>
-#include <time.h>
+
 
 class RealTimeClock
 {
