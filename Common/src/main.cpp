@@ -38,7 +38,7 @@ String message;
 #endif
 
 #if FLOW
-    flow waterflow(FLOW_PIN,"WaterFlow", "L/min", 'f');
+    Flow waterflow(FLOW_PIN,"WaterFlow", "L/min", 'f');
 #endif
 
 #if ERTC
