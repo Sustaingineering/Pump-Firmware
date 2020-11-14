@@ -8,7 +8,7 @@ class RealTimeClock::Impl
 {
 public:
     Impl();
-    void initialize(time_t initialTime);
+    void initialize(long initialTime);
     String getTimeStamp();
     String getDate();
 };
@@ -17,9 +17,9 @@ RealTimeClock::Impl::Impl()
 {
 }
 
-void RealTimeClock::Impl::initialize(time_t initialTime)
+void RealTimeClock::Impl::initialize(long initialTime)
 {
-    timeval epoch = {initialTime, 0};
+    timeval epoch = {(time_t) initialTime, 0};
     const timeval *tv = &epoch;
     settimeofday(tv, NULL);
 }
@@ -39,7 +39,7 @@ String RealTimeClock::Impl::getDate()
     return String(buf);
 }
 
-void RealTimeClock::initialize(time_t initialTime)
+void RealTimeClock::initialize(long initialTime) 
 {
     m_pImpl->initialize(initialTime);
 }

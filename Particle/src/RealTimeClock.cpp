@@ -3,13 +3,13 @@
 class RealTimeClock::Impl
 {
 public:
-    Impl(bool need2SetTime);
+    Impl();
     void initialize();
     String getTimeStamp();
     String getDate();
 };
 
-RealTimeClock::Impl::Impl(bool /*need2SetTime*/)
+RealTimeClock::Impl::Impl()
 {}
 
 void RealTimeClock::Impl::initialize()
@@ -27,10 +27,7 @@ String RealTimeClock::Impl::getDate()
     return Time.format(Time.now(), "%F");
 }
 
-RealTimeClock::RealTimeClock(bool need2SetTime): m_pImpl(new RealTimeClock::Impl(need2SetTime))
-{}
-
-void RealTimeClock::initialize()
+void RealTimeClock::initialize(long initialTime)
 {
     m_pImpl->initialize();
 }
