@@ -42,7 +42,7 @@ String message;
 #endif
 
 #if ERTC
-    RealTimeClock rtc(false);
+    RealTimeClock rtc();
 #endif
 
 #if SDCARD
@@ -61,7 +61,7 @@ String message;
 
 #if COUNTERS
     #define NUM_COUNTERS 6
-    counter *counterArray[NUM_COUNTERS];
+    Counter *counterArray[NUM_COUNTERS];
     void createCounters()
     {
         char letter = 'a';
@@ -70,7 +70,7 @@ String message;
         {
         String name = "Counter";
         name += j;
-        counterArray[j] = new counter(j, name, "T", letter);
+        counterArray[j] = new Counter(j, name, "T", letter);
         letter += 1;
         }
     }
@@ -108,7 +108,7 @@ void setup()
 
     #if ERTC
         Serial.println("Initializing RTC...");
-        rtc.initialize();
+        rtc.initialize(1604177282);
         Serial.println("RTC Initialized.\n");
     #endif
 
@@ -141,6 +141,7 @@ void loop()
     #if COUNTERS
         for (int i = 0; i < NUM_COUNTERS; i++)
         message += counterArray[i]->read();
+    #endif
 
     #if CURRENT
         message += hall_effect.read();
