@@ -60,20 +60,7 @@ LoRaTransceiver responder(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SEC
 #endif //LORA
 
 #if COUNTERS
-  #define NUM_COUNTERS 6
-  counter *counterArray[NUM_COUNTERS];
-  void createCounters()
-  {
-    char letter = 'a';
-
-    for (int j = 0; j < NUM_COUNTERS; j++)
-    {
-      String name = "Counter";
-      name += j;
-      counterArray[j] = new counter(j, name, "T", letter);
-      letter += 1;
-    }
-  }
+  counter **counterArray;
 #endif
 
 void setup()
@@ -129,7 +116,7 @@ void setup()
 #endif // LORA
 
 #if COUNTERS
-  createCounters();
+  counterArray = counter::createCounters(COUNTERS);
 #endif
 
   //Sensors Initializers go here.
@@ -142,7 +129,7 @@ void loop()
   message = "";
   //Sampling Sensors
 #if COUNTERS
-  for (int i = 0; i < NUM_COUNTERS; i++)
+  for (int i = 0; i < COUNTERS; i++)
     message += counterArray[i]->read();
 #endif
 
