@@ -14,7 +14,7 @@ public:
     void listDir(const char * dirname, uint8_t levels);
     void createDir(const char * path);
     void removeDir(const char * path);
-    void readFile(const char * path);
+    char * readFile(const char * path);
     void writeFile(const char * path, const char * message);
     void appendFile(const char * path, const char * message);
     void renameFile(const char * path1, const char * path2);
@@ -53,9 +53,35 @@ void SdCard::Impl::removeDir(const char * path)
     Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
 }
 
-void SdCard::Impl::readFile(const char * path)
+char * SdCard::Impl::readFile(const char * path)
 {
-    Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
+    Serial.printf("Opening file to read: %s\n", path);
+
+    File file = m_Sd.open(path, FILE_READ);
+    if(!file){
+        Serial.println("Failed to open file for reading");
+        return NULL;
+    }
+
+    int file_size = file.size();
+    char * file_contents = (char*) malloc(file_size * sizeof(int) + 1);
+    int byte_read = file.read();
+    int read_idx = 0;
+
+    // read() returns -1 at EOF
+    while(byte_read != -1) {
+        file_contents[read_idx] = (char) byte_read;
+        read_idx++;
+
+        // Read the next byte
+        byte_read = file.read();
+    }
+
+    file_contents[file_size] = '\0';
+    
+    file.close();
+
+    return file_contents;
 }
 
 void SdCard::Impl::writeFile(const char * path, const char * message)
@@ -118,9 +144,9 @@ void SdCard::removeDir(const char * path)
     m_pImpl->removeDir(path);
 }
 
-void SdCard::readFile(const char * path)
+char * SdCard::readFile(const char * path)
 {
-    m_pImpl->readFile(path);
+    return m_pImpl->readFile(path);
 }
 
 void SdCard::writeFile(const char * path, const char * message)
