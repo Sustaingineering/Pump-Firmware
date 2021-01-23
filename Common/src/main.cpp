@@ -15,7 +15,7 @@
 #endif
 #include "counter.h"
 
-#define PUMP_ID 0
+int pumpId;
 
 //Global Objects
 //Restarter restarter(5);
@@ -120,6 +120,10 @@ void setup()
   Serial.println("Initializing MicroSD Card...");
   memory.initialize();
   Serial.println("MicroSD Card Initialized.\n");
+  char *idBuf = memory.readFile("/pump-id.txt");
+  pumpId = strtol(idBuf, NULL, 10);
+  free(idBuf);
+  Serial.printf("PumpID is: %d\n", pumpId);
 #endif
 
 #if LORA
@@ -206,7 +210,7 @@ void loop()
 #endif //LORA
 
 #ifdef electron
-  gsm.Publish(String(PUMP_ID), message);
+  gsm.Publish(String(pumpId), message);
 #endif
 
   //restarter.takeAction(LoRaStatus);
