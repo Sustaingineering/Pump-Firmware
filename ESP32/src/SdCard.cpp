@@ -5,6 +5,7 @@
 #include "vfs_api.h"
 #include "PinConfig.h"
 
+
 class SdCard::Impl
 {
 private:
@@ -15,15 +16,16 @@ private:
 public:
     Impl(int);
     void initialize();
-    void listDir(const char *dirname, uint8_t levels);
-    void createDir(const char *path);
-    void removeDir(const char *path);
-    char *readFile(const char *path);
-    void writeFile(const char *path, const char *message);
-    void appendFile(const char *path, const char *message);
-    void renameFile(const char *path1, const char *path2);
-    void deleteFile(const char *path);
-    void testFileIO(const char *path);
+    void listDir(const char * dirname, uint8_t levels);
+    void createDir(const char * path);
+    void removeDir(const char * path);
+    void readFile(const char * path);
+    void writeFile(const char * path, const char * message);
+    void appendFile(const char * path, const char * message);
+    void renameFile(const char * path1, const char * path2);
+    void deleteFile(const char * path);
+    void testFileIO(const char * path);
+    int remainingSpace();
 };
 
 SdCard::Impl::Impl(int SdCsPin) : fs(FSImplPtr(new VFSImpl())), m_spi(SDCARD_SPI_INTERFACE), m_SdCsPin(SdCsPin)
@@ -281,9 +283,24 @@ void SdCard::Impl::testFileIO(const char *path)
     file.close();
 }
 
-SdCard::SdCard(const int SdCardSelectPin) : m_pImpl(new SdCard::Impl(SdCardSelectPin))
+int SdCard::Impl::remainingSpace()
 {
+    //int freeClusters = sd.vol()*freeClusterCount();
+    //int freeKilobytes = freeClusters*blocksPerCluster()/2;    //blocks are 512 bytes each
+    //int freeMegabytes = freeKilobytes/1024;   
+     
+    int freeBytes = fs.totalBytes()-fs.usedBytes();
+    int freeMegaBytes = freeBytes/(1024*1024);    //1024 bytes in Gigabyte 1024 Gigabytes in Megabyte
+
+    //for testing
+    Serial.println(freeMegaBytes);
+    
+    return freeMegaBytes;
 }
+
+SdCard::SdCard(const int SdCardSelectPin):
+m_pImpl(new SdCard::Impl(SdCardSelectPin))
+{}
 
 void SdCard::initialize()
 {
@@ -333,3 +350,11 @@ void SdCard::testFileIO(const char *path)
 {
     m_pImpl->testFileIO(path);
 }
+<<<<<<< HEAD
+=======
+
+int SdCard::remainingSpace()
+{
+    m_pImpl->remainingSpace();
+}
+>>>>>>> c72f998... #65 Added remainingSpace() method

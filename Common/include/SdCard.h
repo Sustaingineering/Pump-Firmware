@@ -34,4 +34,5 @@ public:
     void renameFile(const char * path1, const char * path2);
     void deleteFile(const char * path);
     void testFileIO(const char * path);
+    int remainingSpace();
 };
