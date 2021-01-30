@@ -15,4 +15,5 @@ protected:
 public:
     Counter(int pin, String name, String unit, char shortcut);
     void initialize() override;
+    static counter ** createCounters(int counters);
 };
