@@ -1,4 +1,4 @@
-#include "farmSensor.h"
+#include "FarmSensor.h"
 
 //template <class T>
 FarmSensor::FarmSensor(int pin, sensorType type, String name, String unit, char shortcut)

@@ -5,7 +5,7 @@
  */
 
 #pragma once
-#include "farmSensor.h"
+#include "FarmSensor.h"
 
 class temp : public IFarmSensor
 {

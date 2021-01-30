@@ -3,7 +3,7 @@
 //#include "Restarter.h"
 #include "RealTimeClock.h"
 #include "SdCard.h"
-#include "farmSensor.h"
+#include "FarmSensor.h"
 #include "Voltage.h"
 #include "Current.h"
 #include "temp.h"

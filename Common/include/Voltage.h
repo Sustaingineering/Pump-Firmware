@@ -7,7 +7,7 @@
 
 #pragma once
 #include <Arduino.h>
-#include <farmSensor.h>
+#include <FarmSensor.h>
 
 class Voltage : public FarmSensor 
 {
