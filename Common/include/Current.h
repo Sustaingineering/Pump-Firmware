@@ -11,7 +11,7 @@
 #include <farmSensor.h>
  
  
-class Current: public farmSensor
+class Current: public FarmSensor
 {
 private:
     //constants declarations (cannot declare static const floats in .h files, need .cpp --> 3.9 defined in readRaw())

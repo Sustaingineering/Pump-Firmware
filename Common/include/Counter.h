@@ -8,7 +8,7 @@
 #include <Arduino.h>
 #include "farmSensor.h"
 
-class Counter : public farmSensor
+class Counter : public FarmSensor
 {
 protected:
     float readRaw() override;

@@ -2,7 +2,7 @@
 #include <OneWire.h> 
 #include <DallasTemperature.h>
 
-class temp::Impl: public farmSensor
+class temp::Impl: public FarmSensor
 {
 private:
     OneWire m_oneWire;
@@ -15,7 +15,7 @@ public:
 };
 
 temp::Impl::Impl(int pin, sensorType type, String name, String unit, char shortcut): 
-                farmSensor(pin, type, name, unit, shortcut), m_oneWire(pin), m_sensors(&m_oneWire) {}
+                FarmSensor(pin, type, name, unit, shortcut), m_oneWire(pin), m_sensors(&m_oneWire) {}
 
 void temp::Impl::initialize()
 {

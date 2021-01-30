@@ -1,7 +1,7 @@
 #include "Current.h"
 
 Current::Current(int pin, String name, String unit, char shortcut, float maximumVoltage):
-    farmSensor(pin,name,unit,shortcut),m_maximumVoltage(maximumVoltage)
+    FarmSensor(pin,name,unit,shortcut),m_maximumVoltage(maximumVoltage)
 {
 }
  

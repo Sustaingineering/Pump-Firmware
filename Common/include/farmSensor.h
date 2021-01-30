@@ -8,7 +8,7 @@
 #include <Arduino.h>
 #include "IFarmSensor.h"
 
-class farmSensor : public IFarmSensor
+class FarmSensor : public IFarmSensor
 {
 private:
     sensorType m_type;
@@ -20,8 +20,8 @@ protected:
     float m_data;
     virtual float readRaw();
 public:
-    farmSensor(int pin, sensorType type, String name, String unit, char shortcut);
-    farmSensor(int pin, String name, String unit, char shortcut);
+    FarmSensor(int pin, sensorType type, String name, String unit, char shortcut);
+    FarmSensor(int pin, String name, String unit, char shortcut);
     void initialize() override;
     String read() override;
     packet pack() override;

@@ -18,7 +18,7 @@ Counter ** Counter::createCounters(int counters)
 }
 
 Counter::Counter(int pin,  String name, String unit, char shortcut):
-    farmSensor(pin, name, unit, shortcut)
+    FarmSensor(pin, name, unit, shortcut)
 {
     m_data = 1.0 * pin;
 }

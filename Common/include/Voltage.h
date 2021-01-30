@@ -9,7 +9,7 @@
 #include <Arduino.h>
 #include <farmSensor.h>
 
-class Voltage : public farmSensor 
+class Voltage : public FarmSensor 
 {
 private:
     int m_higherResistor; // voltage divider, higher resistor value [ohms]

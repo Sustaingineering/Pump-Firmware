@@ -2,7 +2,7 @@
 #include "OneWire.h"
 #include "DS18.h"
 
-class temp::Impl: public farmSensor
+class temp::Impl: public FarmSensor
 {
 private:
     DS18 m_sensor;
@@ -14,7 +14,7 @@ public:
 };
 
 temp::Impl::Impl(int pin, sensorType type, String name, String unit, char shortcut): 
-                farmSensor(pin, type, name, unit, shortcut), m_sensor(pin){}
+                FarmSensor(pin, type, name, unit, shortcut), m_sensor(pin){}
 
 void temp::Impl::initialize()
 {
