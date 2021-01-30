@@ -118,7 +118,7 @@ void SdCard::removeDir(const char * path)
     m_pImpl->removeDir(path);
 }
 
-void SdCard::readFile(const char * path)
+char* SdCard::readFile(const char * path)
 {
     m_pImpl->readFile(path);
 }

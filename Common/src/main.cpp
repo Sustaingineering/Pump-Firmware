@@ -42,7 +42,7 @@ String message;
 #endif
 
 #if ERTC
-    RealTimeClock rtc();
+    RealTimeClock rtc;
 #endif
 
 #if SDCARD
@@ -60,7 +60,7 @@ String message;
 #endif //LORA
 
 #if COUNTERS
-  counter **counterArray;
+  Counter **counterArray;
 #endif
 
 void setup()
@@ -116,11 +116,11 @@ void setup()
     #endif // LORA
 
     //Sensors Initializers go here.
-  
-  volt_divider.initialize();
-  Serial.println("Voltage Sensor Initialized.\n");
-#endif
-  
+    #if VOLTAGE
+      volt_divider.initialize();
+      Serial.println("Voltage Sensor Initialized.\n");
+    #endif
+    
 #if TEMP
   Serial.println("Initializing Thermocouple...");
   thermocouple.initialize();
@@ -160,7 +160,7 @@ void setup()
 #endif // LORA
 
 #if COUNTERS
-  counterArray = counter::createCounters(COUNTERS);
+  counterArray = Counter::createCounters(COUNTERS);
 #endif
 
   //Sensors Initializers go here.
