@@ -108,9 +108,16 @@ void setup()
   memory.initialize();
   Serial.println("MicroSD Card Initialized.\n");
   char *idBuf = memory.readFile("/pump-id.txt");
-  pumpId = strtol(idBuf, NULL, 10);
-  free(idBuf);
-  Serial.printf("PumpID is: %d\n", pumpId);
+  if (idBuf != NULL)
+  {
+    pumpId = strtol(idBuf, NULL, 10);
+    free(idBuf);
+    Serial.printf("PumpID is: %d\n", pumpId);
+  }
+  else
+  {
+    Serial.printf("Pump ID Initialization failed");
+  }
 #endif
 
 #if LORA

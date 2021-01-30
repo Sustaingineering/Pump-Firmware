@@ -238,9 +238,9 @@ SdCard::SdCard(const int SdCardSelectPin):
 m_pImpl(new SdCard::Impl(SdCardSelectPin))
 {}
 
-void SdCard::initialize()
+bool SdCard::initialize()
 {
-    m_pImpl->initialize();
+    return m_pImpl->initialize();
 }
 
 void SdCard::listDir(const char * dirname, uint8_t levels)
