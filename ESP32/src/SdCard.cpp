@@ -350,11 +350,8 @@ void SdCard::testFileIO(const char *path)
 {
     m_pImpl->testFileIO(path);
 }
-<<<<<<< HEAD
-=======
 
 int SdCard::remainingSpace()
 {
     m_pImpl->remainingSpace();
 }
->>>>>>> c72f998... #65 Added remainingSpace() method
