@@ -6,7 +6,7 @@
 #include "FarmSensor.h"
 #include "Voltage.h"
 #include "Current.h"
-#include "temp.h"
+#include "Temperature.h"
 #ifndef electron
 #include "Flow.h"
 #include "LoRaTransceiver.h"
@@ -34,7 +34,7 @@ String message;
 #endif
 
 #if TEMP
-    temp thermocouple(TEMP_PIN, digital, "Temperature", "Celsius", 't'); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
+    Temperature thermocouple(TEMP_PIN, digital, "Temperature", "Celsius", 't'); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
 #endif
 
 #if FLOW
