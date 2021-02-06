@@ -19,7 +19,7 @@ public:
     void listDir(const char * dirname, uint8_t levels);
     void createDir(const char * path);
     void removeDir(const char * path);
-    void readFile(const char * path);
+    char *readFile(const char * path);
     void writeFile(const char * path, const char * message);
     void appendFile(const char * path, const char * message);
     void renameFile(const char * path1, const char * path2);
@@ -285,10 +285,6 @@ void SdCard::Impl::testFileIO(const char *path)
 
 int SdCard::Impl::remainingSpace()
 {
-    //int freeClusters = sd.vol()*freeClusterCount();
-    //int freeKilobytes = freeClusters*blocksPerCluster()/2;    //blocks are 512 bytes each
-    //int freeMegabytes = freeKilobytes/1024;   
-     
     int freeBytes = fs.totalBytes()-fs.usedBytes();
     int freeMegaBytes = freeBytes/(1024*1024);    //1024 bytes in Gigabyte 1024 Gigabytes in Megabyte
 
@@ -353,5 +349,5 @@ void SdCard::testFileIO(const char *path)
 
 int SdCard::remainingSpace()
 {
-    m_pImpl->remainingSpace();
+    return m_pImpl->remainingSpace();
 }
