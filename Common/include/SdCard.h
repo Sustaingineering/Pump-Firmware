@@ -17,21 +17,24 @@
 #pragma once
 #include <Arduino.h>
 
-class SdCard {
+class SdCard
+{
 private:
     class Impl;
-    Impl* m_pImpl;
+    Impl *m_pImpl;
     int SD_CS_PIN;
+
 public:
     SdCard(const int SdCardSelectPin);
-    void initialize();
-    void listDir(const char * dirname, uint8_t levels);
-    void createDir(const char * path);
-    void removeDir(const char * path);
-    char* readFile(const char * path);
-    void writeFile(const char * path, const char * message);
-    void appendFile(const char * path, const char * message);
-    void renameFile(const char * path1, const char * path2);
-    void deleteFile(const char * path);
-    void testFileIO(const char * path);
+    bool initialize();
+    uint64_t  getFreeSpace();
+    void listDir(const char *dirname, uint8_t levels);
+    bool createDir(const char *path);
+    bool removeDir(const char *path);
+    char *readFile(const char *path);
+    bool writeFile(const char *path, const char *message);
+    bool appendFile(const char *path, const char *message);
+    bool renameFile(const char *path1, const char *path2);
+    bool deleteFile(const char *path);
+    bool testFileIO(const char *path);
 };
