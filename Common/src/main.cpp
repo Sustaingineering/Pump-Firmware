@@ -112,11 +112,17 @@ void setup()
   {
     pumpId = strtol(idBuf, NULL, 10);
     free(idBuf);
-    Serial.printf("PumpID is: %d\n", pumpId);
+    Serial.printlnf("PumpID is: %d", pumpId);
+    uint64_t remaining_mem = memory.getFreeSpace();
+    if (remaining_mem > 0) { // negative means failure
+      Serial.printlnf("Free space remaining on SD Card: %f MB", remaining_mem / (1024.0 * 1024.0));
+    } else {
+      Serial.println("Unable to get remaining size");
+    }
   }
   else
   {
-    Serial.printf("Pump ID Initialization failed");
+    Serial.println("Pump ID Initialization failed");
   }
 #endif
 

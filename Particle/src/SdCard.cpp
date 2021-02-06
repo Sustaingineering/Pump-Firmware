@@ -3,6 +3,7 @@
 #include "SdFat.h"
 #include <libgen.h>
 
+#define BLOCK_SIZE 512
 
 class SdCard::Impl
 {
@@ -12,6 +13,7 @@ private:
 public:
     Impl(int);
     bool initialize();
+    uint64_t getFreeSpace();
     void listDir(const char * dirname, uint8_t levels);
     bool createDir(const char * path);
     bool removeDir(const char * path);
@@ -38,6 +40,14 @@ bool SdCard::Impl::initialize()
     Serial.println("initialization successful!.");
     listDir(NULL, 0);
     return true;
+}
+
+uint64_t SdCard::Impl::getFreeSpace()
+{
+    uint64_t clusterSize = BLOCK_SIZE * m_Sd.vol()->blocksPerCluster();
+    Serial.print("Total space bytes: ");
+    Serial.println(clusterSize * m_Sd.vol()->clusterCount());
+    return clusterSize * m_Sd.vol()->freeClusterCount();
 }
 
 void SdCard::Impl::listDir(const char * /*dirname*/, uint8_t /*levels*/)
@@ -241,6 +251,11 @@ m_pImpl(new SdCard::Impl(SdCardSelectPin))
 bool SdCard::initialize()
 {
     return m_pImpl->initialize();
+}
+
+uint64_t SdCard::getFreeSpace()
+{
+    return m_pImpl->getFreeSpace();
 }
 
 void SdCard::listDir(const char * dirname, uint8_t levels)
