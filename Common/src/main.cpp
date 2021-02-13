@@ -3,17 +3,17 @@
 //#include "Restarter.h"
 #include "RealTimeClock.h"
 #include "SdCard.h"
-#include "farmSensor.h"
-#include "volt.h"
-#include "current.h"
-#include "temp.h"
+#include "FarmSensor.h"
+#include "Voltage.h"
+#include "Current.h"
+#include "Temperature.h"
 #ifndef electron
 #include "Flow.h"
 #include "LoRaTransceiver.h"
 #else
 #include "Gsm.h"
 #endif
-#include "counter.h"
+#include "Counter.h"
 
 int pumpId;
 
@@ -26,19 +26,19 @@ Gsm gsm;
 #endif
 
 #if CURRENT
-current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
+Current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
 #endif
 
 #if VOLTAGE
-volt volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 25000, 1000000, MAX_V);
+Voltage volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 25000, 1000000, MAX_V);
 #endif
 
 #if TEMP
-temp thermocouple(TEMP_PIN, digital, "Temperature", "Celsius", 't'); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
+Temperature thermocouple(TEMP_PIN, digital, "Temperature", "Celsius", 't'); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
 #endif
 
 #if FLOW
-flow waterflow(FLOW_PIN,"WaterFlow", "L/min", 'f');
+Flow waterflow(FLOW_PIN, "WaterFlow", "L/min", 'f');
 #endif
 
 #if ERTC
@@ -60,8 +60,19 @@ LoRaTransceiver responder(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SEC
 #endif //LORA
 
 #if COUNTERS
-  counter **counterArray;
+Counter **counterArray;
 #endif
+
+void pumpIdInit()
+{
+  char *idBuf = memory.readFile("/pump-id.txt");
+  if (idBuf != NULL)
+  {
+    pumpId = strtol(idBuf, NULL, 10);
+    free(idBuf);
+    Serial.printf("PumpID is: %d\n", pumpId);
+  }
+}
 
 void setup()
 {
@@ -69,10 +80,6 @@ void setup()
   Serial.begin(115200);
   Serial.println("\nHello Sustaingineering!\n");
 
-#ifdef electron
-  gsm.initialize();
-#endif
-  
 #if CURRENT
   Serial.println("Initializing Current Sensor...");
   hall_effect.initialize();
@@ -84,7 +91,48 @@ void setup()
   volt_divider.initialize();
   Serial.println("Voltage Sensor Initialized.\n");
 #endif
-  
+
+#if TEMP
+  Serial.println("Initializing Thermocouple...");
+  thermocouple.initialize();
+  Serial.println("Thermocouple Initialized.\n");
+#endif
+
+#if FLOW
+  Serial.println("Initializing Waterflow...");
+  waterflow.initialize();
+  Serial.println("WaterFlow Initialized.\n");
+#endif
+
+#if ERTC
+  Serial.println("Initializing RTC...");
+  rtc.initialize(1604177282);
+  Serial.println("RTC Initialized.\n");
+#endif
+
+#if SDCARD
+  Serial.println("Initializing MicroSD Card...");
+  memory.initialize();
+  pumpIdInit();
+  Serial.println("MicroSD Card Initialized.\n");
+#endif
+
+#if LORA
+  Serial.println("Initializing LoRa...");
+#if GSM
+  requester.initialize();
+#else
+  responder.initialize();
+#endif // GSM
+  Serial.println("LoRa Initialized.\n");
+#endif // LORA
+
+//Sensors Initializers go here.
+#if VOLTAGE
+  volt_divider.initialize();
+  Serial.println("Voltage Sensor Initialized.\n");
+#endif
+
 #if TEMP
   Serial.println("Initializing Thermocouple...");
   thermocouple.initialize();
@@ -103,29 +151,6 @@ void setup()
   Serial.println("RTC Initialized.\n");
 #endif
 
-#if SDCARD
-  Serial.println("Initializing MicroSD Card...");
-  memory.initialize();
-  Serial.println("MicroSD Card Initialized.\n");
-  char *idBuf = memory.readFile("/pump-id.txt");
-  if (idBuf != NULL)
-  {
-    pumpId = strtol(idBuf, NULL, 10);
-    free(idBuf);
-    Serial.printlnf("PumpID is: %d", pumpId);
-    uint64_t remaining_mem = memory.getFreeSpace();
-    if (remaining_mem > 0) { // negative means failure
-      Serial.printlnf("Free space remaining on SD Card: %f MB", remaining_mem / (1024.0 * 1024.0));
-    } else {
-      Serial.println("Unable to get remaining size");
-    }
-  }
-  else
-  {
-    Serial.println("Pump ID Initialization failed");
-  }
-#endif
-
 #if LORA
   Serial.println("Initializing LoRa...");
 #if GSM
@@ -137,14 +162,13 @@ void setup()
 #endif // LORA
 
 #if COUNTERS
-  counterArray = counter::createCounters(COUNTERS);
+  counterArray = Counter::createCounters(COUNTERS);
 #endif
 
   //Sensors Initializers go here.
 
   Serial.println("Setup Done!\n");
 }
-
 
 void loop()
 {
@@ -182,7 +206,7 @@ void loop()
 #endif
 
 #if LORA
-#ifdef electron 
+#ifdef electron
   // make requests
   requester.request(0, packets, NUMBER_OF_PACKETS);
   Serial.print("received = [");
@@ -195,7 +219,7 @@ void loop()
   }
   Serial.print("]");
   delay(100);
-#else //electron
+#else  //electron
   //Responding to a request from LoRa
   packets[0] = counter1.pack();
   packets[1] = counter2.pack();
@@ -205,7 +229,7 @@ void loop()
   packets[5] = counter6.pack();
   LoRaStatus = responder.respond(packets, NUMBER_OF_PACKETS);
 #endif // electron
-#else //LORA
+#else  //LORA
   delay(1000);
 #endif //LORA
 

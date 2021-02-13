@@ -1,7 +1,7 @@
-#include "farmSensor.h"
+#include "FarmSensor.h"
 
 //template <class T>
-farmSensor::farmSensor(int pin, sensorType type, String name, String unit, char shortcut)
+FarmSensor::FarmSensor(int pin, sensorType type, String name, String unit, char shortcut)
 {
     m_pin = pin;
     m_type = type;
@@ -11,7 +11,7 @@ farmSensor::farmSensor(int pin, sensorType type, String name, String unit, char 
     m_data = 0.0;
 }
 
-farmSensor::farmSensor(int pin, String name, String unit, char shortcut)
+FarmSensor::FarmSensor(int pin, String name, String unit, char shortcut)
 {
     m_pin = pin;
     m_name = name;
@@ -22,13 +22,13 @@ farmSensor::farmSensor(int pin, String name, String unit, char shortcut)
 
 
 //template <class T>
-void farmSensor::initialize()
+void FarmSensor::initialize()
 {
     pinMode(m_pin, INPUT);
 }
 
 //template <class T>
-float farmSensor::readRaw()
+float FarmSensor::readRaw()
 {   
     switch (m_type)
     {
@@ -41,14 +41,14 @@ float farmSensor::readRaw()
     }
 }
 
-String farmSensor::read()
+String FarmSensor::read()
 {
     m_data = readRaw();
     // return m_name + String(": ") + String(m_data) + String(" (") + m_unit + String(")") + String(" | ");
     return String(m_data, 2) + String(",");
 }
 
-packet farmSensor::pack()
+packet FarmSensor::pack()
 {
     packet ret;
     ret.type = m_shortcut;

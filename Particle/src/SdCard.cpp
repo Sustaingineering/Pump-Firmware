@@ -30,7 +30,7 @@ SdCard::Impl::Impl(int SdCsPin):
 {}
 
 bool SdCard::Impl::initialize()
-{ 
+{
     Serial.print("Initializing SD card...");
 
     if (!m_Sd.begin(m_SdCsPin)) {
@@ -39,6 +39,12 @@ bool SdCard::Impl::initialize()
     }
     Serial.println("initialization successful!.");
     listDir(NULL, 0);
+    uint64_t remaining_mem = getFreeSpace();
+    if (remaining_mem > 0) { // negative means failure
+      Serial.printlnf("Free space remaining on SD Card: %f MB", remaining_mem / (1024.0 * 1024.0));
+    } else {
+      Serial.println("Unable to get remaining size");
+    }
     return true;
 }
 

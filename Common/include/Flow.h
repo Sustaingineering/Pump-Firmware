@@ -6,13 +6,13 @@
  
 #pragma once
 #include <Arduino.h>
-#include "farmSensor.h"
+#include "FarmSensor.h"
  
-class flow : public farmSensor
+class Flow : public FarmSensor
 { 
   protected:
       float readRaw() override;
   public:
-      flow(int pin, String name, String unit, char shortcut);
+      Flow(int pin, String name, String unit, char shortcut);
       void initialize() override;
 };

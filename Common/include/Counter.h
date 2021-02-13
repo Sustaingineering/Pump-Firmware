@@ -6,14 +6,14 @@
  
 #pragma once
 #include <Arduino.h>
-#include "farmSensor.h"
+#include "FarmSensor.h"
 
-class counter : public farmSensor
+class Counter : public FarmSensor
 {
 protected:
     float readRaw() override;
 public:
-    counter(int pin, String name, String unit, char shortcut);
+    Counter(int pin, String name, String unit, char shortcut);
     void initialize() override;
-    static counter ** createCounters(int counters);
+    static Counter ** createCounters(int counters);
 };

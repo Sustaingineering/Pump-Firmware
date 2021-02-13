@@ -17,7 +17,7 @@
 #include <SPI.h>
 #include <LoRa.h>
 #include "PinConfig.h"
-#include "farmSensor.h"
+#include "FarmSensor.h"
 
 // timeout for receiving any response after making a request
 #define REQUEST_TIMEOUT 1000
