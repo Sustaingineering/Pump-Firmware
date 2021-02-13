@@ -6,6 +6,7 @@
 
 #pragma once
 #include "FarmSensor.h"
+#include <cmath>
 
 class Temperature : public IFarmSensor
 {
