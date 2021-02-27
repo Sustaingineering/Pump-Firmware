@@ -5,7 +5,8 @@
 class Temperature::Impl: public FarmSensor
 {
 private:
-    DS18 m_sensor;
+    DS218 m_sensor;
+    bool checkConnection();
 protected:
     float readRaw() override;
 public:
@@ -21,6 +22,8 @@ void Temperature::Impl::initialize()
     if (m_sensor.read())
     {
         Serial.println("Initialized!");
+
+        isWorking = true;
     }
     else
     {
@@ -32,13 +35,44 @@ void Temperature::Impl::initialize()
         {
             Serial.println("ERROR: Something Went Wrong!");
         }
+
+        isWorking = false;
     }
 }
 
 float Temperature::Impl::readRaw()
 {
+    if (isWorking == false)
+        return nanf("0");
+
     while (!m_sensor.read());
+    // https://github.com/particle-iot/OneWireLibrary
+    // {
+    //     if (!checkConnection())
+    //     {
+    //         Serial.println("ERROR: CANNOT READ TEMPERATURE");
+    
+    //         isWorking = false;
+
+    //         return nanf("0");
+    //     }
+    // }
+
     return m_sensor.celsius();
+}
+
+bool Temperature::Impl::checkConnection()
+{
+    uint8_t addr[8];
+
+    m_sensor.addr(addr);
+    
+    // Address will be all zero if device was not found or search is done 
+    for (int i = 0; i < 8; i++)
+        if (addr[i] != 0)
+            return true;
+
+    return false;
 }
 
 Temperature::Temperature(int pin, sensorType type, String name, String unit, char shortcut):
