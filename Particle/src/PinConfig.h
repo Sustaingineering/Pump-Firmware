@@ -34,13 +34,15 @@
 #define VOLTAGE   1
 #define CURRENT   1
 #define TEMP      1
-#define FLOW      0
+#define FLOW      1
+#define EN_GSM    1
 
 #if PLATFORM_ID == PLATFORM_ELECTRON
 #define BUILTIN_LED D7
 #define VOLT_PIN    B2
 #define CURRENT_PIN B3
 #define TEMP_PIN    B4
+#define FLOW_PIN    B5
 #define SDCARD_SELECT_PIN SS
 #define MAX_V 3.3
 #endif
