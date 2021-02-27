@@ -20,12 +20,34 @@ Temperature::Impl::Impl(int pin, sensorType type, String name, String unit, char
 void Temperature::Impl::initialize()
 {
     m_sensors.begin();
+
+    m_sensors.requestTemperatures();
+
+    float temp = m_sensors.getTempCByIndex(0);
+
+    if ((int) temp == DEVICE_DISCONNECTED_C)
+        isWorking = false;
+    else
+        isWorking = true;
 }
 
 float Temperature::Impl::readRaw()
 {
+    if (isWorking == false)
+        return nanf("0");
+
     m_sensors.requestTemperatures();
-    return m_sensors.getTempCByIndex(0);
+
+    float temp = m_sensors.getTempCByIndex(0);
+
+    if ((int) temp == DEVICE_DISCONNECTED_C)
+    {    
+        Serial.print("TEMPERATURE SENSOR IS DISCONNECTED\n");
+        isWorking = false;
+        return nanf("0");
+    }
+    else
+        return temp;
 }
 
 Temperature::Temperature(int pin, sensorType type, String name, String unit, char shortcut):

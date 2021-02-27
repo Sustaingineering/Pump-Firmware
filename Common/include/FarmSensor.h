@@ -18,6 +18,7 @@ protected:
     String m_unit;
     char m_shortcut;
     float m_data;
+    bool isWorking;
     virtual float readRaw();
 public:
     FarmSensor(int pin, sensorType type, String name, String unit, char shortcut);
