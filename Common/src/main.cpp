@@ -7,8 +7,8 @@
 #include "Voltage.h"
 #include "Current.h"
 #include "Temperature.h"
-#ifndef PARTICLE_H
 #include "Flow.h"
+#ifndef PARTICLE_H
 #include "LoRaTransceiver.h"
 #else
 #include "Gsm.h"
@@ -17,17 +17,19 @@
 
 int pumpId;
 
+#ifdef PARTICLE_H
 #if EN_GSM
 SYSTEM_MODE(AUTOMATIC)
 #else
 SYSTEM_MODE(MANUAL)
+#endif
 #endif
 
 //Global Objects
 //Restarter restarter(5);
 String message;
 
-#ifdef electron
+#ifdef PARTICLE_H
 #if EN_GSM
 Gsm gsm;
 #endif
@@ -218,7 +220,7 @@ void loop()
 #endif
 
 #if LORA
-#ifdef electron
+#ifdef PARTICLE_H
   // make requests
   requester.request(0, packets, NUMBER_OF_PACKETS);
   Serial.print("received = [");
@@ -245,7 +247,7 @@ void loop()
   delay(1000);
 #endif //LORA
 
-#ifdef electron
+#ifdef PARTICLE_H
 #if EN_GSM
   gsm.Publish(String(pumpId), message);
 #endif
