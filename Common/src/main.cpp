@@ -17,12 +17,20 @@
 
 int pumpId;
 
+#if EN_GSM
+SYSTEM_MODE(AUTOMATIC)
+#else
+SYSTEM_MODE(MANUAL)
+#endif
+
 //Global Objects
 //Restarter restarter(5);
 String message;
 
 #ifdef electron
+#if EN_GSM
 Gsm gsm;
+#endif
 #endif
 
 #if CURRENT
@@ -65,6 +73,7 @@ Counter **counterArray;
 
 void pumpIdInit()
 {
+#if SDCARD
   char *idBuf = memory.readFile("/pump-id.txt");
   if (idBuf != NULL)
   {
@@ -72,6 +81,9 @@ void pumpIdInit()
     free(idBuf);
     Serial.printf("PumpID is: %d\n", pumpId);
   }
+#else
+  pumpId = 1;
+#endif
 }
 
 void setup()
@@ -234,7 +246,9 @@ void loop()
 #endif //LORA
 
 #ifdef electron
+#if EN_GSM
   gsm.Publish(String(pumpId), message);
+#endif
 #endif
 
   //restarter.takeAction(LoRaStatus);
