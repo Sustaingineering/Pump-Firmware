@@ -7,7 +7,7 @@
 #include "Voltage.h"
 #include "Current.h"
 #include "Temperature.h"
-#ifndef electron
+#ifndef PARTICLE_H
 #include "Flow.h"
 #include "LoRaTransceiver.h"
 #else
