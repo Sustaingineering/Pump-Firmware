@@ -5,7 +5,7 @@
 class Temperature::Impl: public FarmSensor
 {
 private:
-    DS218 m_sensor;
+    DS18 m_sensor;
     bool checkConnection();
 protected:
     float readRaw() override;
