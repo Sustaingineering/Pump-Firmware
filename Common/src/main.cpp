@@ -20,6 +20,7 @@ int pumpId;
 #ifdef PARTICLE_H
 #if EN_GSM
 SYSTEM_MODE(AUTOMATIC)
+Gsm gsm;
 #else
 SYSTEM_MODE(MANUAL)
 #endif
@@ -28,12 +29,6 @@ SYSTEM_MODE(MANUAL)
 //Global Objects
 //Restarter restarter(5);
 String message;
-
-#ifdef PARTICLE_H
-#if EN_GSM
-Gsm gsm;
-#endif
-#endif
 
 #if CURRENT
 Current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
