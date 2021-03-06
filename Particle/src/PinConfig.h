@@ -48,7 +48,7 @@
 #endif
 
 #if PLATFORM_ID == PLATFORM_BORON
-#define BUILTIN_LED D7
+#define BUILTIN_LED  D7
 #define VOLT_PIN     A0
 #define CURRENT_PIN  A1
 #define TEMP_PIN     A2
