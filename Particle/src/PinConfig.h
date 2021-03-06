@@ -52,6 +52,7 @@
 #define VOLT_PIN     A0
 #define CURRENT_PIN  A1
 #define TEMP_PIN     A2
+#define FLOW_PIN     A3
 #define SDCARD_SELECT_PIN  SCK
 #define MAX_V 3.3
 #endif
