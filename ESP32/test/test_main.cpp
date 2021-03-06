@@ -4,7 +4,7 @@
 #include <unity.h>
 
 #include "../test_cases/test_SDCard.cpp"
-//pio test --environment esp32doit-devkit-v1
+//TEST CMD --> pio test --environment esp32doit-devkit-v1
 
 void setup()
 {
@@ -15,22 +15,17 @@ void setup()
     pinMode(BUILTIN_LED, OUTPUT);
 }
 
-bool done = false;
 
 void loop()
 {
     delay(500);
 
-#ifdef SDCARD
+#if SDCARD
     RUN_TEST(initSDcard);
     RUN_TEST(test_SdCard_WriteRead);
     RUN_TEST(test_SdCard_AppendFile);
     cleanUp_SDcard();
 #endif
-
-    if (!done)
-    {
-        UNITY_END();
-        done = true;
-    }
+    
+    UNITY_END();
 }
