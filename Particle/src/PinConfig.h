@@ -14,9 +14,9 @@
          SD(SS)-> *|A2:SPI(SS)             D2|o
                   o|A1                     D1|o
                   o|A0                     D0|o
-                  o|B5                     C5|o
-    Temperature-> o|B4                     C4|o
-        Current-> o|B3                     C3|o
+     Water Flow-> *|B5                     C5|o
+    Temperature-> *|B4                     C4|o
+        Current-> *|B3                     C3|o
         Voltage-> *|B2                     C2|o
                   o|B1                     C1|o
                   o|B0____________________ C0|o
