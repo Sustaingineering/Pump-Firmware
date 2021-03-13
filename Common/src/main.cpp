@@ -1,3 +1,4 @@
+#ifndef UNIT_TEST
 #include <Arduino.h>
 #include "PinConfig.h"
 //#include "Restarter.h"
@@ -52,6 +53,16 @@ RealTimeClock rtc;
 
 #if SDCARD
 SdCard memory(SDCARD_SELECT_PIN);
+void pumpIdInit()
+{
+  char *idBuf = memory.readFile("/pump-id.txt");
+  if (idBuf != NULL)
+  {
+    pumpId = strtol(idBuf, NULL, 10);
+    free(idBuf);
+    Serial.printf("PumpID is: %d\n", pumpId);
+  }
+}
 #endif
 
 #if LORA
@@ -67,21 +78,6 @@ LoRaTransceiver responder(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SEC
 #if COUNTERS
 Counter **counterArray;
 #endif
-
-void pumpIdInit()
-{
-#if SDCARD
-  char *idBuf = memory.readFile("/pump-id.txt");
-  if (idBuf != NULL)
-  {
-    pumpId = strtol(idBuf, NULL, 10);
-    free(idBuf);
-    Serial.printf("PumpID is: %d\n", pumpId);
-  }
-#else
-  pumpId = 1;
-#endif
-}
 
 void setup()
 {
@@ -251,3 +247,4 @@ void loop()
   //restarter.takeAction(LoRaStatus);
   Serial.println();
 }
+#endif // UNIT_TEST
