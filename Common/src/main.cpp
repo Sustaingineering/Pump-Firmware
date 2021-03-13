@@ -252,4 +252,4 @@ void loop()
   //restarter.takeAction(LoRaStatus);
   Serial.println();
 }
-#endif
+#endif // UNIT_TEST
