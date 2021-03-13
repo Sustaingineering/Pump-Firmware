@@ -8,6 +8,8 @@
 #include <Arduino.h>
 #include "FarmSensor.h"
  
+#define FLOW_RATE_FACTOR 5.5 // * Q(L/min)
+
 class Flow : public FarmSensor
 { 
   protected:

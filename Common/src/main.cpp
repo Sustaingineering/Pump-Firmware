@@ -7,8 +7,8 @@
 #include "Voltage.h"
 #include "Current.h"
 #include "Temperature.h"
-#ifndef PARTICLE_H
 #include "Flow.h"
+#ifndef PARTICLE_H
 #include "LoRaTransceiver.h"
 #else
 #include "Gsm.h"
@@ -17,13 +17,18 @@
 
 int pumpId;
 
+#ifdef PARTICLE_H
+#if EN_GSM
+SYSTEM_MODE(AUTOMATIC)
+Gsm gsm;
+#else
+SYSTEM_MODE(MANUAL)
+#endif
+#endif
+
 //Global Objects
 //Restarter restarter(5);
 String message;
-
-#ifdef electron
-Gsm gsm;
-#endif
 
 #if CURRENT
 Current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
@@ -65,6 +70,7 @@ Counter **counterArray;
 
 void pumpIdInit()
 {
+#if SDCARD
   char *idBuf = memory.readFile("/pump-id.txt");
   if (idBuf != NULL)
   {
@@ -72,6 +78,9 @@ void pumpIdInit()
     free(idBuf);
     Serial.printf("PumpID is: %d\n", pumpId);
   }
+#else
+  pumpId = 1;
+#endif
 }
 
 void setup()
@@ -206,7 +215,7 @@ void loop()
 #endif
 
 #if LORA
-#ifdef electron
+#ifdef PARTICLE_H
   // make requests
   requester.request(0, packets, NUMBER_OF_PACKETS);
   Serial.print("received = [");
@@ -233,8 +242,10 @@ void loop()
   delay(1000);
 #endif //LORA
 
-#ifdef electron
+#ifdef PARTICLE_H
+#if EN_GSM
   gsm.Publish(String(pumpId), message);
+#endif
 #endif
 
   //restarter.takeAction(LoRaStatus);
