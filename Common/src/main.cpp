@@ -1,3 +1,4 @@
+#ifndef UNIT_TEST
 #include <Arduino.h>
 #include "PinConfig.h"
 //#include "Restarter.h"
@@ -251,3 +252,4 @@ void loop()
   //restarter.takeAction(LoRaStatus);
   Serial.println();
 }
+#endif

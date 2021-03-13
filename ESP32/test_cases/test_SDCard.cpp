@@ -6,6 +6,9 @@ SdCard *memory = NULL;
 
 void cleanUp_SDcard()
 {
+    if (memory == NULL)
+        return;
+
     delete memory;
     memory = NULL;
 }
@@ -20,6 +23,9 @@ void initSDcard()
 
 void test_SdCard_WriteRead()
 {
+    if (memory == NULL)
+        TEST_FAIL_MESSAGE("SdCard did not initialize properly");
+
     const char *testMsg = "Hello World!";
     const char *testFile = "/test_sdcard.txt";
 
@@ -33,12 +39,15 @@ void test_SdCard_WriteRead()
 
     TEST_ASSERT_EQUAL_STRING(testMsg, readMsg);
 
-    free(readMsg);
+    delete readMsg;
 
 }
 
 void test_SdCard_AppendFile()
 {
+    if (memory == NULL)
+        TEST_FAIL_MESSAGE("SdCard did not initialize properly");
+
     const char *writeMsg = "HELLLOOO\n";
     const char *appendMsg = "GOODBYE";
     const char *fullMsg = "HELLLOOO\nGOODBYE";
@@ -58,5 +67,21 @@ void test_SdCard_AppendFile()
 
     TEST_ASSERT_EQUAL_STRING(fullMsg, readMsg);
 
+    delete readMsg;
+
 }
 
+void test_SdCard_deleteFile()
+{
+    if (memory == NULL)
+        TEST_FAIL_MESSAGE("SdCard did not initialize properly");
+    
+    const char *testFile = "/test_sdcard_delete.txt";
+    
+    if (!memory->writeFile(testFile, "hi"))
+        TEST_FAIL_MESSAGE("Failed to create file");
+    
+    if (!memory->deleteFile(testFile))
+        TEST_FAIL_MESSAGE("Failed to delete file");
+        
+}
