@@ -21,4 +21,13 @@ jobs:
         cd main
         cp -r ../../Particle/lib/OneWireLibrary/src/* ../../Particle/src
         cp -r ../../Particle/lib/SdFat/src/* ../../Particle/src
+    - name: Make Electron
+      run: |
+        cd device-os/main
         make all PLATFORM=electron APPDIR=../../Particle/src
+    - name: Make Boron
+      run: |
+        cd device-os
+        git submodule update --init
+        cd main
+        make clean all PLATFORM=boron APPDIR=../../Particle/src
