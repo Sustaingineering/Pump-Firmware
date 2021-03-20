@@ -313,10 +313,6 @@ bool SdCard::Impl::testFileIO(const char *path)
 
 int SdCard::Impl::remainingSpace()
 {
-    //int freeClusters = sd.vol()*freeClusterCount();
-    //int freeKilobytes = freeClusters*blocksPerCluster()/2;    //blocks are 512 bytes each
-    //int freeMegabytes = freeKilobytes/1024;   
-     
     int freeBytes = fs.totalBytes()-fs.usedBytes();
     int freeMegaBytes = freeBytes/(1024*1024);    //1024 bytes in Gigabyte 1024 Gigabytes in Megabyte
 
@@ -382,5 +378,5 @@ bool SdCard::testFileIO(const char *path)
 
 int SdCard::remainingSpace()
 {
-    m_pImpl->remainingSpace();
+    return m_pImpl->remainingSpace();
 }
