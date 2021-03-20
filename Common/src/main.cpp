@@ -16,7 +16,7 @@
 #endif
 #include "Counter.h"
 
-int pumpId;
+int pumpId = 0;
 
 #ifdef PARTICLE_H
 #if EN_GSM
@@ -117,9 +117,13 @@ void setup()
 
 #if SDCARD
   Serial.println("Initializing MicroSD Card...");
-  memory.initialize();
-  pumpIdInit();
-  Serial.println("MicroSD Card Initialized.\n");
+  if (memory.initialize())
+  {
+    pumpIdInit();
+    Serial.println("MicroSD Card Initialized.\n");
+    memory.getFreeSpace();
+  } else
+    Serial.println("MicroSD Card Failed to Intialize");
 #endif
 
 #if LORA
@@ -154,11 +158,6 @@ void setup()
   Serial.println("Initializing RTC...");
   rtc.initialize(1604177282); //Oct 31, 2020 - 1:48
   Serial.println("RTC Initialized.\n");
-  char *idBuf = memory.readFile("/pump-id.txt");
-  pumpId = strtol(idBuf, NULL, 10);
-  free(idBuf);
-  Serial.printf("PumpID is: %d\n", pumpId);
-  memory.getFreeSpace();
 #endif
 
 #if LORA
