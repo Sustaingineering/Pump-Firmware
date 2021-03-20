@@ -5,6 +5,7 @@
 #include "vfs_api.h"
 #include "PinConfig.h"
 
+
 class SdCard::Impl
 {
 private:
@@ -24,6 +25,7 @@ public:
     bool renameFile(const char *path1, const char *path2);
     bool deleteFile(const char *path);
     bool testFileIO(const char *path);
+    uint64_t getFreeSpace();
 };
 
 SdCard::Impl::Impl(int SdCsPin) : fs(FSImplPtr(new VFSImpl())), m_spi(SDCARD_SPI_INTERFACE), m_SdCsPin(SdCsPin)
@@ -309,9 +311,20 @@ bool SdCard::Impl::testFileIO(const char *path)
     return true;
 }
 
-SdCard::SdCard(const int SdCardSelectPin) : m_pImpl(new SdCard::Impl(SdCardSelectPin))
+uint64_t SdCard::Impl::getFreeSpace()
 {
+    uint64_t freeBytes = fs.totalBytes() - fs.usedBytes();
+
+    //for testing
+    Serial.printf("Remaining space: %llu Total Space: %llu Used Space: %d \n",
+                            freeBytes, fs.totalBytes(), fs.usedBytes());
+    
+    return freeBytes;
 }
+
+SdCard::SdCard(const int SdCardSelectPin):
+m_pImpl(new SdCard::Impl(SdCardSelectPin))
+{}
 
 bool SdCard::initialize()
 {
@@ -361,4 +374,9 @@ bool SdCard::deleteFile(const char *path)
 bool SdCard::testFileIO(const char *path)
 {
     return m_pImpl->testFileIO(path);
+}
+
+uint64_t SdCard::getFreeSpace()
+{
+    return m_pImpl->getFreeSpace();
 }

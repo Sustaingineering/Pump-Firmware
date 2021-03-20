@@ -154,6 +154,11 @@ void setup()
   Serial.println("Initializing RTC...");
   rtc.initialize(1604177282); //Oct 31, 2020 - 1:48
   Serial.println("RTC Initialized.\n");
+  char *idBuf = memory.readFile("/pump-id.txt");
+  pumpId = strtol(idBuf, NULL, 10);
+  free(idBuf);
+  Serial.printf("PumpID is: %d\n", pumpId);
+  memory.getFreeSpace();
 #endif
 
 #if LORA
