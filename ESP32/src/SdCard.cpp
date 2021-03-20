@@ -5,6 +5,7 @@
 #include "vfs_api.h"
 #include "PinConfig.h"
 
+
 class SdCard::Impl
 {
 private:
@@ -24,6 +25,7 @@ public:
     bool renameFile(const char *path1, const char *path2);
     bool deleteFile(const char *path);
     bool testFileIO(const char *path);
+    int remainingSpace();
 };
 
 SdCard::Impl::Impl(int SdCsPin) : fs(FSImplPtr(new VFSImpl())), m_spi(SDCARD_SPI_INTERFACE), m_SdCsPin(SdCsPin)
@@ -309,11 +311,26 @@ bool SdCard::Impl::testFileIO(const char *path)
     return true;
 }
 
-SdCard::SdCard(const int SdCardSelectPin) : m_pImpl(new SdCard::Impl(SdCardSelectPin))
+int SdCard::Impl::remainingSpace()
 {
+    //int freeClusters = sd.vol()*freeClusterCount();
+    //int freeKilobytes = freeClusters*blocksPerCluster()/2;    //blocks are 512 bytes each
+    //int freeMegabytes = freeKilobytes/1024;   
+     
+    int freeBytes = fs.totalBytes()-fs.usedBytes();
+    int freeMegaBytes = freeBytes/(1024*1024);    //1024 bytes in Gigabyte 1024 Gigabytes in Megabyte
+
+    //for testing
+    Serial.println(freeMegaBytes);
+    
+    return freeMegaBytes;
 }
 
-bool SdCard::initialize()
+SdCard::SdCard(const int SdCardSelectPin):
+m_pImpl(new SdCard::Impl(SdCardSelectPin))
+{}
+
+void SdCard::initialize()
 {
     return m_pImpl->initialize();
 }
@@ -361,4 +378,9 @@ bool SdCard::deleteFile(const char *path)
 bool SdCard::testFileIO(const char *path)
 {
     return m_pImpl->testFileIO(path);
+}
+
+int SdCard::remainingSpace()
+{
+    m_pImpl->remainingSpace();
 }
