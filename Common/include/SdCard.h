@@ -27,7 +27,7 @@ private:
 public:
     SdCard(const int SdCardSelectPin);
     bool initialize();
-    uint64_t  getFreeSpace();
+    uint64_t getFreeSpace();
     void listDir(const char *dirname, uint8_t levels);
     bool createDir(const char *path);
     bool removeDir(const char *path);
@@ -37,5 +37,4 @@ public:
     bool renameFile(const char *path1, const char *path2);
     bool deleteFile(const char *path);
     bool testFileIO(const char *path);
-    int remainingSpace();
 };

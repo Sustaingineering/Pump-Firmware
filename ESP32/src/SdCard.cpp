@@ -25,7 +25,7 @@ public:
     bool renameFile(const char *path1, const char *path2);
     bool deleteFile(const char *path);
     bool testFileIO(const char *path);
-    int remainingSpace();
+    uint64_t getFreeSpace();
 };
 
 SdCard::Impl::Impl(int SdCsPin) : fs(FSImplPtr(new VFSImpl())), m_spi(SDCARD_SPI_INTERFACE), m_SdCsPin(SdCsPin)
@@ -311,22 +311,22 @@ bool SdCard::Impl::testFileIO(const char *path)
     return true;
 }
 
-int SdCard::Impl::remainingSpace()
+uint64_t SdCard::Impl::getFreeSpace()
 {
-    int freeBytes = fs.totalBytes()-fs.usedBytes();
-    int freeMegaBytes = freeBytes/(1024*1024);    //1024 bytes in Gigabyte 1024 Gigabytes in Megabyte
+    uint64_t freeBytes = fs.totalBytes() - fs.usedBytes();
 
     //for testing
-    Serial.println(freeMegaBytes);
+    Serial.printf("Remaining space: %llu Total Space: %llu Used Space: %d \n",
+                            freeBytes, fs.totalBytes(), fs.usedBytes());
     
-    return freeMegaBytes;
+    return freeBytes;
 }
 
 SdCard::SdCard(const int SdCardSelectPin):
 m_pImpl(new SdCard::Impl(SdCardSelectPin))
 {}
 
-void SdCard::initialize()
+bool SdCard::initialize()
 {
     return m_pImpl->initialize();
 }
@@ -376,7 +376,7 @@ bool SdCard::testFileIO(const char *path)
     return m_pImpl->testFileIO(path);
 }
 
-int SdCard::remainingSpace()
+uint64_t SdCard::getFreeSpace()
 {
-    return m_pImpl->remainingSpace();
+    return m_pImpl->getFreeSpace();
 }

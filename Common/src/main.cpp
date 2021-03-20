@@ -158,7 +158,7 @@ void setup()
   pumpId = strtol(idBuf, NULL, 10);
   free(idBuf);
   Serial.printf("PumpID is: %d\n", pumpId);
-  memory.remainingSpace();
+  memory.getFreeSpace();
 #endif
 
 #if LORA
