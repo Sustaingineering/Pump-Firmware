@@ -34,11 +34,22 @@ SdCard::Impl::Impl(int SdCsPin) : fs(FSImplPtr(new VFSImpl())), m_spi(SDCARD_SPI
 
 bool SdCard::Impl::initialize()
 {
-    while (!fs.begin(m_SdCsPin, m_spi, 4000000U, "/sd", 5))
+    int NUM_ATTEMPTS = 5;
+
+    for (int i = 0; i < NUM_ATTEMPTS; i++)
     {
-        Serial.println("Card Mount Failed. Trying again in 1 sec.");
-        delay(1000);
+        if (!fs.begin(m_SdCsPin, m_spi, 4000000U, "/sd", 5))
+        {
+            Serial.printf("Card Mount Failed. Trying again in 1 sec. %d\n", i);
+            delay(1000);
+            
+            if (i == NUM_ATTEMPTS - 1)
+                return false;
+
+        } else
+            break;
     }
+
     uint8_t cardType = fs.cardType();
 
     if (cardType == CARD_NONE)
