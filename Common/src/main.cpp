@@ -39,7 +39,7 @@ Current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
 Voltage volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 25000, 1000000, MAX_V);
 #endif
 
-#if TEMP
+#if TEMPERATURE
 Temperature thermocouple(TEMP_PIN, digital, "Temperature", "Celsius", 't'); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
 #endif
 
@@ -97,7 +97,7 @@ void setup()
   Serial.println("Voltage Sensor Initialized.\n");
 #endif
 
-#if TEMP
+#if TEMPERATURE
   Serial.println("Initializing Thermocouple...");
   thermocouple.initialize();
   Serial.println("Thermocouple Initialized.\n");
@@ -138,7 +138,7 @@ void setup()
   Serial.println("Voltage Sensor Initialized.\n");
 #endif
 
-#if TEMP
+#if TEMPERATURE
   Serial.println("Initializing Thermocouple...");
   thermocouple.initialize();
   Serial.println("Thermocouple Initialized.\n");
@@ -192,7 +192,7 @@ void loop()
   message += volt_divider.read();
 #endif
 
-#if TEMP
+#if TEMPERATURE
   message += thermocouple.read();
 #endif
 
