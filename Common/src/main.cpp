@@ -203,7 +203,6 @@ void loop()
 #if SDCARD
   //Writing on Sd Card
   memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), message.c_str());
-  memory.listDir("/", 0);
 #endif
 
 #if LORA
