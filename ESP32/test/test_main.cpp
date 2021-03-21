@@ -24,6 +24,7 @@ void loop()
     RUN_TEST(test_SdCard_WriteRead);
     RUN_TEST(test_SdCard_AppendFile);
     RUN_TEST(test_SdCard_deleteFile);
+    RUN_TEST(test_SdCard_Overflow);
     cleanUp_SDcard();
 #endif
 

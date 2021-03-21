@@ -26,6 +26,7 @@ public:
     bool deleteFile(const char *path);
     bool testFileIO(const char *path);
     uint64_t getFreeSpace();
+    bool handleOverflow();
 };
 
 SdCard::Impl::Impl(int SdCsPin) : fs(FSImplPtr(new VFSImpl())), m_spi(SDCARD_SPI_INTERFACE), m_SdCsPin(SdCsPin)
@@ -337,6 +338,46 @@ uint64_t SdCard::Impl::getFreeSpace()
     return freeBytes;
 }
 
+bool SdCard::Impl::handleOverflow()
+{
+    int BUFFER_BYTES = 1024 * 1024 * 15;
+
+    if (getFreeSpace() < BUFFER_BYTES)
+    {
+        File root = fs.open("/");
+    
+        int toDelete = 3;
+
+        String pumpIdFile("/pump-id.txt");
+        for (int i = 0; i < toDelete; i++)
+        {
+            File entry = root.openNextFile();
+
+            if (!entry)
+                break;
+
+            String fileName(entry.name());
+            while (entry.isDirectory() || pumpIdFile == fileName) 
+            {
+                Serial.println("Skipping " + fileName);
+                entry.close();
+                entry = root.openNextFile();
+                fileName = entry.name();
+            }
+
+            deleteFile(entry.name());
+            
+            entry.close();
+        }
+
+        root.close();
+
+        return true;
+    }
+
+    return false;
+}
+
 SdCard::SdCard(const int SdCardSelectPin):
 m_pImpl(new SdCard::Impl(SdCardSelectPin))
 {}
@@ -394,4 +435,9 @@ bool SdCard::testFileIO(const char *path)
 uint64_t SdCard::getFreeSpace()
 {
     return m_pImpl->getFreeSpace();
+}
+
+bool SdCard::handleOverflow()
+{
+    return m_pImpl->handleOverflow();
 }

@@ -116,7 +116,6 @@ void setup()
 
 #if ERTC
   Serial.println("Initializing RTC...");
-  rtc.initialize(1604177282);
   Serial.println("RTC Initialized.\n");
 #endif
 
@@ -146,7 +145,6 @@ void setup()
 
 #if ERTC
   Serial.println("Initializing RTC...");
-  rtc.initialize(1604177282); //Oct 31, 2020 - 1:48
   Serial.println("RTC Initialized.\n");
 #endif
 
@@ -204,6 +202,7 @@ void loop()
 #if SDCARD
   //Writing on Sd Card
   memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), message.c_str());
+  memory.listDir("/", 0);
 #endif
 
 #if LORA
