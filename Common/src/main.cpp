@@ -175,8 +175,10 @@ void setup()
 #endif
 
   //Sensors Initializers go here.
-
   Serial.println("Setup Done!\n");
+#if PARTICLE_UNIT_TESTS
+  tests();
+#endif
 }
 
 void loop()
