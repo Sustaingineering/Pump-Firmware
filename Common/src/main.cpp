@@ -84,29 +84,30 @@ void setup()
   pinMode(BUILTIN_LED, OUTPUT);
   Serial.begin(115200);
   Serial.println("\nHello Sustaingineering!\n");
+  bool success = true;
 
 #if CURRENT
-  Serial.println("Initializing Current Sensor...");
-  hall_effect.initialize();
-  Serial.println("Current Sensor Initialized.\n");
+  digitalWrite(BUILTIN_LED,HIGH);
+  success = success && hall_effect.initialize();
+  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if VOLTAGE
-  Serial.println("Initializing Voltage Sensor...");
-  volt_divider.initialize();
-  Serial.println("Voltage Sensor Initialized.\n");
+  digitalWrite(BUILTIN_LED,HIGH);
+  success = success && volt_divider.initialize();
+  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if TEMPERATURE
-  Serial.println("Initializing Thermocouple...");
-  thermocouple.initialize();
-  Serial.println("Thermocouple Initialized.\n");
+  digitalWrite(BUILTIN_LED,HIGH);
+  success = success && thermocouple.initialize();
+  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if FLOW
-  Serial.println("Initializing Waterflow...");
-  waterflow.initialize();
-  Serial.println("WaterFlow Initialized.\n");
+  digitalWrite(BUILTIN_LED,HIGH);
+  success = success && waterflow.initialize();
+  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if ERTC
@@ -116,14 +117,14 @@ void setup()
 #endif
 
 #if SDCARD
-  Serial.println("Initializing MicroSD Card...");
-  if (memory.initialize())
+  digitalWrite(BUILTIN_LED,HIGH);
+  success = success && memory.initialize();
+  digitalWrite(BUILTIN_LED,LOW);
+  if (success)
   {
     pumpIdInit();
-    Serial.println("MicroSD Card Initialized.\n");
     memory.getFreeSpace();
-  } else
-    Serial.println("MicroSD Card Failed to Intialize");
+  } 
 #endif
 
 #if LORA
@@ -137,22 +138,6 @@ void setup()
 #endif // LORA
 
 //Sensors Initializers go here.
-#if VOLTAGE
-  volt_divider.initialize();
-  Serial.println("Voltage Sensor Initialized.\n");
-#endif
-
-#if TEMPERATURE
-  Serial.println("Initializing Thermocouple...");
-  thermocouple.initialize();
-  Serial.println("Thermocouple Initialized.\n");
-#endif
-
-#if FLOW
-  Serial.println("Initializing Waterflow...");
-  waterflow.initialize();
-  Serial.println("WaterFlow Initialized.\n");
-#endif
 
 #if ERTC
   Serial.println("Initializing RTC...");
@@ -176,7 +161,12 @@ void setup()
 
   //Sensors Initializers go here.
 
-  Serial.println("Setup Done!\n");
+  if(success)
+    digitalWrite(BUILTIN_LED,LOW);
+  else
+    digitalWrite(BUILTIN_LED,HIGH);
+
+
 }
 
 void loop()
