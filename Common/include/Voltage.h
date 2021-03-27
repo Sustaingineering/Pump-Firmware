@@ -20,6 +20,6 @@ protected:
 public:
     static const int analogDigitalConversionResolution = 4095; // ESP32 ADC resolution is 12 bits
     Voltage(int pin, sensorType type, String name, String unit, char shortcut, int lowerResistor, int higherResistor, float maximumVoltage);
-    void initialize() override;
+    bool initialize() override;
 };
 

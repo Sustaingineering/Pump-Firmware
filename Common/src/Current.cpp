@@ -5,9 +5,11 @@ Current::Current(int pin, String name, String unit, char shortcut, float maximum
 {
 }
  
-void Current::initialize()
+bool Current::initialize()
 {
     pinMode(m_pin, INPUT);
+    isWorking = true;
+    return isWorking;
 }
  
 float Current::readRaw()

@@ -7,9 +7,11 @@ Voltage::Voltage(int pin, sensorType type, String name, String unit, char shortc
 }
 
 /* overriding */
-void Voltage::initialize()
+bool Voltage::initialize()
 {
     pinMode(m_pin, INPUT);
+    isWorking = true;
+    return isWorking;
 }
 
 

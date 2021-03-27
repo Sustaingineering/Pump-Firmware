@@ -18,7 +18,7 @@ struct packet
 class IFarmSensor 
 {
 public:
-    virtual void initialize() = 0;
+    virtual bool initialize() = 0;
     virtual String read() = 0;
     virtual packet pack() = 0;
 };

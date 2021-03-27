@@ -11,13 +11,13 @@ protected:
     float readRaw() override;
 public:
     Impl(int pin, sensorType type, String name, String unit, char shortcut);
-    void initialize() override;
+    bool initialize() override;
 };
 
 Temperature::Impl::Impl(int pin, sensorType type, String name, String unit, char shortcut): 
                 FarmSensor(pin, type, name, unit, shortcut), m_sensor(pin){}
 
-void Temperature::Impl::initialize()
+bool Temperature::Impl::initialize()
 {
     if (m_sensor.read())
     {
@@ -38,6 +38,7 @@ void Temperature::Impl::initialize()
 
         isWorking = false;
     }
+    return isWorking;
 }
 
 float Temperature::Impl::readRaw()
@@ -79,7 +80,7 @@ Temperature::Temperature(int pin, sensorType type, String name, String unit, cha
     m_pImpl(new Temperature::Impl(pin, type, name, unit, shortcut))
 {}
 
-void Temperature::initialize() { m_pImpl->initialize(); }
+bool Temperature::initialize() { return m_pImpl->initialize(); }
 
 String Temperature::read() { return m_pImpl->read(); }
 

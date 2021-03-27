@@ -22,9 +22,11 @@ FarmSensor::FarmSensor(int pin, String name, String unit, char shortcut)
 
 
 //template <class T>
-void FarmSensor::initialize()
+bool FarmSensor::initialize()
 {
     pinMode(m_pin, INPUT);
+    isWorking = true;
+    return isWorking;
 }
 
 //template <class T>

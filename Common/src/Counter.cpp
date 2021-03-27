@@ -23,9 +23,11 @@ Counter::Counter(int pin,  String name, String unit, char shortcut):
     m_data = 1.0 * pin;
 }
 
-void Counter::initialize()
+bool Counter::initialize()
 {
     /*Nothing to initialize*/
+    isWorking = true;
+    return isWorking;
 }
 
 float Counter::readRaw()
