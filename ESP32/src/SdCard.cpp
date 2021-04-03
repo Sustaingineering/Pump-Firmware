@@ -340,28 +340,34 @@ uint64_t SdCard::Impl::getFreeSpace()
 
 bool SdCard::Impl::handleOverflow()
 {
-    int BUFFER_BYTES = 1024 * 1024 * 15;
-
+    int BUFFER_BYTES = 1024 * 1024 * 15; // 15 Megabytes ~ 3 days worth of logs
+    
+    #if UNIT_TEST
+    if (true)
+    #else
     if (getFreeSpace() < BUFFER_BYTES)
+    #endif
     {
         File root = fs.open("/");
-    
-        int toDelete = 3;
 
         String pumpIdFile("/pump-id.txt");
-        for (int i = 0; i < toDelete; i++)
+
+        int TO_DELETE = 3;
+
+        for (int i = 0; i < TO_DELETE; i++)
         {
             File entry = root.openNextFile();
 
-            if (!entry)
-                break;
-
             String fileName(entry.name());
+
             while (entry.isDirectory() || pumpIdFile == fileName) 
             {
                 Serial.println("Skipping " + fileName);
+
                 entry.close();
+
                 entry = root.openNextFile();
+
                 fileName = entry.name();
             }
 
