@@ -37,7 +37,7 @@ bool SdCard::Impl::initialize()
         Serial.println("initialization failed!");
         return false;
     }
-    Serial.println("initialization successful!.");
+    Serial.println("SD Card Initialized.");
     listDir(NULL, 0);
     uint64_t remaining_mem = getFreeSpace();
     if (remaining_mem > 0) { // negative means failure

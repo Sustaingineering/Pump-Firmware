@@ -14,9 +14,11 @@ Flow::Flow(int pin,  String name, String unit, char shortcut):
  
 bool Flow::initialize()
 {
+    Serial.println("Initializing Water Flow Sensor");
     pinMode(m_pin, INPUT); //initializes digital pin as an input
     attachInterrupt(digitalPinToInterrupt(m_pin), Water::countFlowInterrupts, RISING); //and the interrupt is attached
     isWorking = true;
+    Serial.println("Initialized Water Flow Sensor.");
     return isWorking;
 }
 

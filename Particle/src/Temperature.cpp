@@ -19,9 +19,10 @@ Temperature::Impl::Impl(int pin, sensorType type, String name, String unit, char
 
 bool Temperature::Impl::initialize()
 {
+    Serial.println("Initializing Temperature Sensor...");
     if (m_sensor.read())
     {
-        Serial.println("Initialized!");
+        Serial.println("Initialized Temperature Sensor.");
 
         isWorking = true;
     }

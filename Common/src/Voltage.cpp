@@ -9,8 +9,10 @@ Voltage::Voltage(int pin, sensorType type, String name, String unit, char shortc
 /* overriding */
 bool Voltage::initialize()
 {
+    Serial.println("Initializing Voltage Sensor");
     pinMode(m_pin, INPUT);
     isWorking = true;
+    Serial.println("Initialized Voltage Sensor");
     return isWorking;
 }
 

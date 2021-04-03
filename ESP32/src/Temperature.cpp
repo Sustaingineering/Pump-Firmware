@@ -19,16 +19,22 @@ Temperature::Impl::Impl(int pin, sensorType type, String name, String unit, char
 
 bool Temperature::Impl::initialize()
 {
+    Serial.println("Initializing Temperature Sensor...");
+
     m_sensors.begin();
 
     m_sensors.requestTemperatures();
 
     float temp = m_sensors.getTempCByIndex(0);
 
-    if ((int) temp == DEVICE_DISCONNECTED_C)
+    if ((int) temp == DEVICE_DISCONNECTED_C){
         isWorking = false;
-    else
+        Serial.println("Temperature Sensor Initialization Failed.");
+    }
+    else{
         isWorking = true;
+        Serial.println("Temperature Sensor Initialized.");
+    }
 
     return isWorking;
 }
