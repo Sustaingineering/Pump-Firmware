@@ -217,6 +217,8 @@ bool SdCard::Impl::writeFile(const char *path, const char *message)
 
 bool SdCard::Impl::appendFile(const char *path, const char *message)
 {
+    handleOverflow();
+
     Serial.printf("Appending to file: %s\n", path);
 
     File file = fs.open(path, FILE_APPEND);
