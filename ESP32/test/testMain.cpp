@@ -3,7 +3,7 @@
 
 #include <unity.h>
 
-#include "test_cases.h"
+#include "testCases.h"
 //TEST CMD --> pio test --environment esp32doit-devkit-v1
 
 void setup()

@@ -1,6 +1,6 @@
-#include "../test_cases/test_SDCard.cpp"
-#include "../test_cases/test_Temperature.cpp"
-#include "../test_cases/test_Counters.cpp"
+#include "../testCases/testSDCard.cpp"
+#include "../testCases/testTemperature.cpp"
+#include "../testCases/testCounters.cpp"
 
 /*
  *

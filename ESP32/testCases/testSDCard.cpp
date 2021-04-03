@@ -14,7 +14,7 @@ void initSDcard()
 void testSdCardWriteRead()
 {
     const char *testMsg = "Hello World!";
-    const char *testFile = "/test_sdcard.txt";
+    const char *testFile = "/testSdcard.txt";
 
     if (!memory.writeFile(testFile, testMsg))
         TEST_FAIL_MESSAGE("Failed to write to SdCard");
@@ -36,7 +36,7 @@ void testSdCardAppendFile()
     const char *writeMsg = "HELLLOOO\n";
     const char *appendMsg = "GOODBYE";
     const char *fullMsg = "HELLLOOO\nGOODBYE";
-    const char *testFile = "/test_sdcard_append.txt";
+    const char *testFile = "/testSdcardAppend.txt";
 
     if (!memory.writeFile(testFile, writeMsg))
         TEST_FAIL_MESSAGE("Failed to write to SdCard");
@@ -59,7 +59,7 @@ void testSdCardAppendFile()
 
 void testSdCardDeleteFile()
 {    
-    const char *testFile = "/test_sdcard_delete.txt";
+    const char *testFile = "/testSdcardDelete.txt";
     
     if (!memory.writeFile(testFile, "hi"))
         TEST_FAIL_MESSAGE("Failed to create file");

@@ -217,7 +217,9 @@ bool SdCard::Impl::writeFile(const char *path, const char *message)
 
 bool SdCard::Impl::appendFile(const char *path, const char *message)
 {
+    #ifndef UNIT_TEST
     handleOverflow();
+    #endif
 
     Serial.printf("Appending to file: %s\n", path);
 
