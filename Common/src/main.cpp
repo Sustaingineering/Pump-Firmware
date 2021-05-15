@@ -116,6 +116,7 @@ void setup()
 
 #if ERTC
   Serial.println("Initializing RTC...");
+  rtc.initialize(1604177282);
   Serial.println("RTC Initialized.\n");
 #endif
 
