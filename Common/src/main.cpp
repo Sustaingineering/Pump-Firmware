@@ -165,12 +165,10 @@ void setup()
 #endif
 
   //Sensors Initializers go here.
-
-  if(success)
-    digitalWrite(BUILTIN_LED,LOW);
-  else
-    digitalWrite(BUILTIN_LED,HIGH);
-
+  Serial.println("Setup Done!\n");
+#if PARTICLE_UNIT_TESTS
+  tests();
+#endif
 }
 
 void loop()

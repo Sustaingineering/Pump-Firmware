@@ -1,4 +1,5 @@
 #pragma once
+#include "platforms.h"
 
 
 #define ERTC        1
@@ -83,4 +84,10 @@
 #define FLOW_PIN     A3
 #define SDCARD_SELECT_PIN  SCK
 #define MAX_V 3.3
+#endif
+
+#define PARTICLE_UNIT_TESTS 0
+
+#if PARTICLE_UNIT_TESTS
+#include "tests/tests.h"
 #endif

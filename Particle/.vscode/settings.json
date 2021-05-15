@@ -7,6 +7,6 @@
         "chrono": "cpp",
         "thread": "cpp"
     },
-    "particle.firmwareVersion": "3.0.0-rc.2",
+    "particle.firmwareVersion": "3.0.0-rc.1",
     "particle.targetPlatform": "boron"
 }
