@@ -1,6 +1,7 @@
 #include "../test_cases/test_SDCard.cpp"
 #include "../test_cases/test_Temperature.cpp"
 #include "../test_cases/test_Counters.cpp"
+#include "../test_cases/test_Voltage.cpp"
 
 /*
  *
@@ -20,6 +21,8 @@
  *  - Creating Counters Array (static method)
  *  - Reading
  * 
- * 
+ * Voltage Sensor:
+ *  - Intitialzing
+ *  - Reading
  * 
  */

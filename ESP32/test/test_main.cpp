@@ -42,5 +42,11 @@ void loop()
     cleanUp_Counters();
 #endif
     
+#if VOLTAGE
+    RUN_TEST(initVoltage);
+    RUN_TEST(test_Voltage_read);
+    cleanUp_Voltage();
+#endif
+
     UNITY_END();
 }
