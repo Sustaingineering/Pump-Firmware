@@ -72,7 +72,7 @@ void testSdCardDeleteFile()
 void testSdCardOverflow()
 {
     RealTimeClock rtc;
-    long time = 1616307852L; //2021-3-20
+    long time = 0; 
     rtc.initialize(time);
 
     for (int i = 0; i < 10; i++)
@@ -86,8 +86,8 @@ void testSdCardOverflow()
     memory.handleOverflow();
     memory.listDir("/", 0);
 
-    TEST_ASSERT_NULL(memory.readFile("/2021-03-21.txt"));
-    TEST_ASSERT_NULL(memory.readFile("/2021-03-22.txt"));
-    TEST_ASSERT_NULL(memory.readFile("/2021-03-23.txt"));
+    TEST_ASSERT_NULL(memory.readFile("/1970-01-01.txt"));
+    TEST_ASSERT_NULL(memory.readFile("/1970-01-02.txt"));
+    TEST_ASSERT_NULL(memory.readFile("/1970-01-03.txt"));
 
 }
