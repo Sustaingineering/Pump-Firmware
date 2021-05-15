@@ -22,5 +22,5 @@ protected:
 public: 
     //functions
     Current(int pin, String name, String unit, char shortcut, float maxVoltage);
-    void initialize() override;
+    bool initialize() override;
 };

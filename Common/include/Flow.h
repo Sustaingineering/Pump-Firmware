@@ -16,5 +16,5 @@ class Flow : public FarmSensor
       float readRaw() override;
   public:
       Flow(int pin, String name, String unit, char shortcut);
-      void initialize() override;
+      bool initialize() override;
 };
