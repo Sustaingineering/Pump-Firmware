@@ -122,10 +122,10 @@ void setup()
 
 #if SDCARD
   digitalWrite(BUILTIN_LED,HIGH);
-  success = success && memory.initialize();
-  delay(100);
-  digitalWrite(BUILTIN_LED,LOW);
-  if (success)
+  bool memoryInitialized = memory.initialize();
+  success = success && memoryInitialized;
+  delay(100); digitalWrite(BUILTIN_LED,LOW); delay(100);
+  if (memoryInitialized)
   {
     pumpIdInit();
     memory.getFreeSpace();
@@ -142,33 +142,20 @@ void setup()
   Serial.println("LoRa Initialized.\n");
 #endif // LORA
 
-//Sensors Initializers go here.
-
-#if ERTC
-  Serial.println("Initializing RTC...");
-  rtc.initialize(1604177282); //Oct 31, 2020 - 1:48
-  Serial.println("RTC Initialized.\n");
-#endif
-
-#if LORA
-  Serial.println("Initializing LoRa...");
-#if GSM
-  requester.initialize();
-#else
-  responder.initialize();
-#endif // GSM
-  Serial.println("LoRa Initialized.\n");
-#endif // LORA
-
 #if COUNTERS
   counterArray = Counter::createCounters(COUNTERS);
 #endif
 
-  //Sensors Initializers go here.
   Serial.println("Setup Done!\n");
+
 #if PARTICLE_UNIT_TESTS
   tests();
 #endif
+
+  if(success)
+    digitalWrite(BUILTIN_LED,LOW);
+  else
+    digitalWrite(BUILTIN_LED,HIGH);
 }
 
 void loop()

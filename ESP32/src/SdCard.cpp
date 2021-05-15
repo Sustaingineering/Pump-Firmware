@@ -26,6 +26,7 @@ public:
     bool deleteFile(const char *path);
     bool testFileIO(const char *path);
     uint64_t getFreeSpace();
+    bool handleOverflow();
 };
 
 SdCard::Impl::Impl(int SdCsPin) : fs(FSImplPtr(new VFSImpl())), m_spi(SDCARD_SPI_INTERFACE), m_SdCsPin(SdCsPin)
@@ -216,6 +217,10 @@ bool SdCard::Impl::writeFile(const char *path, const char *message)
 
 bool SdCard::Impl::appendFile(const char *path, const char *message)
 {
+    #ifndef UNIT_TEST
+    handleOverflow();
+    #endif
+
     Serial.printf("Appending to file: %s\n", path);
 
     File file = fs.open(path, FILE_APPEND);
@@ -337,6 +342,52 @@ uint64_t SdCard::Impl::getFreeSpace()
     return freeBytes;
 }
 
+bool SdCard::Impl::handleOverflow()
+{
+    int BUFFER_BYTES = 1024 * 1024 * 15; // 15 Megabytes ~ 3 days worth of logs
+    
+    #if UNIT_TEST
+    if (true)
+    #else
+    if (getFreeSpace() < BUFFER_BYTES)
+    #endif
+    {
+        File root = fs.open("/");
+
+        String pumpIdFile("/pump-id.txt");
+
+        int TO_DELETE = 3;
+
+        for (int i = 0; i < TO_DELETE; i++)
+        {
+            File entry = root.openNextFile();
+
+            String fileName(entry.name());
+
+            while (entry.isDirectory() || pumpIdFile == fileName) 
+            {
+                Serial.println("Skipping " + fileName);
+
+                entry.close();
+
+                entry = root.openNextFile();
+
+                fileName = entry.name();
+            }
+
+            deleteFile(entry.name());
+            
+            entry.close();
+        }
+
+        root.close();
+
+        return true;
+    }
+
+    return false;
+}
+
 SdCard::SdCard(const int SdCardSelectPin):
 m_pImpl(new SdCard::Impl(SdCardSelectPin))
 {}
@@ -394,4 +445,9 @@ bool SdCard::testFileIO(const char *path)
 uint64_t SdCard::getFreeSpace()
 {
     return m_pImpl->getFreeSpace();
+}
+
+bool SdCard::handleOverflow()
+{
+    return m_pImpl->handleOverflow();
 }

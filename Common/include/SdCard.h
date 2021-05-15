@@ -37,4 +37,5 @@ public:
     bool renameFile(const char *path1, const char *path2);
     bool deleteFile(const char *path);
     bool testFileIO(const char *path);
+    bool handleOverflow();
 };

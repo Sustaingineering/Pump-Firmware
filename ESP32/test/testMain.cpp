@@ -3,7 +3,7 @@
 
 #include <unity.h>
 
-#include "test_cases.h"
+#include "testCases.h"
 //TEST CMD --> pio test --environment esp32doit-devkit-v1
 
 void setup()
@@ -21,10 +21,11 @@ void loop()
 
 #if SDCARD
     RUN_TEST(initSDcard);
-    RUN_TEST(test_SdCard_WriteRead);
-    RUN_TEST(test_SdCard_AppendFile);
-    RUN_TEST(test_SdCard_deleteFile);
-    cleanUp_SDcard();
+
+    RUN_TEST(testSdCardWriteRead);
+    RUN_TEST(testSdCardAppendFile);
+    RUN_TEST(testSdCardDeleteFile);
+    RUN_TEST(testSdCardOverflow);
 #endif
 
 #if TEMP
