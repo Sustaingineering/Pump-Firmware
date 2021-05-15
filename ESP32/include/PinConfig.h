@@ -53,3 +53,5 @@
 #define FLOW_PIN 34
 
 #define MAX_V 3.9
+
+#define LED_BUILTIN 2

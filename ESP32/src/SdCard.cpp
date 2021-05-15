@@ -34,6 +34,8 @@ SdCard::Impl::Impl(int SdCsPin) : fs(FSImplPtr(new VFSImpl())), m_spi(SDCARD_SPI
 
 bool SdCard::Impl::initialize()
 {
+    Serial.println("Initializing SD Card...");
+
     int NUM_ATTEMPTS = 5;
 
     for (int i = 0; i < NUM_ATTEMPTS; i++)
@@ -81,6 +83,8 @@ bool SdCard::Impl::initialize()
     Serial.printf("Total space: %lluMB\n", fs.totalBytes() / (1024 * 1024));
     Serial.printf("Used space: %lluMB\n", fs.usedBytes() / (1024 * 1024));
     listDir("/", 0);
+    
+    Serial.println("Initialized SD Card.");
 
     return true;
 }

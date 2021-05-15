@@ -5,9 +5,13 @@ Current::Current(int pin, String name, String unit, char shortcut, float maximum
 {
 }
  
-void Current::initialize()
+bool Current::initialize()
 {
+    Serial.println("Initializing Current Sensor...");
     pinMode(m_pin, INPUT);
+    isWorking = true;
+    Serial.println("Initialized Current Sensor");
+    return isWorking;
 }
  
 float Current::readRaw()

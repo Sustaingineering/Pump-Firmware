@@ -14,6 +14,6 @@ protected:
     float readRaw() override;
 public:
     Counter(int pin, String name, String unit, char shortcut);
-    void initialize() override;
+    bool initialize() override;
     static Counter ** createCounters(int counters);
 };
