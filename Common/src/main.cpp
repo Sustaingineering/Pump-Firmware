@@ -89,24 +89,28 @@ void setup()
 #if CURRENT
   digitalWrite(BUILTIN_LED,HIGH);
   success = success && hall_effect.initialize();
+  delay(100);
   digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if VOLTAGE
   digitalWrite(BUILTIN_LED,HIGH);
   success = success && volt_divider.initialize();
+  delay(100);
   digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if TEMPERATURE
   digitalWrite(BUILTIN_LED,HIGH);
   success = success && thermocouple.initialize();
+  delay(100);
   digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if FLOW
   digitalWrite(BUILTIN_LED,HIGH);
   success = success && waterflow.initialize();
+  delay(100);
   digitalWrite(BUILTIN_LED,LOW);
 #endif
 
@@ -119,6 +123,7 @@ void setup()
 #if SDCARD
   digitalWrite(BUILTIN_LED,HIGH);
   success = success && memory.initialize();
+  delay(100);
   digitalWrite(BUILTIN_LED,LOW);
   if (success)
   {
