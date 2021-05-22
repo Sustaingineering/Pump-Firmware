@@ -7,28 +7,22 @@
 #pragma once
 #include <Arduino.h>
 
-#define MAX_DATA_0 6400
-#define MAX_DATA_LIMIT_MB 3
-#define MAX_DATA_LIMIT_BYTES (MAX_DATA_LIMIT_MB * 1024 * 1024)
-#define NUM_DAYS 31
-#define NUM_HOURS 24
-#define SECONDS_IN_HOUR 3600
-#define DEFAULT_PERIOD 10
+#define MAX_TOTAL_OPERATIONS 100000
+#define TOTAL_PARTICLES 10
+#define PARTICLE_OPERATIONS ((MAX_TOTAL_OPERATIONS / 31 ) / TOTAL_PARTICLES)
+#define MESSAGE_SIZE 60
+#define MAX_DATA_BYTES_SENT 540
+#define TOTAL_SECONDS_DAY 86400
+#define TOTAL_MESSAGES_CAP (MAX_DATA_BYTES_SENT / MESSAGE_SIZE)
+#define TIME_BTWN_MESSAGES ((TOTAL_SECONDS_DAY / PARTICLE_OPERATIONS) / TOTAL_MESSAGES_CAP)
 
 class Gsm
 {
 private:
-    int m_lastTimePublished = 0;
-    int m_publishPeriod = 0;
-    int m_numPublish = 0;
-    int m_currentUsageBytes = 0;
-    int m_maxData0Bytes = 0;
-
-    /**
-     * @brief Computes the period at which the GSM module will publish messages
-     * based on the maximum data limit and test-derived parameters.
-     */
-    void computePublishPeriod_();
+    int m_counter;
+    int m_timeFromLastMessage;
+    String delimiter;
+    String m_buffer;
 
     /**
      * @brief Get the total data usage (sent + received).
@@ -37,23 +31,20 @@ private:
      */
     int getTotalDataUsage_();
 
-    /**
-     * @brief Update private members with number of publishes and current total usage.
-     */
-    void updatePublishInfo_();
 public:
 
     /**
      * @brief Currently only initializes private members with defined macros. 
      * Stub for future functionality. 
      */
-    void initialize();
+    bool initialize();
 
     /**
      * @brief Calls the Particle publish method based on time and data restrictions
      * 
      * @param String pumpId: Stringified integer representing the pump ID
      * @param String message: String containing data to be published by the Particle
+     * @return Published string succesfull; else empty string
      */
-    void Publish(String pumpId, String message);
+    String Publish(String pumpId, String message);
 };

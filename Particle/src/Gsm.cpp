@@ -1,47 +1,61 @@
 #include "Gsm.h"
 
 
-void Gsm::initialize()
+bool Gsm::initialize()
 {
-    m_maxData0Bytes = MAX_DATA_0;
-    m_publishPeriod = DEFAULT_PERIOD;
+    delimiter = "\n";
+    m_buffer = "";
+    m_counter = 0;
 }
 
-void Gsm::Publish(String pumpId, String message)
+String Gsm::Publish(String pumpId, String message)
 {
-    int now = (int)Time.now();
-    if (now - m_lastTimePublished >= m_publishPeriod)
+    /**
+     * 1. If buffer is empty, add to it & start tracking time 
+     * 2. If message time < MAXTIME_BTWN_MESSAGES; reject message; else add to buffer
+     * 3. If m_counter == TOTAL_MESSAGES_CAP; publish & return message; else return empty string
+     * 
+     * delimiter = "\n"
+     */
+    int time = Time.now();
+
+    if (m_buffer == "")
     {
-        updatePublishInfo_(); 
+        // Add to empty buffer & set up counter & timer
+        m_buffer += pumpId + delimiter;
+        m_buffer += message + delimiter;
+        m_counter++;
+        m_timeFromLastMessage = Time.now();
 
-        Particle.publish(pumpId.c_str(), message.c_str(), PRIVATE);
-        m_lastTimePublished = now;
-        Serial.println("Particle Published!");
+    }
+    else if (time - m_timeFromLastMessage >= TIME_BTWN_MESSAGES)
+    {
+        Serial.println("Adding to buffer " + message);
+        m_buffer += message + delimiter;
+        m_counter++;
+        m_timeFromLastMessage = time;
 
-        if (m_numPublish == 2)
+        if (m_counter == TOTAL_MESSAGES_CAP)
         {
-            computePublishPeriod_();
+            // Publish method may block (20 secs - 10 mins)
+            // https://docs.particle.io/reference/device-os/firmware/#particle-publish-
+            if (Particle.publish(m_buffer.c_str()))
+            {
+                Serial.println("Succesfully Published Message: " + m_buffer);
+                String result = m_buffer;
+                m_buffer = "";
+                m_counter = 0;
+                return result;
+            }
+            else
+                Serial.println("Could not publish message?????!!!");
+                // Should probably do more here
         }
-    } 
-}
-
-void Gsm::computePublishPeriod_()
-{
-    delay(5000);
-    int messageLength = getTotalDataUsage_() - m_currentUsageBytes;
-    Serial.printlnf("Message Length: %d bytes", messageLength);
-
-    int numMessagesPerMonth = (MAX_DATA_LIMIT_BYTES - (m_maxData0Bytes * NUM_DAYS)) / messageLength;
-
-    m_publishPeriod = NUM_DAYS * NUM_HOURS * SECONDS_IN_HOUR / numMessagesPerMonth;
-    Serial.printlnf("Publish Period: %d seconds", m_publishPeriod);
-}
-
-void Gsm::updatePublishInfo_()
-{
-    m_numPublish++;
-    m_currentUsageBytes = getTotalDataUsage_();
-    Serial.printlnf("Current Total Data usage: %d bytes", m_currentUsageBytes);
+    }
+    
+    Serial.printf("Not printing message yet. m_counter: %d; m_timeFromLastMessage: %d\n", m_counter, m_timeFromLastMessage);
+    Serial.println("Current Message: " + m_buffer);
+    return String("");
 }
 
 int Gsm::getTotalDataUsage_()
