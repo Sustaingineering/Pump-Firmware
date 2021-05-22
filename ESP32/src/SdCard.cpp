@@ -335,9 +335,9 @@ uint64_t SdCard::Impl::getFreeSpace()
 {
     uint64_t freeBytes = fs.totalBytes() - fs.usedBytes();
 
-    //for testing
-    Serial.printf("Remaining space: %llu Total Space: %llu Used Space: %d \n",
-                            freeBytes, fs.totalBytes(), fs.usedBytes());
+    // TODO: add a logging feature with multiple levels
+    // Serial.printf("Remaining space: %llu Total Space: %llu Used Space: %d \n",
+    //                         freeBytes, fs.totalBytes(), fs.usedBytes());
     
     return freeBytes;
 }

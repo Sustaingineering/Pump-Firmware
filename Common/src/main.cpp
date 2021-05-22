@@ -1,7 +1,6 @@
 #ifndef UNIT_TEST
 #include <Arduino.h>
 #include "PinConfig.h"
-//#include "Restarter.h"
 #include "RealTimeClock.h"
 #include "SdCard.h"
 #include "FarmSensor.h"
@@ -9,9 +8,7 @@
 #include "Current.h"
 #include "Temperature.h"
 #include "Flow.h"
-#ifndef PARTICLE_H
-#include "LoRaTransceiver.h"
-#else
+#ifdef PARTICLE_H
 #include "Gsm.h"
 #endif
 #include "Counter.h"
@@ -28,7 +25,6 @@ SYSTEM_MODE(MANUAL)
 #endif
 
 //Global Objects
-//Restarter restarter(5);
 String message;
 
 #if CURRENT
@@ -64,16 +60,6 @@ void pumpIdInit()
   }
 }
 #endif
-
-#if LORA
-bool LoRaStatus;
-packet packets[NUMBER_OF_PACKETS];
-#if GSM
-LoRaTransceiver requester(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SECRET_WORD);
-#else
-LoRaTransceiver responder(LORA_SELECT_PIN, LORA_RST_PIN, LORA_DIO0_PIN, LORA_SECRET_WORD, PUMP_ID);
-#endif //GSM
-#endif //LORA
 
 #if COUNTERS
 Counter **counterArray;
@@ -132,16 +118,6 @@ void setup()
   } 
 #endif
 
-#if LORA
-  Serial.println("Initializing LoRa...");
-#if GSM
-  requester.initialize();
-#else
-  responder.initialize();
-#endif // GSM
-  Serial.println("LoRa Initialized.\n");
-#endif // LORA
-
 #if COUNTERS
   counterArray = Counter::createCounters(COUNTERS);
 #endif
@@ -181,6 +157,8 @@ void loop()
 
 #if FLOW
   message += waterflow.read();
+#else
+  delay(1000);
 #endif
 
 #if ERTC
@@ -188,38 +166,11 @@ void loop()
 #endif
   message += String("\n");
   Serial.print(message);
+
 #if SDCARD
   //Writing on Sd Card
   memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), message.c_str());
 #endif
-
-#if LORA
-#ifdef PARTICLE_H
-  // make requests
-  requester.request(0, packets, NUMBER_OF_PACKETS);
-  Serial.print("received = [");
-  for (int i = 0; i < NUMBER_OF_PACKETS; i++)
-  {
-    Serial.print(packets[i].type);
-    Serial.print(packets[i].data);
-    if (i != (NUMBER_OF_PACKETS - 1))
-      Serial.print(", ");
-  }
-  Serial.print("]");
-  delay(100);
-#else  //electron
-  //Responding to a request from LoRa
-  packets[0] = counter1.pack();
-  packets[1] = counter2.pack();
-  packets[2] = counter3.pack();
-  packets[3] = counter4.pack();
-  packets[4] = counter5.pack();
-  packets[5] = counter6.pack();
-  LoRaStatus = responder.respond(packets, NUMBER_OF_PACKETS);
-#endif // electron
-#else  //LORA
-  delay(1000);
-#endif //LORA
 
 #ifdef PARTICLE_H
 #if EN_GSM
@@ -227,7 +178,6 @@ void loop()
 #endif
 #endif
 
-  //restarter.takeAction(LoRaStatus);
   Serial.println();
 }
 #endif // UNIT_TEST
