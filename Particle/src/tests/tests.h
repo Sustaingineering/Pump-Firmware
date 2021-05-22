@@ -43,3 +43,5 @@ extern SdCard memory;
 void tests(); 
 void printTestStart(String tag);
 void printTestEnd(String tag);
+void printTestFailed(String tag);
+void printTestPassed(String tag);
