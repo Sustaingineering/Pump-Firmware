@@ -27,7 +27,6 @@
 // Hardware connected to ESP32 is true. Otherwise false.
 #define ERTC          1
 #define SDCARD        1
-#define LORA          0
 #define COUNTERS      0
 #define VOLTAGE       1
 #define CURRENT       1
