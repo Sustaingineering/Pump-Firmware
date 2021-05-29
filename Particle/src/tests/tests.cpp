@@ -1,5 +1,5 @@
 #include "tests.h"
-#include "gsm/GSMTests.h"
+#include "GSMTests.h"
 
 void tests() {
     Serial.println("Hello Unit Tests");

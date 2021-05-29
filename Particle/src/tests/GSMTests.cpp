@@ -1,13 +1,12 @@
-#include "tests.h"
 #include "GSMTests.h"
 #if EN_GSM == 1
 
-String message1 = "313.311,314.31,315.31,316.31,317.31,1617476161";
-String message2 = "312.311,314.31,315.31,316.31,317.31,1617476162";
+String message1 = "313.311,314.31,315.31,316.31,317.31,1617476161\n";
+String message2 = "312.311,314.31,315.31,316.31,317.31,1617476162\n";
 
 // 60 characters defined as max message length
-String maxLengthMessage = "9999.9999,9999.9999,9999.9999,9999.9999,9999.999,1617476162";
-String greaterThanMaxMessage = "9999.9999,9999.9999,9999.9999,9999.9999,9999.9999,1617476162";
+String maxLengthMessage = "9999.9999,9999.9999,9999.9999,9999.9999,9999.999,1617476162\n";
+String greaterThanMaxMessage = "9999.9999,9999.9999,9999.9999,9999.9999,9999.9999,1617476162\n";
 
 #if ERTC == 1
 bool testPublishInterval()
@@ -21,7 +20,7 @@ bool testPublishInterval()
     
     while(!isPublished) {
         delay(1000);
-        isPublished = !(gsm.Publish(String(0), message1).equals(""));
+        isPublished = !(gsm.Publish(String(0), message1).equals(String("")));
         publishCount++;
         Serial.printf("Published %d times so far (loop 1)\n", publishCount);
     }
@@ -35,7 +34,7 @@ bool testPublishInterval()
 
     while(!isPublished) {
         delay(1000);
-        isPublished = !(gsm.Publish(String(0), message2).equals(""));
+        isPublished = !(gsm.Publish(String(0), message2).equals(String("")));
         publishCount++;
         Serial.printf("Published %d times so far (loop 2)\n", publishCount);
     }
@@ -60,7 +59,6 @@ bool testPublishLength()
     printTestStart(testTag);
 
     bool isPublished = false;    
-    int lastPublishTime;
     int publishCount = 0;
     String result;
 

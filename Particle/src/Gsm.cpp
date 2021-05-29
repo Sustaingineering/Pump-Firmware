@@ -6,6 +6,7 @@ bool Gsm::initialize()
     delimiter = "\n";
     m_buffer = "";
     m_counter = 0;
+    return true;
 }
 
 String Gsm::Publish(String pumpId, String message)
@@ -22,16 +23,17 @@ String Gsm::Publish(String pumpId, String message)
     if (m_buffer == "")
     {
         // Add to empty buffer & set up counter & timer
-        m_buffer += pumpId + delimiter;
-        m_buffer += message + delimiter;
+        m_buffer += (pumpId + delimiter);
+        m_buffer += message;
         m_counter++;
+        // time at which message was last added to the buffer
         m_timeFromLastMessage = Time.now();
 
     }
     else if (time - m_timeFromLastMessage >= TIME_BTWN_MESSAGES)
     {
         Serial.println("Adding to buffer " + message);
-        m_buffer += message + delimiter;
+        m_buffer += message;
         m_counter++;
         m_timeFromLastMessage = time;
 
