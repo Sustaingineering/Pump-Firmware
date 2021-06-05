@@ -27,6 +27,8 @@ SYSTEM_MODE(MANUAL)
 //Global Objects
 String message;
 
+RealTimeClock rtc;
+
 #if CURRENT
 Current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
 #endif
@@ -41,10 +43,6 @@ Temperature thermocouple(TEMP_PIN, digital, "Temperature", "Celsius", 't'); //pr
 
 #if FLOW
 Flow waterflow(FLOW_PIN, "WaterFlow", "L/min", 'f');
-#endif
-
-#if ERTC
-RealTimeClock rtc;
 #endif
 
 #if SDCARD
@@ -72,6 +70,10 @@ void setup()
   Serial.println("\nHello Sustaingineering!\n");
   bool success = true;
 
+  Serial.println("Initializing RTC...");
+  rtc.initialize(1604177282);
+  Serial.println("RTC Initialized.\n");
+
 #if CURRENT
   digitalWrite(BUILTIN_LED,HIGH);
   success = success && hall_effect.initialize();
@@ -98,12 +100,6 @@ void setup()
   success = success && waterflow.initialize();
   delay(100);
   digitalWrite(BUILTIN_LED,LOW);
-#endif
-
-#if ERTC
-  Serial.println("Initializing RTC...");
-  rtc.initialize(1604177282);
-  Serial.println("RTC Initialized.\n");
 #endif
 
 #if SDCARD
@@ -161,9 +157,7 @@ void loop()
   delay(1000);
 #endif
 
-#if ERTC
   message += rtc.getTimeStamp();
-#endif
   message += String("\n");
   Serial.print(message);
 
