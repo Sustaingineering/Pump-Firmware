@@ -23,6 +23,7 @@ public:
     bool renameFile(const char * path1, const char * path2);
     bool deleteFile(const char * path);
     bool testFileIO(const char * path);
+    bool handleOverflow();
 };
 
 SdCard::Impl::Impl(int SdCsPin):
@@ -154,6 +155,8 @@ bool SdCard::Impl::appendFile(const char * path, const char * message)
 {
     Serial.printf("Appending to file: %s\n", path);
 
+    handleOverflow();
+
     File file = m_Sd.open(path, FILE_WRITE);
     if(!file){
         Serial.println("Failed to open file for appending");
@@ -250,6 +253,48 @@ bool SdCard::Impl::testFileIO(const char * path)
     return true;
 }
 
+bool SdCard::Impl::handleOverflow()
+{
+    int BUFFER_BYTES = 1024 * 1024 * 15; // 15 Megabytes ~ 3 days worth of logs
+
+    if (getFreeSpace() < BUFFER_BYTES)
+    {
+        File root = m_Sd.open("/");
+
+        String pumpIdFile("/pump-id.txt");
+
+        int TO_DELETE = 3;
+
+        for (int i = 0; i < TO_DELETE; i++)
+        {
+            File entry = root.openNextFile();
+
+            String fileName(entry.name());
+
+            while (entry.isDirectory() || pumpIdFile == fileName) 
+            {
+                Serial.println("Skipping " + fileName);
+
+                entry.close();
+
+                entry = root.openNextFile();
+
+                fileName = entry.name();
+            }
+
+            deleteFile(entry.name());
+            
+            entry.close();
+        }
+
+        root.close();
+
+        return true;
+    }
+
+    return false;
+}
+
 SdCard::SdCard(const int SdCardSelectPin):
 m_pImpl(new SdCard::Impl(SdCardSelectPin))
 {}
@@ -307,4 +352,9 @@ bool SdCard::deleteFile(const char * path)
 bool SdCard::testFileIO(const char * path)
 {
     return m_pImpl->testFileIO(path);
+}
+
+bool SdCard::handleOverflow()
+{
+    return m_pImpl->handleOverflow();
 }
