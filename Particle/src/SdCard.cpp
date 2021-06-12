@@ -255,7 +255,7 @@ bool SdCard::Impl::testFileIO(const char * path)
 
 bool SdCard::Impl::handleOverflow()
 {
-    int BUFFER_BYTES = 1024 * 1024 * 15; // 15 Megabytes ~ 3 days worth of logs
+    uint64_t BUFFER_BYTES = 1024 * 1024 * 15; // 15 Megabytes ~ 3 days worth of logs
 
     if (getFreeSpace() < BUFFER_BYTES)
     {
