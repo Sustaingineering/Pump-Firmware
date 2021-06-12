@@ -26,10 +26,8 @@ extern Temperature thermocouple; //pretty slow response and depends greatly on t
 extern Flow waterflow;
 #endif
 
-#if ERTC
 #include "RealTimeClock.h"
 extern RealTimeClock rtc;
-#endif
 
 #if SDCARD
 #include "SdCard.h"

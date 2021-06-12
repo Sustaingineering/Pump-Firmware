@@ -1,17 +1,13 @@
 #pragma once
 #include "platforms.h"
 
-
-#define ERTC        1
 #define SDCARD      1
-#define LORA        0
 #define COUNTERS    0
 #define VOLTAGE     1
 #define CURRENT     1
 #define TEMPERATURE 1
 #define FLOW        1
 #define EN_GSM      1
-
 
 /*
                     _________________________
