@@ -1,5 +1,11 @@
 #include "PinConfig.h"
 #include <Arduino.h>
+#include <string.h>
+
+#define TEST_ASSERT_NULL(ptr) ptr == NULL ? 1 : 0
+#define TEST_FAIL_MESSAGE(msg) Serial.printf("TEST FAILED: %s\n", msg)
+#define TEST_ASSERT_EQUAL_STRING(str1, str2) strcmp(str1, str2) == 0 ? true : false
+
 
 #if EN_GSM
 #include "Gsm.h"
