@@ -67,46 +67,33 @@ void setup()
 {
   pinMode(BUILTIN_LED, OUTPUT);
   Serial.begin(115200);
+  digitalWrite(BUILTIN_LED, HIGH);
   Serial.println("\nHello Sustaingineering!\n");
+  delay(1000);
   bool success = true;
 
-  Serial.println("Initializing RTC...");
   rtc.initialize(1604177282);
-  Serial.println("RTC Initialized.\n");
 
 #if CURRENT
-  digitalWrite(BUILTIN_LED,HIGH);
   success = success && hall_effect.initialize();
-  delay(100);
-  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if VOLTAGE
-  digitalWrite(BUILTIN_LED,HIGH);
   success = success && volt_divider.initialize();
-  delay(100);
-  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if TEMPERATURE
-  digitalWrite(BUILTIN_LED,HIGH);
   success = success && thermocouple.initialize();
-  delay(100);
-  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if FLOW
-  digitalWrite(BUILTIN_LED,HIGH);
   success = success && waterflow.initialize();
-  delay(100);
-  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if SDCARD
-  digitalWrite(BUILTIN_LED,HIGH);
   bool memoryInitialized = memory.initialize();
   success = success && memoryInitialized;
-  delay(100); digitalWrite(BUILTIN_LED,LOW); delay(100);
+
   if (memoryInitialized)
   {
     pumpIdInit();
@@ -125,15 +112,11 @@ void setup()
 #endif
 
   Serial.println("Setup Done!\n");
+  digitalWrite(BUILTIN_LED, !success);
 
 #if PARTICLE_UNIT_TESTS
   tests();
 #endif
-
-  if(success)
-    digitalWrite(BUILTIN_LED,LOW);
-  else
-    digitalWrite(BUILTIN_LED,HIGH);
 }
 
 void loop()
