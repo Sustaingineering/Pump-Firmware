@@ -12,6 +12,7 @@ void tests() {
     #ifdef SDCARD
     testSDCard();
     #endif
+    Serial.println("\n\n ---------- TESTING COMPLETE ----------");
     while(1);
 }
 
