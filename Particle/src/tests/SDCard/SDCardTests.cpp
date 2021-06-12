@@ -87,3 +87,11 @@ void testSdCardOverflow()
 
 }
 
+void testSDCard()
+{
+    initSDcard();
+    testSdCardWriteRead();
+    testSdCardAppendFile();
+    testSdCardDeleteFile();
+    testSdCardOverflow();
+}

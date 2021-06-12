@@ -1,4 +1,4 @@
-#include "tests.h"
+#include "../tests.h"
 
 void initSDcard();
 // Test Write and Read
@@ -9,3 +9,5 @@ void testSdCardAppendFile();
 void testSdCardDeleteFile();
 // Test Ovf 
 void testSdCardOverflow();
+
+void testSDCard();

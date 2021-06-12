@@ -1,4 +1,4 @@
-#include "tests.h"
+#include "../tests.h"
 #include "GSMTests.h"
 #if EN_GSM == 1
 
@@ -9,7 +9,6 @@ String message2 = "312.311,314.31,315.31,316.31,317.31,1617476162";
 String maxLengthMessage = "9999.9999,9999.9999,9999.9999,9999.9999,9999.999,1617476162";
 String greaterThanMaxMessage = "9999.9999,9999.9999,9999.9999,9999.9999,9999.9999,1617476162";
 
-#if ERTC == 1
 bool testPublishInterval()
 {
     String testTag = "PUBLISH INTERVAL";
@@ -52,7 +51,6 @@ bool testPublishInterval()
     printTestPassed(testTag);
     return true;
 }
-#endif
 
 bool testPublishLength()
 {
@@ -83,9 +81,7 @@ bool testPublishLength()
 
 void testGsm(){
 
-    #if ERTC == 1 // can't test publish interval without rtc
-        testPublishInterval();
-    #endif
+    testPublishInterval();
     testPublishLength();
 }
 
