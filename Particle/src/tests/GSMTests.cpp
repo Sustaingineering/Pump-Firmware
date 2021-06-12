@@ -44,6 +44,8 @@ bool testPublishInterval()
 
     Serial.println("Checking for difference in recorded times");
     if ((double)(newPublishTime - lastPublishTime) < MIN_PUBLISH_INTERVAL) {
+        Serial.printf("newPublishTime: %d\n", newPublishTime);
+        Serial.printf("lastPublishTime:, %d\n", lastPublishTime);
         printTestFailed(testTag);
         return false;
     }
