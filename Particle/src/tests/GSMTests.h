@@ -12,7 +12,6 @@
  */
 void testGsm();
 
-#if ERTC == 1
 /**
  * @brief Tests that the time difference between
  * true publish events is at least MIN_PUBLISH_INTERVAL
@@ -24,7 +23,6 @@ void testGsm();
  * timestamps
  */
 bool testPublishInterval();
-#endif
 
 /**
  * @brief Tests that the length of each publish message
