@@ -7,28 +7,26 @@
 #pragma once
 #include <Arduino.h>
 
-#define MAX_DATA_0 6400
-#define MAX_DATA_LIMIT_MB 3
-#define MAX_DATA_LIMIT_BYTES (MAX_DATA_LIMIT_MB * 1024 * 1024)
-#define NUM_DAYS 31
-#define NUM_HOURS 24
-#define SECONDS_IN_HOUR 3600
-#define DEFAULT_PERIOD 10
+#define MAX_TOTAL_OPERATIONS 100000
+#define TOTAL_PARTICLES 1
+#define NUM_DAYS_IN_MONTH 31
+#define MAX_OPERATIONS_PER_DAY ((MAX_TOTAL_OPERATIONS / NUM_DAYS_IN_MONTH) / TOTAL_PARTICLES)
+#define MAX_MESSAGE_SIZE 60 // bytes, safe overestimate, typically 48-50 bytes at most
+#define MAX_BYTES_PER_DATA_OPERATION 622
+#define MAX_HEADER_SIZE 40
+#define MAX_DATA_BYTES_SENT (MAX_BYTES_PER_DATA_OPERATION - MAX_HEADER_SIZE)
+#define TOTAL_SECONDS_DAY 24 * 60 * 60
+#define TOTAL_MESSAGES_CAP (MAX_DATA_BYTES_SENT / MAX_MESSAGE_SIZE)
+#define CEILING(x,y) (((x) + (y) - 1) / (y))
+#define TIME_BTWN_MESSAGES CEILING((TOTAL_SECONDS_DAY / MAX_OPERATIONS_PER_DAY), TOTAL_MESSAGES_CAP)
 
 class Gsm
 {
 private:
-    int m_lastTimePublished = 0;
-    int m_publishPeriod = 0;
-    int m_numPublish = 0;
-    int m_currentUsageBytes = 0;
-    int m_maxData0Bytes = 0;
-
-    /**
-     * @brief Computes the period at which the GSM module will publish messages
-     * based on the maximum data limit and test-derived parameters.
-     */
-    void computePublishPeriod_();
+    int m_counter;
+    int m_timeFromLastMessage;
+    String delimiter;
+    String m_buffer;
 
     /**
      * @brief Get the total data usage (sent + received).
@@ -37,23 +35,20 @@ private:
      */
     int getTotalDataUsage_();
 
-    /**
-     * @brief Update private members with number of publishes and current total usage.
-     */
-    void updatePublishInfo_();
 public:
 
     /**
      * @brief Currently only initializes private members with defined macros. 
      * Stub for future functionality. 
      */
-    void initialize();
+    bool initialize();
 
     /**
      * @brief Calls the Particle publish method based on time and data restrictions
      * 
      * @param String pumpId: Stringified integer representing the pump ID
      * @param String message: String containing data to be published by the Particle
+     * @return Published string succesfull; else empty string
      */
-    void Publish(String pumpId, String message);
+    String Publish(String pumpId, String message);
 };
