@@ -114,6 +114,12 @@ void setup()
   } 
 #endif
 
+#ifdef PARTICLE_H
+#if EN_GSM
+  success = success && gsm.initialize();
+#endif
+#endif
+
 #if COUNTERS
   counterArray = Counter::createCounters(COUNTERS);
 #endif
@@ -158,8 +164,7 @@ void loop()
 #endif
 
   message += rtc.getTimeStamp();
-  message += String("\n");
-  Serial.print(message);
+  Serial.println(message);
 
 #if SDCARD
   //Writing on Sd Card

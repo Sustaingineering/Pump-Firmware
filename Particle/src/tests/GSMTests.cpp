@@ -1,12 +1,12 @@
 #include "GSMTests.h"
 #if EN_GSM == 1
 
-String message1 = "313.311,314.31,315.31,316.31,317.31,1617476161\n";
-String message2 = "312.311,314.31,315.31,316.31,317.31,1617476162\n";
+String message1 = "313.311,314.31,315.31,316.31,317.31,1617476161";
+String message2 = "312.311,314.31,315.31,316.31,317.31,1617476162";
 
 // 60 characters defined as max message length
-String maxLengthMessage = "9999.9999,9999.9999,9999.9999,9999.9999,9999.999,1617476162\n";
-String greaterThanMaxMessage = "9999.9999,9999.9999,9999.9999,9999.9999,9999.9999,1617476162\n";
+String maxLengthMessage = "9999.9999,9999.9999,9999.9999,9999.9999,9999.999,1617476162";
+String greaterThanMaxMessage = "9999.9999,9999.9999,9999.9999,9999.9999,9999.9999,1617476162";
 
 bool testPublishInterval()
 {

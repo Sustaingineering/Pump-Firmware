@@ -3,7 +3,7 @@
 
 bool Gsm::initialize()
 {
-    delimiter = "\n";
+    delimiter = ";";
     m_buffer = "";
     m_counter = 0;
     return true;
@@ -23,8 +23,10 @@ String Gsm::Publish(String pumpId, String message)
     if (m_buffer == "")
     {
         // Add to empty buffer & set up counter & timer
-        m_buffer += (pumpId + delimiter);
+        m_buffer += pumpId;
+        m_buffer += delimiter;
         m_buffer += message;
+        m_buffer += delimiter;
         m_counter++;
         // time at which message was last added to the buffer
         m_timeFromLastMessage = Time.now();
@@ -34,6 +36,7 @@ String Gsm::Publish(String pumpId, String message)
     {
         Serial.println("Adding to buffer " + message);
         m_buffer += message;
+        m_buffer += delimiter;
         m_counter++;
         m_timeFromLastMessage = time;
 
@@ -41,7 +44,7 @@ String Gsm::Publish(String pumpId, String message)
         {
             // Publish method may block (20 secs - 10 mins)
             // https://docs.particle.io/reference/device-os/firmware/#particle-publish-
-            if (Particle.publish(m_buffer.c_str()))
+            if (Particle.publish("sensors", m_buffer.c_str()))
             {
                 Serial.println("Succesfully Published Message: " + m_buffer);
                 String result = m_buffer;
@@ -50,7 +53,7 @@ String Gsm::Publish(String pumpId, String message)
                 return result;
             }
             else
-                Serial.println("Could not publish message?????!!!");
+                Serial.println("Could not publish message!");
                 // Should probably do more here
         }
     }
