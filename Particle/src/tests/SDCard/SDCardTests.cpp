@@ -1,5 +1,7 @@
 #include "SDCardTests.h"
 
+#if SDCARD
+
 void initSDcard()
 {
     if (!memory.initialize())
@@ -95,3 +97,5 @@ void testSDCard()
     testSdCardDeleteFile();
     testSdCardOverflow();
 }
+
+#endif
