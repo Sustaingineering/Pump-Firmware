@@ -78,11 +78,15 @@ bool testPublishLength()
     printTestPassed(testTag);
     return true;
 }
+#endif
 
 void testGsm(){
 
+#if EN_GSM == 1
     testPublishInterval();
     testPublishLength();
+#else
+    Serial.println("----- SKIPPING GSM TEST -----");
+#endif
 }
 
-#endif

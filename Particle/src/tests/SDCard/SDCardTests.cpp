@@ -88,14 +88,18 @@ void testSdCardOverflow()
     TEST_ASSERT_NULL(memory.readFile("/1970-01-03.txt"));
 
 }
+#endif
 
 void testSDCard()
 {
+#if SDCARD
     initSDcard();
     testSdCardWriteRead();
     testSdCardAppendFile();
     testSdCardDeleteFile();
     testSdCardOverflow();
+#else
+    Serial.println("----- Skipping SDCard Tests -----");
+#endif
 }
 
-#endif
