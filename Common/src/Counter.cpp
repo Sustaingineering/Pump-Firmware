@@ -1,20 +1,14 @@
 #include "Counter.h"
 
-#include "Counter.h"
+static int pin = 0;
+static char shortcut = 'a';
 
-Counter ** Counter::createCounters(int counters)
-{
-    char letter = 'a';
-    Counter **counterArray = (Counter**) malloc(sizeof(Counter*) * counters);
-    for (int j = 0; j < counters; j++)
-    {
-        String name = "Counter";
-        name += j;
-        counterArray[j] = new Counter(j, name, "T", letter); 
-        letter += 1;
-    }
-
-    return counterArray;
+Counter::Counter() {
+    m_name = "Counter";
+    m_pin = pin++;
+    m_unit = 'T';
+    m_shortcut = shortcut++;
+    m_data = 1.0 * m_pin;
 }
 
 Counter::Counter(int pin,  String name, String unit, char shortcut):

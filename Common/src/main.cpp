@@ -60,7 +60,7 @@ void pumpIdInit()
 #endif
 
 #if COUNTERS
-Counter **counterArray;
+Counter counters[COUNTERS];
 #endif
 
 void setup()
@@ -107,10 +107,6 @@ void setup()
 #endif
 #endif
 
-#if COUNTERS
-  counterArray = Counter::createCounters(COUNTERS);
-#endif
-
   Serial.println("Setup Done!\n");
   digitalWrite(BUILTIN_LED, !success);
 
@@ -125,7 +121,7 @@ void loop()
   //Sampling Sensors
 #if COUNTERS
   for (int i = 0; i < COUNTERS; i++)
-    message += counterArray[i]->read();
+    message += counters[i].read();
 #endif
 
 #if CURRENT
