@@ -12,7 +12,7 @@ private:
     SDFS fs;
     SPIClass m_spi;
     int m_SdCsPin;
-
+    bool is_Working;
 public:
     Impl(int);
     bool initialize();
@@ -47,7 +47,10 @@ bool SdCard::Impl::initialize()
             delay(1000);
             
             if (i == NUM_ATTEMPTS - 1)
+            {
+                is_Working = false;
                 return false;
+            }
 
         } else
             break;
@@ -87,11 +90,19 @@ bool SdCard::Impl::initialize()
     
     Serial.println("Initialized SD Card.");
 
+    is_Working = true;
+
     return true;
 }
 
 void SdCard::Impl::listDir(const char *dirname, uint8_t levels)
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return;
+    }
+
     Serial.printf("Listing directory: %s\n", dirname);
 
     File root = fs.open(dirname);
@@ -131,6 +142,12 @@ void SdCard::Impl::listDir(const char *dirname, uint8_t levels)
 
 bool SdCard::Impl::createDir(const char *path)
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return false;
+    }
+
     Serial.printf("Creating Dir: %s\n", path);
     if (fs.mkdir(path))
     {
@@ -146,6 +163,12 @@ bool SdCard::Impl::createDir(const char *path)
 
 bool SdCard::Impl::removeDir(const char *path)
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return false;
+    }
+
     Serial.printf("Removing Dir: %s\n", path);
     if (fs.rmdir(path))
     {
@@ -161,6 +184,12 @@ bool SdCard::Impl::removeDir(const char *path)
 
 char *SdCard::Impl::readFile(const char *path)
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return NULL;
+    }
+
     Serial.printf("Reading file: %s\n", path);
 
     File file = fs.open(path);
@@ -190,6 +219,12 @@ char *SdCard::Impl::readFile(const char *path)
 
 bool SdCard::Impl::writeFile(const char *path, const char *message)
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return false;
+    }
+
     Serial.printf("Writing file: %s\n", path);
 
     File file = fs.open(path, FILE_WRITE);
@@ -217,6 +252,12 @@ bool SdCard::Impl::writeFile(const char *path, const char *message)
 
 bool SdCard::Impl::appendFile(const char *path, const char *message)
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return false;
+    }
+
     #ifndef UNIT_TEST
     handleOverflow();
     #endif
@@ -248,6 +289,12 @@ bool SdCard::Impl::appendFile(const char *path, const char *message)
 
 bool SdCard::Impl::renameFile(const char *path1, const char *path2)
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return false;
+    }
+
     Serial.printf("Renaming file %s to %s\n", path1, path2);
     if (fs.rename(path1, path2))
     {
@@ -263,6 +310,12 @@ bool SdCard::Impl::renameFile(const char *path1, const char *path2)
 
 bool SdCard::Impl::deleteFile(const char *path)
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return false;
+    }
+
     Serial.printf("Deleting file: %s\n", path);
     if (fs.remove(path))
     {
@@ -278,6 +331,12 @@ bool SdCard::Impl::deleteFile(const char *path)
 
 bool SdCard::Impl::testFileIO(const char *path)
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return false;
+    }
+
     File file = fs.open(path);
     static uint8_t buf[512];
     size_t len = 0;
@@ -333,6 +392,12 @@ bool SdCard::Impl::testFileIO(const char *path)
 
 uint64_t SdCard::Impl::getFreeSpace()
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return 0;
+    }
+
     uint64_t freeBytes = fs.totalBytes() - fs.usedBytes();
 
     // TODO: add a logging feature with multiple levels
@@ -344,6 +409,12 @@ uint64_t SdCard::Impl::getFreeSpace()
 
 bool SdCard::Impl::handleOverflow()
 {
+    if (!is_Working)
+    {
+        Serial.println("SD Card not initialized properly");
+        return false;
+    }
+    
     int BUFFER_BYTES = 1024 * 1024 * 15; // 15 Megabytes ~ 3 days worth of logs
     
     #if UNIT_TEST
