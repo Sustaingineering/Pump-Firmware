@@ -1,10 +1,20 @@
 #pragma once
-#include <vector>
 #include <string.h>
 #include <string>
-#include <stdio.h>
 #include "SdCard.h"
 using namespace std;
+
+class PairData 
+{
+private:
+    int m_value;
+    String m_name;
+
+public:
+    PairData(String name, int value);
+    int getValue();
+    String getName();
+};
 
 /**
  * @brief A class that stores persistent data as key value pairs in program memory
@@ -12,19 +22,26 @@ using namespace std;
  * 
  * The format of the config file MUST be:
  * (string)persistentVariableName=(int)persistentVariableValue
- *  
- * 
  */
 class PersistentData
 {
 private:
 
-    char * configPath = "config.txt"
+    char * m_configPath = "/config.txt";
 
     /**
      * @brief Stores all config settings as key-value pairs
      */
-    vector<pair<string, const int>> pairs;
+    PairData ** m_pairs;
+    int m_numEntries;
+
+    /**
+     * @brief Stores default values to be used when SD Card object is null
+     * or configPath file data is inaccessible for any reason.
+     */
+    PairData ** m_defaults;
+
+    bool m_useDefaults = true;
 
     /**
      * @brief Utility function that is used to separate the input strings into 
@@ -35,9 +52,12 @@ private:
      * @param tokens is the empty vector passed by reference for temporarily holding string fragments
      * which the parent can use to access all the split pieces
      */
-    void stringSplit(string str, string splitBy, vector<string>&tokens);
+    void stringSplit(string str, string splitBy, string configs[]);
 
+    void setDefaults();
 public:
+
+    PersistentData();
 
     /**
      * @brief Read configuration values stored on SD Card in 'configs.txt'
@@ -57,7 +77,7 @@ public:
      * @return const int for the value associated with the name. Must be const as 
      * this data cannot be modified
      */
-    const int getValue(string name);
+    int getValue(String name);
 
     /**
      * @brief Debug function to quickly print out all pairs in the vector pairs

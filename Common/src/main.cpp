@@ -12,6 +12,7 @@
 #include "Gsm.h"
 #endif
 #include "Counter.h"
+#include "PersistentData.h"
 
 int pumpId = 0;
 
@@ -56,7 +57,12 @@ void pumpIdInit()
     free(idBuf);
     Serial.printf("PumpID is: %d\n", pumpId);
   }
+
 }
+
+PersistentData pData;
+// pData.initialize(&memory);
+
 #endif
 
 #if COUNTERS
@@ -112,6 +118,9 @@ void setup()
     pumpIdInit();
     memory.getFreeSpace();
   } 
+
+  pData.initialize(NULL);
+
 #endif
 
 #ifdef PARTICLE_H
@@ -124,6 +133,7 @@ void setup()
   counterArray = Counter::createCounters(COUNTERS);
 #endif
 
+  pData.printAll();
   Serial.println("Setup Done!\n");
 
 #if PARTICLE_UNIT_TESTS
