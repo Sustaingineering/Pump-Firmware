@@ -1,4 +1,4 @@
-#ifndef UNIT_TEST
+#ifndef UNIT_TEST         // This macro is defined in PlatformIO toolchain and it is needed for ESP32.
 #include <Arduino.h>
 #include "PinConfig.h"
 #include "RealTimeClock.h"
@@ -13,7 +13,7 @@
 #endif
 #include "Counter.h"
 
-int pumpId = 0;
+int pumpId = 0;         // FIXME: do it in persistent data class
 
 #ifdef PARTICLE_H
 #if EN_GSM
@@ -47,6 +47,7 @@ Flow waterflow(FLOW_PIN, "WaterFlow", "L/min", 'f');
 
 #if SDCARD
 SdCard memory(SDCARD_SELECT_PIN);
+// FIXME: do it in persistent data class
 void pumpIdInit()
 {
   char *idBuf = memory.readFile("/pump-id.txt");
@@ -93,12 +94,17 @@ void setup()
 #if SDCARD
   bool memoryInitialized = memory.initialize();
   success = success && memoryInitialized;
-
+  // FIXME: do it in persistent data class
   if (memoryInitialized)
   {
     pumpIdInit();
     memory.getFreeSpace();
   } 
+#endif
+
+#if COUNTERS
+    for (int i = 0; i < COUNTERS; i++)
+    counters[i].initialize();
 #endif
 
 #ifdef PARTICLE_H

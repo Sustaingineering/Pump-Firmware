@@ -14,13 +14,14 @@ Counter::Counter() {
 Counter::Counter(int pin,  String name, String unit, char shortcut):
     FarmSensor(pin, name, unit, shortcut)
 {
-    m_data = 1.0 * pin;
+    m_data = 1.0 * m_pin;
 }
 
 bool Counter::initialize()
 {
     /*Nothing to initialize*/
     isWorking = true;
+    Serial.printf("Counter %d is initialized\n", m_pin);
     return isWorking;
 }
 
