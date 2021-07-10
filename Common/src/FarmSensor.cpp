@@ -1,5 +1,9 @@
 #include "FarmSensor.h"
 
+FarmSensor::FarmSensor() {
+    
+}
+
 //template <class T>
 FarmSensor::FarmSensor(int pin, sensorType type, String name, String unit, char shortcut)
 {

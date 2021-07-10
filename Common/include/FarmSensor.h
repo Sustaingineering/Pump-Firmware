@@ -21,6 +21,7 @@ protected:
     bool isWorking;
     virtual float readRaw();
 public:
+    FarmSensor();
     FarmSensor(int pin, sensorType type, String name, String unit, char shortcut);
     FarmSensor(int pin, String name, String unit, char shortcut);
     bool initialize() override;

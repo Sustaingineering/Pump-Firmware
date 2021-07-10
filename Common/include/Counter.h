@@ -13,7 +13,7 @@ class Counter : public FarmSensor
 protected:
     float readRaw() override;
 public:
+    Counter();
     Counter(int pin, String name, String unit, char shortcut);
     bool initialize() override;
-    static Counter ** createCounters(int counters);
 };

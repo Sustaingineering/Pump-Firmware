@@ -14,7 +14,9 @@ RealTimeClock::Impl::Impl()
 
 void RealTimeClock::Impl::initialize()
 {
+    Serial.println("Initializing RTC...");
     Time.zone(-7.0);
+    Serial.println("Initializing RTC Done.");
 }
 
 String RealTimeClock::Impl::getTimeStamp()

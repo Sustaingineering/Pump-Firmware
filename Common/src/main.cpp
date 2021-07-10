@@ -1,4 +1,4 @@
-#ifndef UNIT_TEST
+#ifndef UNIT_TEST         // This macro is defined in PlatformIO toolchain and it is needed for ESP32.
 #include <Arduino.h>
 #include "PinConfig.h"
 #include "RealTimeClock.h"
@@ -13,7 +13,7 @@
 #endif
 #include "Counter.h"
 
-int pumpId = 0;
+int pumpId = 0;         // FIXME: do it in persistent data class
 
 #ifdef PARTICLE_H
 #if EN_GSM
@@ -47,6 +47,7 @@ Flow waterflow(FLOW_PIN, "WaterFlow", "L/min", 'f');
 
 #if SDCARD
 SdCard memory(SDCARD_SELECT_PIN);
+// FIXME: do it in persistent data class
 void pumpIdInit()
 {
   char *idBuf = memory.readFile("/pump-id.txt");
@@ -60,58 +61,50 @@ void pumpIdInit()
 #endif
 
 #if COUNTERS
-Counter **counterArray;
+Counter counters[COUNTERS];
 #endif
 
 void setup()
 {
   pinMode(BUILTIN_LED, OUTPUT);
   Serial.begin(115200);
+  digitalWrite(BUILTIN_LED, HIGH);
   Serial.println("\nHello Sustaingineering!\n");
+  delay(1000);
   bool success = true;
 
-  Serial.println("Initializing RTC...");
   rtc.initialize(1604177282);
-  Serial.println("RTC Initialized.\n");
 
 #if CURRENT
-  digitalWrite(BUILTIN_LED,HIGH);
   success = success && hall_effect.initialize();
-  delay(100);
-  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if VOLTAGE
-  digitalWrite(BUILTIN_LED,HIGH);
   success = success && volt_divider.initialize();
-  delay(100);
-  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if TEMPERATURE
-  digitalWrite(BUILTIN_LED,HIGH);
   success = success && thermocouple.initialize();
-  delay(100);
-  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if FLOW
-  digitalWrite(BUILTIN_LED,HIGH);
   success = success && waterflow.initialize();
-  delay(100);
-  digitalWrite(BUILTIN_LED,LOW);
 #endif
 
 #if SDCARD
-  digitalWrite(BUILTIN_LED,HIGH);
   bool memoryInitialized = memory.initialize();
   success = success && memoryInitialized;
-  delay(100); digitalWrite(BUILTIN_LED,LOW); delay(100);
+  // FIXME: do it in persistent data class
   if (memoryInitialized)
   {
     pumpIdInit();
     memory.getFreeSpace();
   } 
+#endif
+
+#if COUNTERS
+    for (int i = 0; i < COUNTERS; i++)
+    counters[i].initialize();
 #endif
 
 #ifdef PARTICLE_H
@@ -120,20 +113,12 @@ void setup()
 #endif
 #endif
 
-#if COUNTERS
-  counterArray = Counter::createCounters(COUNTERS);
-#endif
-
   Serial.println("Setup Done!\n");
+  digitalWrite(BUILTIN_LED, !success);
 
 #if PARTICLE_UNIT_TESTS
   tests();
 #endif
-
-  if(success)
-    digitalWrite(BUILTIN_LED,LOW);
-  else
-    digitalWrite(BUILTIN_LED,HIGH);
 }
 
 void loop()
@@ -142,7 +127,7 @@ void loop()
   //Sampling Sensors
 #if COUNTERS
   for (int i = 0; i < COUNTERS; i++)
-    message += counterArray[i]->read();
+    message += counters[i].read();
 #endif
 
 #if CURRENT
