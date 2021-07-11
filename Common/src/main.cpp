@@ -132,6 +132,10 @@ void setup()
 
 void loop()
 {
+#if PARTICLE_UNIT_TESTS
+  return;
+#endif
+
   message = "";
   //Sampling Sensors
 #if COUNTERS
