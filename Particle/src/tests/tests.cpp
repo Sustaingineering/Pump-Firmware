@@ -9,7 +9,6 @@ void tests() {
     testGsm();
     testSDCard();
     Serial.println("\n\n ---------- TESTING COMPLETE ----------");
-    while(1);
 }
 
 void printTestStart(String tag) {
