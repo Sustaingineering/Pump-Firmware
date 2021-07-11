@@ -5,8 +5,10 @@ void tests() {
     Serial.println("Hello Unit Tests");
     // Test that extern objects are available
     Serial.printlnf("%s", rtc.getTimeStamp().c_str());
+#if EN_GSM
     testGsm();
-    while(1);
+#endif
+    Serial.println("----- TESTING COMPLETE -----");
 }
 
 void printTestStart(String tag) {
