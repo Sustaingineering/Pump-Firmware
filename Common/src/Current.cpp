@@ -1,4 +1,5 @@
 #include "Current.h"
+#define I_PN 10 // can be ±10, ±20, ±30, ±50, ±100, ±150, or ±200
 
 Current::Current(int pin, String name, String unit, char shortcut, float maximumVoltage):
     FarmSensor(pin,name,unit,shortcut),m_maximumVoltage(maximumVoltage)
@@ -20,11 +21,11 @@ float Current::readRaw()
     // Convert to decimal
     float hallVoltage = analogData * (m_maximumVoltage / analogDigitalConversionResolution);
     // Compute the current from the voltage reading equation
-    float hallAmps = (hallVoltage * 22.0) / 3.0 - (55.0 / 3.0);
- 
- 
-    //cannot define static const float values in header files --> needs to be in the .cpp file
-    //return analogRead(pin) * (3.9 / adc_res) * ((RH + RL) / RL); 
+    float hallAmps = 0;
+    if (hallVoltage > 2.5)
+        hallAmps = (hallVoltage - 2.5) * (I_PN / 0.625);
+    else if (hallVoltage < 2.5)
+        hallAmps = (2.5 - hallVoltage) * (I_PN / 0.625);
     return hallAmps;
 }
  
