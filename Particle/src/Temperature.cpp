@@ -20,25 +20,20 @@ Temperature::Impl::Impl(int pin, sensorType type, String name, String unit, char
 bool Temperature::Impl::initialize()
 {
     Serial.println("Initializing Temperature Sensor...");
-    if (m_sensor.read())
+    
+    int tries = 20;
+    while (!m_sensor.read())
     {
-        Serial.println("Initialized Temperature Sensor.");
-
-        isWorking = true;
-    }
-    else
-    {
-        if (m_sensor.searchDone())
+        tries--;
+        if (tries == 0)
         {
-            Serial.println("ERROR: No More Addresses");
-        } 
-        else
-        {
-            Serial.println("ERROR: Something Went Wrong!");
+            Serial.println("ERROR: Temperature sensor failed to intitialize");
+            isWorking = false;
+            return false;
         }
-
-        isWorking = false;
     }
+
+    isWorking = true;
     return isWorking;
 }
 
