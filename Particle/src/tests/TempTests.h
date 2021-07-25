@@ -2,7 +2,8 @@
 #include "PinConfig.h"
 #include "tests.h" 
 
-void initTemperature();
-void cleanUp_Temperature();
-void test_Temp_read();
+bool initTemperature();
+bool cleanUp_Temperature();
+bool test_Temp_read();
+
 void testTemp();
