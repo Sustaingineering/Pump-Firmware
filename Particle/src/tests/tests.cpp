@@ -1,5 +1,6 @@
 #include "tests.h"
 #include "GSMTests.h"
+#include "TempTests.h"
 
 void tests() {
     Serial.println("Hello Unit Tests");
@@ -8,7 +9,17 @@ void tests() {
 #if EN_GSM
     testGsm();
 #endif
+#if TEMPERATURE
+    testTemp();
+#endif
     Serial.println("----- TESTING COMPLETE -----");
+}
+
+void run_test(bool (*test)(), char *test_name)
+{
+    Serial.printf("UNIT TEST: %s\n", test_name);
+    if (test())
+        Serial.printf("%s [PASSED]\n", test_name);
 }
 
 void printTestStart(String tag) {
