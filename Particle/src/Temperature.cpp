@@ -1,23 +1,9 @@
 #include "Temperature.h"
-#include "OneWire.h"
-#include "DS18.h"
 
-class Temperature::Impl: public FarmSensor
-{
-private:
-    DS18 m_sensor;
-    bool checkConnection();
-protected:
-    float readRaw() override;
-public:
-    Impl(int pin, sensorType type, String name, String unit, char shortcut);
-    bool initialize() override;
-};
-
-Temperature::Impl::Impl(int pin, sensorType type, String name, String unit, char shortcut): 
+Temperature::Temperature(int pin, sensorType type, String name, String unit, char shortcut): 
                 FarmSensor(pin, type, name, unit, shortcut), m_sensor(pin){}
 
-bool Temperature::Impl::initialize()
+bool Temperature::initialize()
 {
     Serial.println("Initializing Temperature Sensor...");
     
@@ -37,7 +23,7 @@ bool Temperature::Impl::initialize()
     return isWorking;
 }
 
-float Temperature::Impl::readRaw()
+float Temperature::readRaw()
 {
     if (isWorking == false)
         return nanf("0");
@@ -58,7 +44,7 @@ float Temperature::Impl::readRaw()
     return m_sensor.celsius();
 }
 
-bool Temperature::Impl::checkConnection()
+bool Temperature::checkConnection()
 {
     uint8_t addr[8];
 
@@ -71,13 +57,3 @@ bool Temperature::Impl::checkConnection()
 
     return false;
 }
-
-Temperature::Temperature(int pin, sensorType type, String name, String unit, char shortcut):
-    m_pImpl(new Temperature::Impl(pin, type, name, unit, shortcut))
-{}
-
-bool Temperature::initialize() { return m_pImpl->initialize(); }
-
-String Temperature::read() { return m_pImpl->read(); }
-
-packet Temperature::pack() { return m_pImpl->pack(); }
