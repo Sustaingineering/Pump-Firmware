@@ -23,6 +23,7 @@
 class Gsm
 {
 private:
+    bool m_isConnected;
     int m_counter;
     int m_timeFromLastMessage;
     String delimiter;
@@ -36,6 +37,7 @@ private:
     int getTotalDataUsage_();
 
 public:
+    Gsm(bool isConnected);
 
     /**
      * @brief Currently only initializes private members with defined macros. 

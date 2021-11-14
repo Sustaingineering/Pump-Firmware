@@ -9,7 +9,7 @@
 #define TEST_ASSERT_EQUAL_STRING(str1, str2) if (strcmp(str1, str2)) TEST_FAIL_MESSAGE("Strings not equal: " str1 "!=" str2)
 #define TEST_ASSERT_TRUE(cond) if (!cond) TEST_FAIL_MESSAGE(#cond " IS FALSE")
 
-#if EN_GSM
+#if GSM_SWITCH
 #include "Gsm.h"
 extern Gsm gsm;
 #endif

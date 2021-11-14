@@ -1,5 +1,17 @@
 #include "Gsm.h"
 
+Gsm::Gsm(bool isConnected)
+{
+    m_isConnected = isConnected;
+    if (m_isConnected)
+    {
+        SYSTEM_MODE(AUTOMATIC)
+    }
+    else
+    {
+        SYSTEM_MODE(MANUAL)
+    }
+}
 
 bool Gsm::initialize()
 {
@@ -11,6 +23,10 @@ bool Gsm::initialize()
 
 String Gsm::Publish(String pumpId, String message)
 {
+    if (!m_isConnected)
+    {
+        return "";
+    }
     /**
      * 1. If buffer is empty, add to it & start tracking time 
      * 2. If message time < MAXTIME_BTWN_MESSAGES; reject message; else add to buffer

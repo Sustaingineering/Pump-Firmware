@@ -1,5 +1,5 @@
 #include "GSMTests.h"
-#if EN_GSM == 1
+#if GSM_SWITCH == 1
 
 String message1 = "313.311,314.31,315.31,316.31,317.31,1617476161";
 String message2 = "312.311,314.31,315.31,316.31,317.31,1617476162";

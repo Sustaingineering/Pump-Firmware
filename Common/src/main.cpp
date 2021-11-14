@@ -15,12 +15,7 @@
 int pumpId = 0;         // FIXME: do it in persistent data class
 
 #ifdef PARTICLE_H
-#if EN_GSM
-SYSTEM_MODE(AUTOMATIC)
-Gsm gsm;
-#else
-SYSTEM_MODE(MANUAL)
-#endif
+Gsm gsm(GSM_SWITCH);
 #endif
 
 //Global Objects
@@ -82,9 +77,7 @@ void setup()
 #endif
 
 #ifdef PARTICLE_H
-#if EN_GSM
   success = success && gsm.initialize();
-#endif
 #endif
 
   Serial.println("Setup Done!\n");
@@ -121,9 +114,7 @@ void loop()
 #endif
 
 #ifdef PARTICLE_H
-#if EN_GSM
   gsm.Publish(String(pumpId), message);
-#endif
 #endif
 
   Serial.println();

@@ -6,7 +6,7 @@
 #define CURRENT_SWITCH     1
 #define TEMPERATURE_SWITCH 1
 #define FLOW_SWITCH        1
-#define EN_GSM             1
+#define GSM_SWITCH         1
 
 /*
                     _________________________
