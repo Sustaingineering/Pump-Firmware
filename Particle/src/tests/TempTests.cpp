@@ -1,6 +1,6 @@
 #include "TempTests.h"
 
-Temperature temp(TEMP_PIN, digital, "Temperature", "Celsius", 't');
+Temperature temp(TEMP_PIN);
 
 
 bool test_Temp_read()

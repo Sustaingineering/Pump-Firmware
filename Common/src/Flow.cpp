@@ -9,8 +9,8 @@ namespace Water
     }
 }
 
-Flow::Flow(int pin,  String name, String unit, char shortcut):
-        FarmSensor(pin,name,unit,shortcut) {}
+Flow::Flow(int pin):
+        FarmSensor(pin) {}
  
 bool Flow::initialize()
 {

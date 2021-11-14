@@ -21,6 +21,6 @@ protected:
     float readRaw() override; //returns currentage of source (NOT THE DIVIDER) in decimal value
 public: 
     //functions
-    Current(int pin, String name, String unit, char shortcut, float maxVoltage);
+    Current(int pin, float maxVoltage);
     bool initialize() override;
 };

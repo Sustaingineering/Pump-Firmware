@@ -30,19 +30,19 @@ String message;
 RealTimeClock rtc;
 
 #if CURRENT
-Current hall_effect(CURRENT_PIN, "Current", "Amps", 'i', MAX_V);
+Current hall_effect(CURRENT_PIN, MAX_V);
 #endif
 
 #if VOLTAGE
-Voltage volt_divider(VOLT_PIN, analog, "Voltage", "Volt", 'v', 25000, 1000000, MAX_V);
+Voltage volt_divider(VOLT_PIN, 25000, 1000000, MAX_V);
 #endif
 
 #if TEMPERATURE
-Temperature thermocouple(TEMP_PIN, digital, "Temperature", "Celsius", 't'); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
+Temperature thermocouple(TEMP_PIN); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
 #endif
 
 #if FLOW
-Flow waterflow(FLOW_PIN, "WaterFlow", "L/min", 'f');
+Flow waterflow(FLOW_PIN);
 #endif
 
 #if SDCARD

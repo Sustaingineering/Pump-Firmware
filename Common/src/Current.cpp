@@ -1,8 +1,8 @@
 #include "Current.h"
 #define I_PN 10 // can be ±10, ±20, ±30, ±50, ±100, ±150, or ±200
 
-Current::Current(int pin, String name, String unit, char shortcut, float maximumVoltage):
-    FarmSensor(pin,name,unit,shortcut),m_maximumVoltage(maximumVoltage)
+Current::Current(int pin, float maximumVoltage):
+    FarmSensor(pin),m_maximumVoltage(maximumVoltage)
 {
 }
  

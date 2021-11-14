@@ -1,7 +1,7 @@
 #include "Temperature.h"
 
-Temperature::Temperature(int pin, sensorType type, String name, String unit, char shortcut): 
-                FarmSensor(pin, type, name, unit, shortcut), m_oneWire(pin), m_sensors(&m_oneWire) {}
+Temperature::Temperature(int pin): 
+                FarmSensor(pin), m_oneWire(pin), m_sensors(&m_oneWire) {}
 
 bool Temperature::initialize()
 {

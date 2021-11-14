@@ -10,6 +10,6 @@ private:
 protected:
     float readRaw() override;
 public:
-    Temperature(int pin, sensorType type, String name, String unit, char shortcut);
+    Temperature(int pin);
     bool initialize() override;
 };
