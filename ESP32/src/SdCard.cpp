@@ -459,66 +459,114 @@ bool SdCard::Impl::handleOverflow()
     return false;
 }
 
-SdCard::SdCard(const int SdCardSelectPin):
-m_pImpl(new SdCard::Impl(SdCardSelectPin))
+SdCard::SdCard(bool isConnected, const int SdCardSelectPin):
+    m_isConnected(isConnected), m_pImpl(new SdCard::Impl(SdCardSelectPin))
 {}
 
 bool SdCard::initialize()
 {
+    if (!m_isConnected)
+    {
+        return false;
+    }
     return m_pImpl->initialize();
 }
 
 void SdCard::listDir(const char *dirname, uint8_t levels)
 {
+    if (!m_isConnected)
+    {
+        return;
+    }
     m_pImpl->listDir(dirname, levels);
 }
 
 bool SdCard::createDir(const char *path)
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     return m_pImpl->createDir(path);
 }
 
 bool SdCard::removeDir(const char *path)
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     return m_pImpl->removeDir(path);
 }
 
 char *SdCard::readFile(const char *path)
 {
+    if (!m_isConnected)
+    {
+        return nullptr;
+    }
     return m_pImpl->readFile(path);
 }
 
 bool SdCard::writeFile(const char *path, const char *message)
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     return m_pImpl->writeFile(path, message);
 }
 
 bool SdCard::appendFile(const char *path, const char *message)
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     return m_pImpl->appendFile(path, message);
 }
 
 bool SdCard::renameFile(const char *path1, const char *path2)
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     return m_pImpl->renameFile(path1, path2);
 }
 
 bool SdCard::deleteFile(const char *path)
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     return m_pImpl->deleteFile(path);
 }
 
 bool SdCard::testFileIO(const char *path)
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     return m_pImpl->testFileIO(path);
 }
 
 uint64_t SdCard::getFreeSpace()
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     return m_pImpl->getFreeSpace();
 }
 
 bool SdCard::handleOverflow()
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     return m_pImpl->handleOverflow();
 }

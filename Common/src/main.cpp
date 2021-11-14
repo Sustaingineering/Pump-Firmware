@@ -31,8 +31,7 @@ Temperature thermocouple(TEMPERATURE_SWITCH, TEMP_PIN); //pretty slow response a
 
 Flow waterflow(FLOW_SWITCH, FLOW_PIN);
 
-#if SDCARD_SWITCH
-SdCard memory(SDCARD_SELECT_PIN);
+SdCard memory(SDCARD_SWITCH, SDCARD_SELECT_PIN);
 // FIXME: do it in persistent data class
 void pumpIdInit()
 {
@@ -44,7 +43,6 @@ void pumpIdInit()
     Serial.printf("PumpID is: %d\n", pumpId);
   }
 }
-#endif
 
 void setup()
 {
@@ -65,7 +63,6 @@ void setup()
 
   success = success && waterflow.initialize();
 
-#if SDCARD_SWITCH
   bool memoryInitialized = memory.initialize();
   success = success && memoryInitialized;
   // FIXME: do it in persistent data class
@@ -73,8 +70,7 @@ void setup()
   {
     pumpIdInit();
     memory.getFreeSpace();
-  } 
-#endif
+  }
 
 #ifdef PARTICLE_H
   success = success && gsm.initialize();
@@ -108,10 +104,8 @@ void loop()
   message += rtc.getTimeStamp();
   Serial.println(message);
 
-#if SDCARD_SWITCH
   //Writing on Sd Card
   memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), message.c_str());
-#endif
 
 #ifdef PARTICLE_H
   gsm.Publish(String(pumpId), message);

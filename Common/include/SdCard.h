@@ -21,11 +21,12 @@ class SdCard
 {
 private:
     class Impl;
+    bool m_isConnected;
     Impl *m_pImpl;
     int SD_CS_PIN;
 
 public:
-    SdCard(const int SdCardSelectPin);
+    SdCard(bool isConnected, const int SdCardSelectPin);
     bool initialize();
     uint64_t getFreeSpace();
     void listDir(const char *dirname, uint8_t levels);
