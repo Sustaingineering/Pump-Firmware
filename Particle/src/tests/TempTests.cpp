@@ -1,6 +1,6 @@
 #include "TempTests.h"
 
-Temperature temp(TEMP_PIN);
+Temperature temp(TEMPERATURE_SWITCH, TEMP_PIN);
 
 
 bool test_Temp_read()

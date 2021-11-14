@@ -11,7 +11,6 @@
 #ifdef PARTICLE_H
 #include "Gsm.h"
 #endif
-#include "Counter.h"
 
 int pumpId = 0;         // FIXME: do it in persistent data class
 
@@ -29,23 +28,15 @@ String message;
 
 RealTimeClock rtc;
 
-#if CURRENT
-Current hall_effect(CURRENT_PIN, MAX_V);
-#endif
+Current hall_effect(CURRENT_SWITCH, CURRENT_PIN, MAX_V);
 
-#if VOLTAGE
-Voltage volt_divider(VOLT_PIN, 25000, 1000000, MAX_V);
-#endif
+Voltage volt_divider(VOLTAGE_SWITCH, VOLT_PIN, 25000, 1000000, MAX_V);
 
-#if TEMPERATURE
-Temperature thermocouple(TEMP_PIN); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
-#endif
+Temperature thermocouple(TEMPERATURE_SWITCH, TEMP_PIN); //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
 
-#if FLOW
-Flow waterflow(FLOW_PIN);
-#endif
+Flow waterflow(FLOW_SWITCH, FLOW_PIN);
 
-#if SDCARD
+#if SDCARD_SWITCH
 SdCard memory(SDCARD_SELECT_PIN);
 // FIXME: do it in persistent data class
 void pumpIdInit()
@@ -60,10 +51,6 @@ void pumpIdInit()
 }
 #endif
 
-#if COUNTERS
-Counter counters[COUNTERS];
-#endif
-
 void setup()
 {
   pinMode(BUILTIN_LED, OUTPUT);
@@ -75,23 +62,15 @@ void setup()
 
   rtc.initialize(1604177282);
 
-#if CURRENT
   success = success && hall_effect.initialize();
-#endif
 
-#if VOLTAGE
   success = success && volt_divider.initialize();
-#endif
 
-#if TEMPERATURE
   success = success && thermocouple.initialize();
-#endif
 
-#if FLOW
   success = success && waterflow.initialize();
-#endif
 
-#if SDCARD
+#if SDCARD_SWITCH
   bool memoryInitialized = memory.initialize();
   success = success && memoryInitialized;
   // FIXME: do it in persistent data class
@@ -100,11 +79,6 @@ void setup()
     pumpIdInit();
     memory.getFreeSpace();
   } 
-#endif
-
-#if COUNTERS
-    for (int i = 0; i < COUNTERS; i++)
-    counters[i].initialize();
 #endif
 
 #ifdef PARTICLE_H
@@ -129,33 +103,19 @@ void loop()
 
   message = "";
   //Sampling Sensors
-#if COUNTERS
-  for (int i = 0; i < COUNTERS; i++)
-    message += counters[i].read();
-#endif
 
-#if CURRENT
   message += hall_effect.read();
-#endif
 
-#if VOLTAGE
   message += volt_divider.read();
-#endif
 
-#if TEMPERATURE
   message += thermocouple.read();
-#endif
 
-#if FLOW
   message += waterflow.read();
-#else
-  delay(1000);
-#endif
 
   message += rtc.getTimeStamp();
   Serial.println(message);
 
-#if SDCARD
+#if SDCARD_SWITCH
   //Writing on Sd Card
   memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), message.c_str());
 #endif

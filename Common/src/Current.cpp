@@ -1,13 +1,17 @@
 #include "Current.h"
 #define I_PN 10 // can be ±10, ±20, ±30, ±50, ±100, ±150, or ±200
 
-Current::Current(int pin, float maximumVoltage):
-    FarmSensor(pin),m_maximumVoltage(maximumVoltage)
+Current::Current(bool isConnected, int pin, float maximumVoltage):
+    FarmSensor(isConnected, pin),m_maximumVoltage(maximumVoltage)
 {
 }
  
 bool Current::initialize()
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     Serial.println("Initializing Current Sensor...");
     pinMode(m_pin, INPUT);
     isWorking = true;
@@ -17,6 +21,10 @@ bool Current::initialize()
  
 float Current::readRaw()
 {
+    if (!m_isConnected)
+    {
+        return count();
+    }
     int analogData = analogRead(m_pin); // Take reading
     // Convert to decimal
     float hallVoltage = analogData * (m_maximumVoltage / analogDigitalConversionResolution);

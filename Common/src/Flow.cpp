@@ -9,11 +9,15 @@ namespace Water
     }
 }
 
-Flow::Flow(int pin):
-        FarmSensor(pin) {}
+Flow::Flow(bool isConnected, int pin):
+        FarmSensor(isConnected, pin) {}
  
 bool Flow::initialize()
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     Serial.println("Initializing Water Flow Sensor");
     pinMode(m_pin, INPUT); //initializes digital pin as an input
     attachInterrupt(digitalPinToInterrupt(m_pin), Water::countFlowInterrupts, RISING); //and the interrupt is attached
@@ -24,6 +28,11 @@ bool Flow::initialize()
 
 float Flow::readRaw()
 {
+    if (!m_isConnected)
+    {
+        delay (1000);
+        return count();
+    }
     Water::numberOfFanTops = 0;   
 
     sei(); //Enables interrupts

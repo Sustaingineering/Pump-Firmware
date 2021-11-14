@@ -1,10 +1,14 @@
 #include "Temperature.h"
 
-Temperature::Temperature(int pin): 
-                FarmSensor(pin), m_sensor(pin){}
+Temperature::Temperature(bool isConnected, int pin): 
+                FarmSensor(isConnected, pin), m_sensor(pin){}
 
 bool Temperature::initialize()
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
     Serial.println("Initializing Temperature Sensor...");
     
     int tries = 20;
@@ -25,6 +29,10 @@ bool Temperature::initialize()
 
 float Temperature::readRaw()
 {
+    if (!m_isConnected)
+    {
+        return count();
+    }
     if (isWorking == false)
         return nanf("0");
 

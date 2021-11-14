@@ -21,6 +21,6 @@ protected:
     float readRaw() override; //returns currentage of source (NOT THE DIVIDER) in decimal value
 public: 
     //functions
-    Current(int pin, float maxVoltage);
+    Current(bool isConnected, int pin, float maxVoltage);
     bool initialize() override;
 };

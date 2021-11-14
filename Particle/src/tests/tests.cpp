@@ -9,7 +9,7 @@ void tests() {
 #if EN_GSM
     testGsm();
 #endif
-#if TEMPERATURE
+#if TEMPERATURE_SWITCH
     testTemp();
 #endif
     Serial.println("----- TESTING COMPLETE -----");

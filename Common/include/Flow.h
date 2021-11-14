@@ -15,6 +15,6 @@ class Flow : public FarmSensor
   protected:
       float readRaw() override;
   public:
-      Flow(int pin);
+      Flow(bool isConnected, int pin);
       bool initialize() override;
 };

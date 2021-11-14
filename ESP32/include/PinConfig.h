@@ -25,12 +25,11 @@
 #pragma once
 
 // Hardware connected to ESP32 is true. Otherwise false.
-#define SDCARD        1
-#define COUNTERS      0
-#define VOLTAGE       1
-#define CURRENT       1
-#define TEMPERATURE   1
-#define FLOW          1
+#define SDCARD_SWITCH        1
+#define VOLTAGE_SWITCH       1
+#define CURRENT_SWITCH       1
+#define TEMPERATURE_SWITCH   1
+#define FLOW_SWITCH          1
 
 // Pins Definitions:
 #define SDCARD_SPI_INTERFACE VSPI

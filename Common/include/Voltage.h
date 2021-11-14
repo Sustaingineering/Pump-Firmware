@@ -19,7 +19,7 @@ protected:
     float readRaw() override; 
 public:
     static const int analogDigitalConversionResolution = 4095; // ESP32 ADC resolution is 12 bits
-    Voltage(int pin, int lowerResistor, int higherResistor, float maximumVoltage);
+    Voltage(bool isConnected, int pin, int lowerResistor, int higherResistor, float maximumVoltage);
     bool initialize() override;
 };
 

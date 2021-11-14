@@ -1,13 +1,12 @@
 #pragma once
 #include "platforms.h"
 
-#define SDCARD      1
-#define COUNTERS    0
-#define VOLTAGE     1
-#define CURRENT     1
-#define TEMPERATURE 1
-#define FLOW        1
-#define EN_GSM      1
+#define SDCARD_SWITCH      1
+#define VOLTAGE_SWITCH     1
+#define CURRENT_SWITCH     1
+#define TEMPERATURE_SWITCH 1
+#define FLOW_SWITCH        1
+#define EN_GSM             1
 
 /*
                     _________________________

@@ -10,6 +10,6 @@ private:
 protected:
     float readRaw() override;
 public:
-    Temperature(int pin);
+    Temperature(bool isConnected, int pin);
     bool initialize() override;
 };

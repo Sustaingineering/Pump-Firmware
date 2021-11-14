@@ -14,22 +14,22 @@
 extern Gsm gsm;
 #endif
 
-#if CURRENT
+#if CURRENT_SWITCH
 #include "Current.h"
 extern Current hall_effect;
 #endif
 
-#if VOLTAGE
+#if VOLTAGE_SWITCH
 #include "Voltage.h"
 extern Voltage volt_divider;
 #endif
 
-#if TEMPERATURE
+#if TEMPERATURE_SWITCH
 #include "Temperature.h"
 extern Temperature thermocouple; //pretty slow response and depends greatly on the surface temperature of the thermocouple tip
 #endif
 
-#if FLOW
+#if FLOW_SWITCH
 #include "Flow.h"
 extern Flow waterflow;
 #endif
@@ -37,7 +37,7 @@ extern Flow waterflow;
 #include "RealTimeClock.h"
 extern RealTimeClock rtc;
 
-#if SDCARD
+#if SDCARD_SWITCH
 #include "SdCard.h"
 extern SdCard memory;
 #endif

@@ -10,13 +10,14 @@
 class FarmSensor
 {
 protected:
+    bool m_isConnected;
     int m_pin;
     float m_data;
     bool isWorking;
+    float count();
     virtual float readRaw() = 0;
 public:
-    FarmSensor();
-    FarmSensor(int pin);
+    FarmSensor(bool isConnected, int pin);
     virtual bool initialize() = 0;
     String read();
 };
