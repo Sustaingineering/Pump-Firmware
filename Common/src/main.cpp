@@ -1,13 +1,21 @@
 #ifndef UNIT_TEST         // This macro is defined in PlatformIO toolchain and it is needed for ESP32.
 #include "main.h"
+#include "Logger.h"
+
+#define LOG_MODULE_SWITCH LOG_MAIN_SWITCH
 
 void setup()
 {
   pinMode(BUILTIN_LED, OUTPUT);
-  Serial.begin(115200);
   digitalWrite(BUILTIN_LED, HIGH);
-  Serial.println("\nHello Sustaingineering!\n");
   delay(1000);
+
+  Serial.begin(115200);
+
+  initLogger(&memory, &rtc);
+
+  SDLOG("Hello Sustaingineering!");
+  
   bool success = true;
 
   rtc.initialize(1604177282);
@@ -33,8 +41,8 @@ void setup()
   success = success && gsm.initialize();
 #endif
 
-  Serial.println("Setup Done!\n");
   digitalWrite(BUILTIN_LED, !success);
+  SDLOG("Setup Done!");
 
 #if PARTICLE_UNIT_TESTS
   tests();
@@ -59,7 +67,7 @@ void loop()
   message += waterflow.read();
 
   message += rtc.getTimeStamp();
-  Serial.println(message);
+  SDLOG(message);
 
   //Writing on Sd Card
   memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), message.c_str());
@@ -67,7 +75,5 @@ void loop()
 #ifdef PARTICLE_H
   gsm.Publish(String(pumpId), message);
 #endif
-
-  Serial.println();
 }
 #endif // UNIT_TEST
