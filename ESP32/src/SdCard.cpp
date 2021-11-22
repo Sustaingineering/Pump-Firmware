@@ -21,7 +21,7 @@ public:
     bool removeDir(const char *path);
     char *readFile(const char *path);
     bool writeFile(const char *path, const char *message);
-    bool appendFile(const char *path, const char *message);
+    bool appendFile(const char *path, const char *message, bool isLogger);
     bool renameFile(const char *path1, const char *path2);
     bool deleteFile(const char *path);
     bool testFileIO(const char *path);
@@ -250,7 +250,7 @@ bool SdCard::Impl::writeFile(const char *path, const char *message)
     }
 }
 
-bool SdCard::Impl::appendFile(const char *path, const char *message)
+bool SdCard::Impl::appendFile(const char *path, const char *message, bool isLogger)
 {
     if (!is_Working)
     {
@@ -517,13 +517,13 @@ bool SdCard::writeFile(const char *path, const char *message)
     return m_pImpl->writeFile(path, message);
 }
 
-bool SdCard::appendFile(const char *path, const char *message)
+bool SdCard::appendFile(const char *path, const char *message, bool isLogger)
 {
     if (!m_isConnected)
     {
         return true;
     }
-    return m_pImpl->appendFile(path, message);
+    return m_pImpl->appendFile(path, message, isLogger);
 }
 
 bool SdCard::renameFile(const char *path1, const char *path2)

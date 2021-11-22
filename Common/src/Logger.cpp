@@ -19,5 +19,5 @@ void logger(bool condition, String file, String function, int line, String messa
         Serial.println(toLog);
     }
     
-    s_pSdCard->appendFile(("/" + s_pRtc->getDate() + ".log").c_str(), toLog.c_str());
+    s_pSdCard->appendFile(("/" + s_pRtc->getDate() + ".log").c_str(), toLog.c_str(), true);
 }

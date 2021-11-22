@@ -34,7 +34,7 @@ public:
     bool removeDir(const char *path);
     char *readFile(const char *path);
     bool writeFile(const char *path, const char *message);
-    bool appendFile(const char *path, const char *message);
+    bool appendFile(const char *path, const char *message, bool isLogger = false);
     bool renameFile(const char *path1, const char *path2);
     bool deleteFile(const char *path);
     bool testFileIO(const char *path);
