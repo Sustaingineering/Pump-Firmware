@@ -1,4 +1,7 @@
 #include "Temperature.h"
+#include "Logger.h"
+
+#define LOG_MODULE_SWITCH LOG_TEMPERATURE_SWITCH
 
 Temperature::Temperature(bool isConnected, int pin): 
                 FarmSensor(isConnected, pin), m_sensor(pin){}
@@ -9,7 +12,6 @@ bool Temperature::initialize()
     {
         return true;
     }
-    Serial.println("Initializing Temperature Sensor...");
     
     int tries = 20;
     while (!m_sensor.read())
@@ -17,12 +19,12 @@ bool Temperature::initialize()
         tries--;
         if (tries == 0)
         {
-            Serial.println("ERROR: Temperature sensor failed to intitialize");
+            LOGGER("ERROR: Temperature sensor failed to intitialize");
             isWorking = false;
             return false;
         }
     }
-
+    LOGGER("Initialized temperature sensor");
     isWorking = true;
     return isWorking;
 }
@@ -33,6 +35,7 @@ float Temperature::readRaw()
     {
         return count();
     }
+    
     if (isWorking == false)
         return nanf("0");
 
@@ -41,7 +44,7 @@ float Temperature::readRaw()
     // {
     //     if (!checkConnection())
     //     {
-    //         Serial.println("ERROR: CANNOT READ TEMPERATURE");
+    //         LOGGER("ERROR: CANNOT READ TEMPERATURE");
     
     //         isWorking = false;
 

@@ -9,10 +9,10 @@ void initLogger(SdCard *pSdCard, RealTimeClock *pRtc)
     s_pRtc = pRtc;
 }
 
-void sdLog(bool condition, String file, String function, int line, String message)
+void logger(bool condition, String file, String function, int line, String message)
 {
     String time = s_pRtc->getTimeStamp();
-    String toLog = "[" + time + "]" + "(" + file + ":" + function + ":" + line + ")" + message;
+    String toLog = "[" + time + "]" + "(" + file + ":" + function + ":" + line + ") " + message;
     
     if (condition)
     {

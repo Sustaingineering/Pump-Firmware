@@ -1,4 +1,7 @@
 #include "Voltage.h"
+#include "Logger.h"
+
+#define LOG_MODULE_SWITCH LOG_VOLTAGE_SWITCH
 
 /* constructor */
 Voltage::Voltage(bool isConnected, int pin, int lowerResistor, int higherResistor, float maximumVoltage): 
@@ -13,10 +16,9 @@ bool Voltage::initialize()
     {
         return true;
     }
-    Serial.println("Initializing Voltage Sensor");
     pinMode(m_pin, INPUT);
     isWorking = true;
-    Serial.println("Initialized Voltage Sensor");
+    LOGGER("Initialized voltage sensor");
     return isWorking;
 }
 

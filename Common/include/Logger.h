@@ -13,7 +13,7 @@
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
-#define SDLOG(message) sdLog(LOG_MODULE_SWITCH, __FILENAME__, __FUNCTION__, __LINE__, message)
+#define LOGGER(message) logger(LOG_MODULE_SWITCH, __FILENAME__, __FUNCTION__, __LINE__, message)
 
 #define LOG_CURRENT_SWITCH      1
 #define LOG_SENSOR_SWITCH       1
@@ -26,4 +26,4 @@
 #define LOG_VOLTAGE_SWITCH      1
 
 void initLogger(SdCard *pSdCard, RealTimeClock *pRtc);
-void sdLog(bool condition, String file, String function, int line, String message);
+void logger(bool condition, String file, String function, int line, String message);

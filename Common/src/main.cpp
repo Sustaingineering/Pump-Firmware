@@ -14,19 +14,24 @@ void setup()
 
   initLogger(&memory, &rtc);
 
-  SDLOG("Hello Sustaingineering!");
+  LOGGER("Hello Sustaingineering!");
   
   bool success = true;
+  bool status;
 
   rtc.initialize(1604177282);
 
-  success = success && hall_effect.initialize();
+  status = hall_effect.initialize();
+  success = success && status;
 
-  success = success && volt_divider.initialize();
+  status = volt_divider.initialize();
+  success = success && status;
 
-  success = success && thermocouple.initialize();
+  status = thermocouple.initialize();
+  success = success && status;
 
-  success = success && waterflow.initialize();
+  status = waterflow.initialize();
+  success = success && status;
 
   bool memoryInitialized = memory.initialize();
   success = success && memoryInitialized;
@@ -38,11 +43,12 @@ void setup()
   }
 
 #ifdef PARTICLE_H
-  success = success && gsm.initialize();
+  status = gsm.initialize();
+  success = success && status;
 #endif
 
   digitalWrite(BUILTIN_LED, !success);
-  SDLOG("Setup Done!");
+  LOGGER("Setup Done!");
 
 #if PARTICLE_UNIT_TESTS
   tests();
@@ -67,7 +73,7 @@ void loop()
   message += waterflow.read();
 
   message += rtc.getTimeStamp();
-  SDLOG(message);
+  LOGGER(message);
 
   //Writing on Sd Card
   memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), message.c_str());

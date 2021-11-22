@@ -1,4 +1,7 @@
 #include "FarmSensor.h"
+#include "Logger.h"
+
+#define LOG_MODULE_SWITCH LOG_SENSOR_SWITCH
 
 FarmSensor::FarmSensor(bool isConnected, int pin)
 {

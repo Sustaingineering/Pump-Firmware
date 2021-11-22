@@ -2,7 +2,9 @@
 #include <SPI.h>
 #include "SdFat.h"
 #include <libgen.h>
+#include "Logger.h"
 
+#define LOG_MODULE_SWITCH LOG_SDCARD_SWITCH
 #define BLOCK_SIZE 512
 
 class SdCard::Impl
@@ -31,19 +33,17 @@ SdCard::Impl::Impl(int SdCsPin):
 
 bool SdCard::Impl::initialize()
 {
-    Serial.print("Initializing SD card...");
-
     if (!m_Sd.begin(m_SdCsPin)) {
-        Serial.println("initialization failed!");
+        LOGGER("SD card initialization failed!");
         return false;
     }
-    Serial.println("SD Card Initialized.");
+    LOGGER("Initialized SD card");
     listDir(NULL, 0);
     uint64_t remaining_mem = getFreeSpace();
     if (remaining_mem > 0) { // negative means failure
-      Serial.printlnf("Free space remaining on SD Card: %f MB", remaining_mem / (1024.0 * 1024.0));
+      LOGGER("Free space remaining on SD Card: " + String(remaining_mem / (1024.0 * 1024.0)) +" MB");
     } else {
-      Serial.println("Unable to get remaining size");
+      LOGGER("Unable to get remaining size");
     }
     return true;
 }
@@ -51,8 +51,7 @@ bool SdCard::Impl::initialize()
 uint64_t SdCard::Impl::getFreeSpace()
 {
     uint64_t clusterSize = BLOCK_SIZE * m_Sd.vol()->blocksPerCluster();
-    Serial.print("Total space bytes: ");
-    Serial.println(clusterSize * m_Sd.vol()->clusterCount());
+    LOGGER("Total space bytes: " + String((unsigned long)(clusterSize * m_Sd.vol()->clusterCount())));
     return clusterSize * m_Sd.vol()->freeClusterCount();
 }
 
@@ -68,17 +67,17 @@ bool SdCard::Impl::createDir(const char * path)
     {
         File file = m_Sd.open(path, FILE_READ);
         if(!file){
-            Serial.println("Failed to open file, but it should exist");
+            LOGGER("Failed to open file, but it should exist");
             return false;
         }
         
         if(file.isDir())
         {
-            Serial.println("Directory already exists, cannot create new directory");
+            LOGGER("Directory already exists, cannot create new directory");
         } 
         else if (file.isFile())
         {
-            Serial.println("File with the same name already exists, cannot create new directory");
+            LOGGER("File with the same name already exists, cannot create new directory");
         }
 
         file.close();
@@ -87,7 +86,7 @@ bool SdCard::Impl::createDir(const char * path)
     }
 
     bool res = m_Sd.mkdir(path);
-    res ? Serial.println("Directory created") : Serial.println("Directory creation failed");
+    res ? LOGGER("Directory created") : LOGGER("Directory creation failed");
 
     return res;
 }
@@ -95,18 +94,18 @@ bool SdCard::Impl::createDir(const char * path)
 bool SdCard::Impl::removeDir(const char * path)
 {
     bool res = m_Sd.rmdir(path);
-    res ? Serial.println("Directory removed") : Serial.println("Directory remove failed");
+    res ? LOGGER("Directory removed") : LOGGER("Directory remove failed");
 
     return res;
 }
 
 char * SdCard::Impl::readFile(const char * path)
 {
-    Serial.printf("Opening file to read: %s\n", path);
+    LOGGER("Opening file to read: " + String(path));
 
     File file = m_Sd.open(path, FILE_READ);
     if(!file){
-        Serial.println("Failed to open file for reading");
+        LOGGER("Failed to open file for reading");
         return NULL;
     }
 
@@ -133,17 +132,17 @@ char * SdCard::Impl::readFile(const char * path)
 
 bool SdCard::Impl::writeFile(const char * path, const char * message)
 {
-    Serial.printf("Writing to: %s\n", path);
+    LOGGER("Writing to: " + String(path));
 
     // Open (new) file with length truncated to 0
     File file = m_Sd.open(path, O_CREAT | O_RDWR | O_TRUNC);
     if(!file){
-        Serial.println("Failed to open file for writing");
+        LOGGER("Failed to open file for writing");
         return false;
     }
 
     bool res = file.print(message);
-    res ? Serial.println("Message written") : Serial.println("Write failed");
+    res ? LOGGER("Message written") : LOGGER("Write failed");
 
     file.close();
 
@@ -152,16 +151,16 @@ bool SdCard::Impl::writeFile(const char * path, const char * message)
 
 bool SdCard::Impl::appendFile(const char * path, const char * message)
 {
-    Serial.printf("Appending to file: %s\n", path);
+    LOGGER("Appending to file: " + String(path));
 
     File file = m_Sd.open(path, FILE_WRITE);
     if(!file){
-        Serial.println("Failed to open file for appending");
+        LOGGER("Failed to open file for appending");
         return false;
     }
 
     bool res = file.print(message);
-    res ? Serial.println("Message appended") : Serial.println("Append failed");
+    res ? LOGGER("Message appended") : LOGGER("Append failed");
 
     file.close();
 
@@ -171,7 +170,7 @@ bool SdCard::Impl::appendFile(const char * path, const char * message)
 bool SdCard::Impl::renameFile(const char * path1, const char * path2)
 {
     bool res = m_Sd.rename(path1, path2);
-    res ? Serial.println("File renamed") : Serial.println("File rename failed");
+    res ? LOGGER("File renamed") : LOGGER("File rename failed");
 
     return res;
 }
@@ -179,74 +178,71 @@ bool SdCard::Impl::renameFile(const char * path1, const char * path2)
 bool SdCard::Impl::deleteFile(const char * path)
 {
     bool res = m_Sd.remove(path);
-    res ? Serial.println("File removed") : Serial.println("File remove failed");
+    res ? LOGGER("File removed") : LOGGER("File remove failed");
 
     return res;
 }
 
 bool SdCard::Impl::testFileIO(const char * path)
 {
-    char * test_msg = "This is a test message";
-    char * test_file = "/testfile.txt";
+    String test_msg = "This is a test message";
+    String test_file = "/testfile.txt";
     
     // Initialize tests (remove required files)
-    bool test_file_exists = m_Sd.exists(test_file);
+    bool test_file_exists = m_Sd.exists(test_file.c_str());
     if (test_file_exists)
     {
-        bool deleted = deleteFile(test_file);
-        test_file_exists = m_Sd.exists(test_file);
+        bool deleted = deleteFile(test_file.c_str());
+        test_file_exists = m_Sd.exists(test_file.c_str());
         if (deleted && !test_file_exists)
         {
-            Serial.println("File cleaned up: Tests Initialized");
+            LOGGER("File cleaned up: Tests Initialized");
         }
         else
         {
-            Serial.println("Error cleaning up files");
+            LOGGER("Error cleaning up files");
             return false;
         }
     } 
     else
     {
-        Serial.println("File DNE: Tests Initialized");
+        LOGGER("File DNE: Tests Initialized");
     }
 
     // WRITE TEST
-    bool created = writeFile(test_file, test_msg);
-    test_file_exists = m_Sd.exists(test_file);
+    bool created = writeFile(test_file.c_str(), test_msg.c_str());
+    test_file_exists = m_Sd.exists(test_file.c_str());
     if (created && test_file_exists)
     {
-        Serial.println("Write test successful");
+        LOGGER("Write test successful");
     }
     else
     {
-        Serial.println("Failed to create and write to file");
+        LOGGER("Failed to create and write to file");
         return false;
     }
 
     // READ TEST
-    char * read_contents = readFile(test_file);
+    char * read_contents = readFile(test_file.c_str());
     if (read_contents != NULL)
     {
-        bool content_same = strcmp(read_contents, test_msg);
+        bool content_same = strcmp(read_contents, test_msg.c_str());
         if (!content_same)
         {
-            Serial.printlnf("Read failed, file contents different: %s", read_contents);
+            LOGGER("Read failed, file contents different: " + String(read_contents));
             return false;
         }
         else
         {
-            Serial.println("Read test successful");
+            LOGGER("Read test successful");
         }
     }
     else
     {
-        Serial.printlnf("Read failed, returned NULL pointer");
+        LOGGER("Read failed, returned NULL pointer");
         return false;
     }
 
-
-
-    // Serial.println(("Error: " + String(__func__) + " is not implemented.").c_str());
     return true;
 }
 

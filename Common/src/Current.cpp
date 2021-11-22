@@ -1,4 +1,7 @@
 #include "Current.h"
+#include "Logger.h"
+
+#define LOG_MODULE_SWITCH LOG_CURRENT_SWITCH
 #define I_PN 10 // can be ±10, ±20, ±30, ±50, ±100, ±150, or ±200
 
 Current::Current(bool isConnected, int pin, float maximumVoltage):
@@ -12,10 +15,9 @@ bool Current::initialize()
     {
         return true;
     }
-    Serial.println("Initializing Current Sensor...");
     pinMode(m_pin, INPUT);
     isWorking = true;
-    Serial.println("Initialized Current Sensor");
+    LOGGER("Initialized Current Sensor");
     return isWorking;
 }
  

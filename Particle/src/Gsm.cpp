@@ -1,4 +1,7 @@
 #include "Gsm.h"
+#include "Logger.h"
+
+#define LOG_MODULE_SWITCH LOG_GSM_SWITCH
 
 Gsm::Gsm(bool isConnected)
 {
@@ -15,9 +18,17 @@ Gsm::Gsm(bool isConnected)
 
 bool Gsm::initialize()
 {
+    if (!m_isConnected)
+    {
+        return true;
+    }
+
     delimiter = ";";
     m_buffer = "";
     m_counter = 0;
+    LOGGER("Time between messages: " + String(TIME_BTWN_MESSAGES));
+    LOGGER("Total messages cap: " + String(TOTAL_MESSAGES_CAP));
+    LOGGER("Initialized GSM");
     return true;
 }
 
@@ -48,7 +59,6 @@ String Gsm::Publish(String pumpId, String message)
     }
     else if (time - m_timeFromLastMessage >= TIME_BTWN_MESSAGES)
     {
-        Serial.println("Adding to buffer " + message);
         m_buffer += message;
         m_buffer += delimiter;
         m_counter++;
@@ -60,20 +70,20 @@ String Gsm::Publish(String pumpId, String message)
             // https://docs.particle.io/reference/device-os/firmware/#particle-publish-
             if (Particle.publish(pumpId, m_buffer.c_str()))
             {
-                Serial.println("Succesfully Published Message: " + m_buffer);
+                LOGGER("Succesfully Published buffer: " + m_buffer);
                 String result = m_buffer;
                 m_buffer = "";
                 m_counter = 0;
                 return result;
             }
             else
-                Serial.println("Could not publish message!");
+            {
+                LOGGER("Could not publish message!");
                 // Should probably do more here
+            }
         }
     }
-    
-    Serial.printf("Not printing message yet. m_counter: %d; m_timeFromLastMessage: %d\n", m_counter, m_timeFromLastMessage);
-    Serial.println("Current Message: " + m_buffer);
+    LOGGER("Number of messages in buffer: " + String(m_counter));
     return String("");
 }
 
@@ -81,11 +91,11 @@ int Gsm::getTotalDataUsage_()
 {
     CellularData data;
     if (!Cellular.getDataUsage(data)) {
-        Serial.println("Error! Not able to get data.");
+        LOGGER("Error! Not able to get data.");
         return 0;
     }
     else {
-        Serial.println(data);
+        LOGGER(data);
         return data.tx_total + data.rx_total;
     }
 }

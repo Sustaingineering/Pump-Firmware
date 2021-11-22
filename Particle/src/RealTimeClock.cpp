@@ -1,4 +1,7 @@
 #include "RealTimeClock.h"
+#include "Logger.h"
+
+#define LOG_MODULE_SWITCH LOG_RTC_SWITCH
 
 class RealTimeClock::Impl
 {
@@ -14,9 +17,8 @@ RealTimeClock::Impl::Impl()
 
 void RealTimeClock::Impl::initialize()
 {
-    Serial.println("Initializing RTC...");
     Time.zone(-7.0);
-    Serial.println("Initializing RTC Done.");
+    LOGGER("Initializing RTC Done.");
 }
 
 String RealTimeClock::Impl::getTimeStamp()

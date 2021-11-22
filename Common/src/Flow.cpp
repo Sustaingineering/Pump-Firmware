@@ -1,4 +1,7 @@
 #include "Flow.h"
+#include "Logger.h"
+
+#define LOG_MODULE_SWITCH LOG_FLOW_SWITCH
 
 namespace Water
 {
@@ -18,11 +21,10 @@ bool Flow::initialize()
     {
         return true;
     }
-    Serial.println("Initializing Water Flow Sensor");
     pinMode(m_pin, INPUT); //initializes digital pin as an input
     attachInterrupt(digitalPinToInterrupt(m_pin), Water::countFlowInterrupts, RISING); //and the interrupt is attached
     isWorking = true;
-    Serial.println("Initialized Water Flow Sensor.");
+    LOGGER("Initialized Water Flow Sensor");
     return isWorking;
 }
 
@@ -33,6 +35,7 @@ float Flow::readRaw()
         delay (1000);
         return count();
     }
+
     Water::numberOfFanTops = 0;   
 
     sei(); //Enables interrupts
@@ -40,9 +43,7 @@ float Flow::readRaw()
     cli(); //Disable interrupts
 
     //calculations subtract number of times called outside of interupt
-    int flowRate = (Water::numberOfFanTops * 60 / FLOW_RATE_FACTOR); //(Pulse frequency x 60) / 5.5Q, = flow rate in L/min
-    Serial.printf("Flow Rate: %d L/min\n",flowRate); //Prints flow rate calculated above
-    Serial.printf("numberOfFanTops: %d \n", Water::numberOfFanTops);
-    Serial.print("\n");
+    //(Pulse frequency x 60) / 5.5Q, = flow rate in L/min
+    int flowRate = (Water::numberOfFanTops * 60 / FLOW_RATE_FACTOR);
     return flowRate;
 }
