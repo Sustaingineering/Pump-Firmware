@@ -6,20 +6,29 @@
 
 void setup()
 {
+  bool success = true;
+  bool status;
+  
   pinMode(BUILTIN_LED, OUTPUT);
   digitalWrite(BUILTIN_LED, HIGH);
   delay(1000);
 
   Serial.begin(115200);
+  
+  rtc.initialize(1604177282);
+
+  bool memoryInitialized = memory.initialize();
+  success = success && memoryInitialized;
+  // FIXME: do it in persistent data class
+  if (memoryInitialized)
+  {
+    pumpIdInit();
+    memory.getFreeSpace();
+  }
 
   initLogger(&memory, &rtc);
 
   LOGGER("Hello Sustaingineering!");
-  
-  bool success = true;
-  bool status;
-
-  rtc.initialize(1604177282);
 
   status = hall_effect.initialize();
   success = success && status;
@@ -32,15 +41,6 @@ void setup()
 
   status = waterflow.initialize();
   success = success && status;
-
-  bool memoryInitialized = memory.initialize();
-  success = success && memoryInitialized;
-  // FIXME: do it in persistent data class
-  if (memoryInitialized)
-  {
-    pumpIdInit();
-    memory.getFreeSpace();
-  }
 
 #ifdef PARTICLE_H
   status = gsm.initialize();

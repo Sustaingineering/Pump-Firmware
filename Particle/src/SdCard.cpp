@@ -34,16 +34,16 @@ SdCard::Impl::Impl(int SdCsPin):
 bool SdCard::Impl::initialize()
 {
     if (!m_Sd.begin(m_SdCsPin)) {
-        LOGGER("SD card initialization failed!");
+        Serial.println("SD card initialization failed!");
         return false;
     }
-    LOGGER("Initialized SD card");
+    Serial.println("Initialized SD card");
     listDir(NULL, 0);
     uint64_t remaining_mem = getFreeSpace();
     if (remaining_mem > 0) { // negative means failure
-      LOGGER("Free space remaining on SD Card: " + String(remaining_mem / (1024.0 * 1024.0)) +" MB");
+      Serial.println("Free space remaining on SD Card: " + String(remaining_mem / (1024.0 * 1024.0)) +" MB");
     } else {
-      LOGGER("Unable to get remaining size");
+      Serial.println("Unable to get remaining size");
     }
     return true;
 }
