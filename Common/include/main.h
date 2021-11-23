@@ -12,6 +12,9 @@
 #ifdef PARTICLE_H
 #include "Gsm.h"
 #endif
+#include "Logger.h"
+
+#define LOG_MODULE_SWITCH LOG_MAIN_SWITCH
 
 int pumpId = 0;         // FIXME: do it in persistent data class
 
@@ -41,6 +44,6 @@ void pumpIdInit()
   {
     pumpId = strtol(idBuf, NULL, 10);
     free(idBuf);
-    Serial.printf("PumpID is: %d\n", pumpId);
+    LOGGER("PumpID is: " +  String(pumpId));
   }
 }

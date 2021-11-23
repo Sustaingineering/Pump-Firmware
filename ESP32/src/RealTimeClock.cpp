@@ -19,11 +19,10 @@ RealTimeClock::Impl::Impl()
 
 void RealTimeClock::Impl::initialize(long initialTime)
 {
-    Serial.println("Initializing RTC...");
     timeval epoch = {(time_t) initialTime, 0};
     const timeval *tv = &epoch;
     settimeofday(tv, NULL);
-    Serial.println("Initializing RTC Done.");
+    Serial.println("Initialized RTC");
 }
 
 String RealTimeClock::Impl::getTimeStamp()

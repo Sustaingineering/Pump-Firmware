@@ -1,4 +1,7 @@
 #include "Temperature.h"
+#include "Logger.h"
+
+#define LOG_MODULE_SWITCH LOG_TEMPERATURE_SWITCH
 
 Temperature::Temperature(bool isConnected, int pin): 
                 FarmSensor(isConnected, pin), m_oneWire(pin), m_sensors(&m_oneWire) {}
@@ -9,8 +12,6 @@ bool Temperature::initialize()
     {
         return true;
     }
-    
-    Serial.println("Initializing Temperature Sensor...");
 
     m_sensors.begin();
 
@@ -20,11 +21,11 @@ bool Temperature::initialize()
 
     if ((int) temp == DEVICE_DISCONNECTED_C){
         isWorking = false;
-        Serial.println("Temperature Sensor Initialization Failed.");
+        LOGGER("Temperature Sensor Initialization Failed.");
     }
     else{
         isWorking = true;
-        Serial.println("Temperature Sensor Initialized.");
+        LOGGER("Temperature Sensor Initialized.");
     }
 
     return isWorking;
@@ -46,7 +47,7 @@ float Temperature::readRaw()
 
     if ((int) temp == DEVICE_DISCONNECTED_C)
     {    
-        Serial.print("TEMPERATURE SENSOR IS DISCONNECTED\n");
+        LOGGER("TEMPERATURE SENSOR IS DISCONNECTED");
         isWorking = false;
         return nanf("0");
     }

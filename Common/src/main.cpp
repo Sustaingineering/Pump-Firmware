@@ -1,8 +1,5 @@
 #ifndef UNIT_TEST         // This macro is defined in PlatformIO toolchain and it is needed for ESP32.
 #include "main.h"
-#include "Logger.h"
-
-#define LOG_MODULE_SWITCH LOG_MAIN_SWITCH
 
 void setup()
 {
@@ -19,14 +16,15 @@ void setup()
 
   bool memoryInitialized = memory.initialize();
   success = success && memoryInitialized;
+
+  initLogger(&memory, &rtc);
+
   // FIXME: do it in persistent data class
   if (memoryInitialized)
   {
     pumpIdInit();
     memory.getFreeSpace();
   }
-
-  initLogger(&memory, &rtc);
 
   LOGGER("Hello Sustaingineering!");
 

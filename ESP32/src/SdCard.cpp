@@ -4,7 +4,9 @@
 #include "SPI.h"
 #include "vfs_api.h"
 #include "PinConfig.h"
+#include "Logger.h"
 
+#define LOG_MODULE_SWITCH LOG_SDCARD_SWITCH
 
 class SdCard::Impl
 {
@@ -35,8 +37,6 @@ SdCard::Impl::Impl(int SdCsPin) : fs(FSImplPtr(new VFSImpl())), m_spi(SDCARD_SPI
 
 bool SdCard::Impl::initialize()
 {
-    Serial.println("Initializing SD Card...");
-
     int NUM_ATTEMPTS = 5;
 
     for (int i = 0; i < NUM_ATTEMPTS; i++)
@@ -86,7 +86,6 @@ bool SdCard::Impl::initialize()
     Serial.printf("SD Card Size: %lluMB\n", cardSize);
     Serial.printf("Total space: %lluMB\n", fs.totalBytes() / (1024 * 1024));
     Serial.printf("Used space: %lluMB\n", fs.usedBytes() / (1024 * 1024));
-    listDir("/", 0);
     
     Serial.println("Initialized SD Card.");
 
@@ -99,21 +98,21 @@ void SdCard::Impl::listDir(const char *dirname, uint8_t levels)
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        LOGGER("SD Card not initialized properly");
         return;
     }
 
-    Serial.printf("Listing directory: %s\n", dirname);
+    LOGGER("Listing directory: " + String(dirname));
 
     File root = fs.open(dirname);
     if (!root)
     {
-        Serial.println("Failed to open directory");
+        LOGGER("Failed to open directory");
         return;
     }
     if (!root.isDirectory())
     {
-        Serial.println("Not a directory");
+        LOGGER("Not a directory");
         return;
     }
 
@@ -123,7 +122,7 @@ void SdCard::Impl::listDir(const char *dirname, uint8_t levels)
         if (file.isDirectory())
         {
             Serial.print("  DIR : ");
-            Serial.println(file.name());
+            LOGGER(file.name());
             if (levels)
             {
                 listDir(file.name(), levels - 1);
@@ -144,19 +143,19 @@ bool SdCard::Impl::createDir(const char *path)
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        LOGGER("SD Card not initialized properly");
         return false;
     }
 
-    Serial.printf("Creating Dir: %s\n", path);
+    LOGGER("Creating Dir: " + String(path));
     if (fs.mkdir(path))
     {
-        Serial.println("Dir created");
+        LOGGER("Dir created");
         return true;
     }
     else
     {
-        Serial.println("mkdir failed");
+        LOGGER("mkdir failed");
         return false;
     }
 }
@@ -165,19 +164,19 @@ bool SdCard::Impl::removeDir(const char *path)
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        LOGGER("SD Card not initialized properly");
         return false;
     }
 
-    Serial.printf("Removing Dir: %s\n", path);
+    LOGGER("Removing Dir: " + String(path));
     if (fs.rmdir(path))
     {
-        Serial.println("Dir removed");
+        LOGGER("Dir removed");
         return true;
     }
     else
     {
-        Serial.println("rmdir failed");
+        LOGGER("rmdir failed");
         return false;
     }
 }
@@ -186,16 +185,16 @@ char *SdCard::Impl::readFile(const char *path)
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        LOGGER("SD Card not initialized properly");
         return NULL;
     }
 
-    Serial.printf("Reading file: %s\n", path);
+    LOGGER("Reading file: " + String(path));
 
     File file = fs.open(path);
     if (!file)
     {
-        Serial.println("Failed to open file for reading");
+        LOGGER("Failed to open file for reading");
         return NULL;
     }
 
@@ -221,16 +220,16 @@ bool SdCard::Impl::writeFile(const char *path, const char *message)
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        LOGGER("SD Card not initialized properly");
         return false;
     }
 
-    Serial.printf("Writing file: %s\n", path);
+    LOGGER("Writing file: " +  String(path));
 
     File file = fs.open(path, FILE_WRITE);
     if (!file)
     {
-        Serial.println("Failed to open file for writing");
+        LOGGER("Failed to open file for writing");
         return false;
     }
 
@@ -240,12 +239,12 @@ bool SdCard::Impl::writeFile(const char *path, const char *message)
 
     if (bytesWritten)
     {
-        Serial.println("File written");
+        LOGGER("File written");
         return true;
     }
     else
     {
-        Serial.println("Write failed");
+        LOGGER("Write failed");
         return false;
     }
 }
@@ -254,20 +253,22 @@ bool SdCard::Impl::appendFile(const char *path, const char *message, bool isLogg
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        if (!isLogger)
+            LOGGER("SD Card not initialized properly");
         return false;
     }
 
     #ifndef UNIT_TEST
     handleOverflow();
     #endif
-
-    Serial.printf("Appending to file: %s\n", path);
+    if (!isLogger)
+        LOGGER("Appending to file: " +  String(path));
 
     File file = fs.open(path, FILE_APPEND);
     if (!file)
     {
-        Serial.println("Failed to open file for appending");
+        if (!isLogger)
+            LOGGER("Failed to open file for appending");
         return false;
     }
 
@@ -277,12 +278,14 @@ bool SdCard::Impl::appendFile(const char *path, const char *message, bool isLogg
 
     if (bytesWritten)
     {
-        Serial.println("Message appended");
+        if (!isLogger)
+            LOGGER("Message appended");
         return true;
     }
     else
     {
-        Serial.println("Append failed");
+        if (!isLogger)
+            LOGGER("Append failed");
         return false;
     }
 }
@@ -291,19 +294,19 @@ bool SdCard::Impl::renameFile(const char *path1, const char *path2)
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        LOGGER("SD Card not initialized properly");
         return false;
     }
 
-    Serial.printf("Renaming file %s to %s\n", path1, path2);
+    LOGGER("Renaming file " + String(path1) + " to " + String(path2));
     if (fs.rename(path1, path2))
     {
-        Serial.println("File renamed");
+        LOGGER("File renamed");
         return true;
     }
     else
     {
-        Serial.println("Rename failed");
+        LOGGER("Rename failed");
         return false;
     }
 }
@@ -312,19 +315,19 @@ bool SdCard::Impl::deleteFile(const char *path)
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        LOGGER("SD Card not initialized properly");
         return false;
     }
 
-    Serial.printf("Deleting file: %s\n", path);
+    LOGGER("Deleting file: " + String(path));
     if (fs.remove(path))
     {
-        Serial.println("File deleted");
+        LOGGER("File deleted");
         return true;
     }
     else
     {
-        Serial.println("Delete failed");
+        LOGGER("Delete failed");
         return false;
     }
 }
@@ -333,7 +336,7 @@ bool SdCard::Impl::testFileIO(const char *path)
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        LOGGER("SD Card not initialized properly");
         return false;
     }
 
@@ -359,19 +362,19 @@ bool SdCard::Impl::testFileIO(const char *path)
             len -= toRead;
         }
         end = millis() - start;
-        Serial.printf("%u bytes read for %u ms\n", flen, end);
+        LOGGER(String(flen) + " bytes read for " + String(end) + " ms");
         file.close();
     }
     else
     {
-        Serial.println("Failed to open file for reading");
+        LOGGER("Failed to open file for reading");
         return false;
     }
 
     file = fs.open(path, FILE_WRITE);
     if (!file)
     {
-        Serial.println("Failed to open file for writing");
+        LOGGER("Failed to open file for writing");
         return false;
     }
 
@@ -383,7 +386,7 @@ bool SdCard::Impl::testFileIO(const char *path)
     }
     end = millis() - start;
 
-    Serial.printf("%u bytes written for %u ms\n", 2048 * 512, end);
+    LOGGER(String(2048 * 512) + " bytes written for " + String(end) + " ms");
 
     file.close();
 
@@ -394,7 +397,7 @@ uint64_t SdCard::Impl::getFreeSpace()
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        LOGGER("SD Card not initialized properly");
         return 0;
     }
 
@@ -411,7 +414,7 @@ bool SdCard::Impl::handleOverflow()
 {
     if (!is_Working)
     {
-        Serial.println("SD Card not initialized properly");
+        LOGGER("SD Card not initialized properly");
         return false;
     }
     
@@ -437,7 +440,7 @@ bool SdCard::Impl::handleOverflow()
 
             while (entry.isDirectory() || pumpIdFile == fileName) 
             {
-                Serial.println("Skipping " + fileName);
+                LOGGER("Skipping " + fileName);
 
                 entry.close();
 
