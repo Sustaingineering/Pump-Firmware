@@ -12,11 +12,11 @@ void initLogger(SdCard *pSdCard, RealTimeClock *pRtc)
 void logger(bool condition, String file, String function, int line, String message)
 {
     String time = s_pRtc->getTimeStamp();
-    String toLog = "[" + time + "]" + "(" + file + ":" + function + ":" + line + ") " + message;
+    String toLog = "[" + time + "]" + "(" + file + ":" + function + ":" + line + ") " + message + "\n";
     
     if (condition)
     {
-        Serial.println(toLog);
+        Serial.print(toLog);
     }
     
     s_pSdCard->appendFile(("/" + s_pRtc->getDate() + ".log").c_str(), toLog.c_str(), true);

@@ -23,7 +23,6 @@ void setup()
   if (memoryInitialized)
   {
     pumpIdInit();
-    memory.getFreeSpace();
   }
 
   LOGGER("Hello Sustaingineering!");
@@ -71,10 +70,11 @@ void loop()
   message += waterflow.read();
 
   message += rtc.getTimeStamp();
+
   LOGGER(message);
 
   //Writing on Sd Card
-  memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), message.c_str());
+  memory.appendFile(("/" + rtc.getDate() + ".txt").c_str(), (message + "\n").c_str());
 
 #ifdef PARTICLE_H
   gsm.Publish(String(pumpId), message);
