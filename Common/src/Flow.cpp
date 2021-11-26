@@ -37,11 +37,9 @@ float Flow::readRaw()
     }
 
     Water::numberOfFanTops = 0;   
-
-    sei(); //Enables interrupts
+    interrupts();
     delay (1000); //Wait 1 second
-    cli(); //Disable interrupts
-
+    noInterrupts();
     //calculations subtract number of times called outside of interupt
     //(Pulse frequency x 60) / 5.5Q, = flow rate in L/min
     int flowRate = (Water::numberOfFanTops * 60 / FLOW_RATE_FACTOR);
