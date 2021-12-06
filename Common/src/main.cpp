@@ -17,7 +17,7 @@ void setup()
   bool memoryInitialized = memory.initialize();
   success = success && memoryInitialized;
 
-  initLogger(&memory, &rtc);
+  PersistentLogger::initialize(&memory, &rtc);
 
   // FIXME: do it in persistent data class
   if (memoryInitialized)

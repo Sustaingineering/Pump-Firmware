@@ -13,7 +13,7 @@
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
-#define LOGGER(message) logger(LOG_MODULE_SWITCH, __FILENAME__, __FUNCTION__, __LINE__, message)
+#define LOGGER(message) PersistentLogger::log(LOG_MODULE_SWITCH, __FILENAME__, __FUNCTION__, __LINE__, message)
 
 #define LOG_CURRENT_SWITCH      1
 #define LOG_SENSOR_SWITCH       1
@@ -25,5 +25,13 @@
 #define LOG_TEMPERATURE_SWITCH  1
 #define LOG_VOLTAGE_SWITCH      1
 
-void initLogger(SdCard *pSdCard, RealTimeClock *pRtc);
-void logger(bool condition, String file, String function, int line, String message);
+class PersistentLogger
+{
+private:
+    static unsigned int m_linesLogged;
+    static SdCard *m_pSdCard;
+    static RealTimeClock *m_pRtc;
+public:
+    static void initialize(SdCard *pSdCard, RealTimeClock *pRtc);
+    static void log(bool condition, String file, String function, int line, String message);
+};

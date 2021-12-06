@@ -1,17 +1,19 @@
 #include "Logger.h"
 
-static SdCard *s_pSdCard;
-static RealTimeClock *s_pRtc;
+unsigned int PersistentLogger::m_linesLogged = 0;
+SdCard* PersistentLogger::m_pSdCard = nullptr;
+RealTimeClock* PersistentLogger::m_pRtc = nullptr;
 
-void initLogger(SdCard *pSdCard, RealTimeClock *pRtc)
+void PersistentLogger::initialize(SdCard *pSdCard, RealTimeClock *pRtc)
 {
-    s_pSdCard = pSdCard;
-    s_pRtc = pRtc;
+    m_linesLogged = 0;
+    m_pSdCard = pSdCard;
+    m_pRtc = pRtc;
 }
 
-void logger(bool condition, String file, String function, int line, String message)
+void PersistentLogger::log(bool condition, String file, String function, int line, String message)
 {
-    String time = s_pRtc->getTimeStamp();
+    String time = m_pRtc->getTimeStamp();
     String toLog = "[" + time + "]" + "(" + file + ":" + function + ":" + line + ") " + message + "\n";
     
     if (condition)
@@ -19,5 +21,6 @@ void logger(bool condition, String file, String function, int line, String messa
         Serial.print(toLog);
     }
     
-    s_pSdCard->appendFile(("/" + s_pRtc->getDate() + ".log").c_str(), toLog.c_str(), true);
+    m_pSdCard->appendFile(("/" + m_pRtc->getDate() + ".log").c_str(), toLog.c_str(), true);
+    m_linesLogged++;
 }
