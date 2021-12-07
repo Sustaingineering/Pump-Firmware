@@ -24,3 +24,23 @@ void PersistentLogger::log(bool condition, String file, String function, int lin
     m_pSdCard->appendFile(("/" + m_pRtc->getDate() + ".log").c_str(), toLog.c_str(), true);
     m_linesLogged++;
 }
+
+void PersistentLogger::dumpLogs()
+{
+    if (Serial.peek() == -1)
+    {
+        return;
+    }
+    
+    char command = Serial.read();
+    while (Serial.read() != -1) {}
+
+    if (command == 'd')
+    {
+        Serial.println("PersistentLogger::dumpLogs() has executed");
+    }
+    else
+    {
+        Serial.println("Invalid serial command");
+    }
+}

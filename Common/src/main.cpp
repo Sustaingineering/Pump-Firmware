@@ -79,5 +79,7 @@ void loop()
 #ifdef PARTICLE_H
   gsm.Publish(String(pumpId), message);
 #endif
+
+  PersistentLogger::dumpLogs();
 }
 #endif // UNIT_TEST

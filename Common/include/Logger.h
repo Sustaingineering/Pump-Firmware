@@ -34,4 +34,5 @@ private:
 public:
     static void initialize(SdCard *pSdCard, RealTimeClock *pRtc);
     static void log(bool condition, String file, String function, int line, String message);
+    static void dumpLogs();
 };
