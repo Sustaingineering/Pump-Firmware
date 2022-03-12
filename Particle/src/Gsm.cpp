@@ -26,8 +26,8 @@ bool Gsm::initialize()
     delimiter = ";";
     m_buffer = "";
     m_counter = 0;
-    LOGGER("Time between messages: " + String(TIME_BTWN_MESSAGES));
-    LOGGER("Total messages cap: " + String(TOTAL_MESSAGES_CAP));
+    LOGGER("Time between messages: " + String(time_btwn_messages));
+    LOGGER("Total messages cap: " + String(total_message_cap));
     LOGGER("Initialized GSM");
 
 
@@ -82,14 +82,14 @@ String Gsm::Publish(String pumpId, String message)
         m_timeFromLastMessage = Time.now();
 
     }
-    else if (time - m_timeFromLastMessage >= TIME_BTWN_MESSAGES)
+    else if (time - m_timeFromLastMessage >= time_btwn_messages)
     {
         m_buffer += message;
         m_buffer += delimiter;
         m_counter++;
         m_timeFromLastMessage = time;
 
-        if (m_counter == TOTAL_MESSAGES_CAP)
+        if (m_counter == total_message_cap)
         {
             // Publish method may block (20 secs - 10 mins)
             // https://docs.particle.io/reference/device-os/firmware/#particle-publish-
