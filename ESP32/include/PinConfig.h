@@ -26,10 +26,10 @@
 
 // Hardware connected to ESP32 is true. Otherwise false.
 #define SDCARD_SWITCH        1
-#define VOLTAGE_SWITCH       1
-#define CURRENT_SWITCH       1
-#define TEMPERATURE_SWITCH   1
-#define FLOW_SWITCH          1
+#define VOLTAGE_SWITCH       0
+#define CURRENT_SWITCH       0
+#define TEMPERATURE_SWITCH   0
+#define FLOW_SWITCH          0
 
 // Pins Definitions:
 #define SDCARD_SPI_INTERFACE VSPI

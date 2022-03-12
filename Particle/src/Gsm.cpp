@@ -29,6 +29,31 @@ bool Gsm::initialize()
     LOGGER("Time between messages: " + String(TIME_BTWN_MESSAGES));
     LOGGER("Total messages cap: " + String(TOTAL_MESSAGES_CAP));
     LOGGER("Initialized GSM");
+
+
+    //register cloud variable and function
+    //the stuff before the Particle.variable... is for testing
+    if(
+        Particle.variable("maxTotalOps", gsmParameters.maxTotalOperations) &
+        Particle.variable("pumpId", gsmParameters.cloudPumpId) &
+        Particle.variable("numParticles", gsmParameters.totalParticles) &
+        Particle.variable("maxMsgSize", gsmParameters.maxMessageSize) &
+        Particle.variable("maxHdrSize", gsmParameters.maxHeaderSize) &
+
+        Particle.function("setPumpId", &Gsm::setCloudPumpId, this) &
+        Particle.function("setTotalPumps", &Gsm::setTotalParticles, this) &
+        Particle.function("setMaxMsg", &Gsm::setMaxMessageSize, this) &
+        Particle.function("setMaxHdr", &Gsm::setMaxHeaderSize, this) &
+        Particle.function("setTotalOps", &Gsm::setMaxOperations, this)
+    )
+    {
+        LOGGER("Initialized Cloud Variables and Functions.");
+    }
+    else
+    {
+        LOGGER("ERROR: Could not initialize Cloud Variables and Functions!");
+    }
+    
     return true;
 }
 
@@ -98,4 +123,89 @@ int Gsm::getTotalDataUsage_()
         LOGGER(data);
         return data.tx_total + data.rx_total;
     }
+}
+
+int Gsm::initializeEeprom()
+{
+    EEPROM.get(EEPROM_INITIAL_ADDRESS, gsmParameters);
+    if(gsmParameters.maxTotalOperations == 0)
+    {
+        gsmParameters = {MAX_TOTAL_OPERATIONS, TOTAL_PARTICLES, 0, MAX_MESSAGE_SIZE, MAX_HEADER_SIZE};
+        EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
+        //for testing
+        LOGGER("Defaults values were taken");
+    }
+    //for testing
+    LOGGER("Retrieved Values: " + String(gsmParameters.totalParticles));
+    return 1;
+}
+
+int Gsm::setTotalParticles(String newTotalParticles)
+{
+        //for testing
+        EepromStorage temp_tester;
+        EEPROM.get(EEPROM_INITIAL_ADDRESS, temp_tester);
+        LOGGER("Old totalParticles: " + String(temp_tester.totalParticles));
+    gsmParameters.totalParticles = newTotalParticles.toInt();
+    EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
+        //for testing
+        EEPROM.get(EEPROM_INITIAL_ADDRESS, temp_tester);
+        LOGGER("New totalParticles: " + String(temp_tester.totalParticles));
+    return 1;
+}
+
+int Gsm::setMaxMessageSize(String newMaxMessageSize)
+{
+        //for testing
+        EepromStorage temp_tester;
+        EEPROM.get(EEPROM_INITIAL_ADDRESS, temp_tester);
+        LOGGER("Old maxMessageSize: " + String(temp_tester.maxMessageSize));
+    gsmParameters.maxMessageSize = newMaxMessageSize.toInt();
+    EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
+        //for testing
+        EEPROM.get(EEPROM_INITIAL_ADDRESS, temp_tester);
+        LOGGER("New maxMessageSize: " + String(temp_tester.maxMessageSize));
+    return 1;
+}
+
+int Gsm::setMaxHeaderSize(String newMaxHeaderSize)
+{
+        //for testing
+        EepromStorage temp_tester;
+        EEPROM.get(EEPROM_INITIAL_ADDRESS, temp_tester);
+        LOGGER("Old maxHeaderSize Value: " + String(temp_tester.maxHeaderSize));
+    gsmParameters.maxHeaderSize = newMaxHeaderSize.toInt();
+    EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
+        //for testing
+        EEPROM.get(EEPROM_INITIAL_ADDRESS, temp_tester);
+        LOGGER("New maxHeaderSize Value: " + String(temp_tester.maxHeaderSize));
+    return 1;
+}
+
+int Gsm::setCloudPumpId(String newCloudPumpId)
+{
+        //for testing
+        EepromStorage temp_tester;
+        EEPROM.get(EEPROM_INITIAL_ADDRESS, temp_tester);
+        LOGGER("Old cloudPumpId Value: " + String(temp_tester.cloudPumpId));
+    gsmParameters.cloudPumpId = newCloudPumpId.toInt();
+    EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);  
+        //for testing
+        EEPROM.get(EEPROM_INITIAL_ADDRESS, temp_tester);
+        LOGGER("New cloudPumpId Value: " + String(temp_tester.cloudPumpId));
+    return 1;
+}
+
+int Gsm::setMaxOperations(String newMaxOperations)
+{
+        //for testing
+        EepromStorage temp_tester;
+        EEPROM.get(EEPROM_INITIAL_ADDRESS, temp_tester);
+        LOGGER("Old maxTotalOperations Value: " + String(temp_tester.maxTotalOperations));
+    gsmParameters.maxTotalOperations = newMaxOperations.toInt();
+    EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
+        //for testing
+        EEPROM.get(EEPROM_INITIAL_ADDRESS, temp_tester);
+        LOGGER("Old maxTotalOperations Value: " + String(temp_tester.maxTotalOperations));
+    return 1;
 }

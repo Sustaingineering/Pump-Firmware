@@ -8,5 +8,6 @@
         "thread": "cpp"
     },
     "particle.firmwareVersion": "3.1.0",
-    "particle.targetPlatform": "boron"
+    "particle.targetPlatform": "boron",
+    "particle.targetDevice": "sustainBoronL"
 }

@@ -25,6 +25,8 @@ void setup()
     pumpIdInit();
   }
 
+                        //Particle.function("setPumpId", Gsm::setCloudPumpId);
+
   LOGGER("Hello Sustaingineering!");
 
   status = hall_effect.initialize();
