@@ -26,9 +26,33 @@ bool Gsm::initialize()
     delimiter = ";";
     m_buffer = "";
     m_counter = 0;
-    LOGGER("Time between messages: " + String(TIME_BTWN_MESSAGES));
-    LOGGER("Total messages cap: " + String(TOTAL_MESSAGES_CAP));
+    LOGGER("Time between messages: " + String(time_btwn_messages));
+    LOGGER("Total messages cap: " + String(total_messages_cap));
     LOGGER("Initialized GSM");
+
+    //register cloud variable and function
+    //the stuff before the Particle.variable... is for testing
+    if(
+        Particle.variable("maxTotalOps", gsmParameters.maxTotalOperations) &
+        Particle.variable("pumpId", gsmParameters.cloudPumpId) &
+        Particle.variable("numParticles", gsmParameters.totalParticles) &
+        Particle.variable("maxMsgSize", gsmParameters.maxMessageSize) &
+        Particle.variable("maxHdrSize", gsmParameters.maxHeaderSize) &
+
+        Particle.function("setPumpId", &Gsm::setCloudPumpId, this) &
+        Particle.function("setTotalPumps", &Gsm::setTotalParticles, this) &
+        Particle.function("setMaxMsg", &Gsm::setMaxMessageSize, this) &
+        Particle.function("setMaxHdr", &Gsm::setMaxHeaderSize, this) &
+        Particle.function("setTotalOps", &Gsm::setMaxOperations, this)
+    )
+    {
+        LOGGER("Initialized Cloud Variables and Functions.");
+    }
+    else
+    {
+        LOGGER("ERROR: Could not initialize Cloud Variables and Functions!");
+    }
+
     return true;
 }
 
@@ -57,14 +81,14 @@ String Gsm::Publish(String pumpId, String message)
         m_timeFromLastMessage = Time.now();
 
     }
-    else if (time - m_timeFromLastMessage >= TIME_BTWN_MESSAGES)
+    else if (time - m_timeFromLastMessage >= time_btwn_messages)
     {
         m_buffer += message;
         m_buffer += delimiter;
         m_counter++;
         m_timeFromLastMessage = time;
 
-        if (m_counter == TOTAL_MESSAGES_CAP)
+        if (m_counter == total_messages_cap)
         {
             // Publish method may block (20 secs - 10 mins)
             // https://docs.particle.io/reference/device-os/firmware/#particle-publish-
@@ -98,4 +122,53 @@ int Gsm::getTotalDataUsage_()
         LOGGER(data);
         return data.tx_total + data.rx_total;
     }
+}
+
+int Gsm::initializeEeprom()
+{
+    EEPROM.get(EEPROM_INITIAL_ADDRESS, gsmParameters);
+    if(gsmParameters.maxTotalOperations == 0)
+    {
+        gsmParameters = {MAX_TOTAL_OPERATIONS, TOTAL_PARTICLES, 0, MAX_MESSAGE_SIZE, MAX_HEADER_SIZE};
+        EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
+        //for testing
+        LOGGER("Defaults values were taken");
+    }
+    //for testing
+    LOGGER("Retrieved Values: " + String(gsmParameters.totalParticles));
+    return 1;
+}
+
+int Gsm::setTotalParticles(String newTotalParticles)
+{
+    EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
+    return 1;
+}
+
+int Gsm::setMaxMessageSize(String newMaxMessageSize)
+{
+    gsmParameters.maxMessageSize = newMaxMessageSize.toInt();
+    EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
+    return 1;
+}
+
+int Gsm::setMaxHeaderSize(String newMaxHeaderSize)
+{
+    gsmParameters.maxHeaderSize = newMaxHeaderSize.toInt();
+    EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
+    return 1;
+}
+
+int Gsm::setCloudPumpId(String newCloudPumpId)
+{
+    gsmParameters.cloudPumpId = newCloudPumpId.toInt();
+    EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);  
+    return 1;
+}
+
+int Gsm::setMaxOperations(String newMaxOperations)
+{
+    gsmParameters.maxTotalOperations = newMaxOperations.toInt();
+    EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
+    return 1;
 }

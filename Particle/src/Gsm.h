@@ -19,6 +19,8 @@
 #define TOTAL_MESSAGES_CAP (MAX_DATA_BYTES_SENT / MAX_MESSAGE_SIZE)
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
 #define TIME_BTWN_MESSAGES CEILING((TOTAL_SECONDS_DAY / MAX_OPERATIONS_PER_DAY), TOTAL_MESSAGES_CAP)
+//#define TIME_BTWN_MESSAGES CEILING((TOTAL_SECONDS_DAY / MAX_OPERATIONS_PER_DAY), TOTAL_MESSAGES_CAP)
+#define EEPROM_INITIAL_ADDRESS 10
 
 class Gsm
 {
@@ -35,6 +37,23 @@ private:
      * @return int Number of bytes sent and received.
      */
     int getTotalDataUsage_();
+
+    /**
+     * @brief Defines the persistent data class
+     * 
+     */
+    struct EepromStorage {
+        int maxTotalOperations;
+        int totalParticles;
+        int cloudPumpId;
+        int maxMessageSize;
+        int maxHeaderSize;
+    };
+
+    int max_operations_per_day = (gsmParameters.maxTotalOperations/NUM_DAYS_IN_MONTH)/gsmParameters.totalParticles;
+    int max_data_bytes_sent = (MAX_BYTES_PER_DATA_OPERATION - gsmParameters.maxHeaderSize);
+    int total_messages_cap = (max_data_bytes_sent / gsmParameters.maxMessageSize);
+    int time_btwn_messages = CEILING((TOTAL_SECONDS_DAY / max_operations_per_day), total_messages_cap);
 
 public:
     Gsm(bool isConnected);
@@ -53,4 +72,23 @@ public:
      * @return Published string succesfull; else empty string
      */
     String Publish(String pumpId, String message);
+
+    EepromStorage gsmParameters;
+
+    int setCloudPumpId(String newCloudPumpID);
+
+    int setMaxMessageSize(String newMaxMessageSize);
+
+    int setMaxHeaderSize(String newMaxHeaderSize);
+
+    int setTotalParticles(String newTotalParticles);
+
+    int setMaxOperations(String newMaxOperations);
+
+    /**
+     * @brief 
+     * 
+     * @return int 
+     */
+    int initializeEeprom();
 };
