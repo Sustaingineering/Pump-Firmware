@@ -30,6 +30,8 @@ bool Gsm::initialize()
     LOGGER("Total messages cap: " + String(total_messages_cap));
     LOGGER("Initialized GSM");
 
+    initializeEeprom();
+
     //register cloud variable and function
     //the stuff before the Particle.variable... is for testing
     if(
@@ -70,6 +72,34 @@ String Gsm::Publish(String pumpId, String message)
      * delimiter = "\n"
      */
     int time = Time.now();
+    max_operations_per_day = (gsmParameters.maxTotalOperations/NUM_DAYS_IN_MONTH)/gsmParameters.totalParticles;
+    max_data_bytes_sent = (MAX_BYTES_PER_DATA_OPERATION - gsmParameters.maxHeaderSize);
+    total_messages_cap = (max_data_bytes_sent / gsmParameters.maxMessageSize);
+    time_btwn_messages = CEILING((TOTAL_SECONDS_DAY / max_operations_per_day), total_messages_cap);
+
+    LOGGER(String(time_btwn_messages));
+    LOGGER(String(time - m_timeFromLastMessage)); 
+
+    if(time_btwn_messages < 1)
+    {
+        String message;
+        message = "ERROR: time between messages is less than 1";
+        m_buffer += message;
+        time_btwn_messages = TIME_BTWN_MESSAGES;
+        if (Particle.publish(pumpId, m_buffer.c_str()))
+            {
+                LOGGER("Succesfully Published buffer: " + m_buffer);
+                String result = m_buffer;
+                m_buffer = "";
+                m_counter = 0;
+                return result;
+            }
+            else
+            {
+                LOGGER("Could not publish message!");
+                // Should probably do more here
+            }
+    }
 
     if (m_buffer == "")
     {
@@ -127,7 +157,8 @@ int Gsm::getTotalDataUsage_()
 int Gsm::initializeEeprom()
 {
     EEPROM.get(EEPROM_INITIAL_ADDRESS, gsmParameters);
-    if(gsmParameters.maxTotalOperations == 0)
+    if(gsmParameters.maxTotalOperations <= 0 || gsmParameters.maxHeaderSize <= 0 ||
+        gsmParameters.maxMessageSize <= 0 || gsmParameters.totalParticles <= 0)
     {
         gsmParameters = {MAX_TOTAL_OPERATIONS, TOTAL_PARTICLES, 0, MAX_MESSAGE_SIZE, MAX_HEADER_SIZE};
         EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
@@ -141,6 +172,7 @@ int Gsm::initializeEeprom()
 
 int Gsm::setTotalParticles(String newTotalParticles)
 {
+    gsmParameters.totalParticles = newTotalParticles.toInt();
     EEPROM.put(EEPROM_INITIAL_ADDRESS, gsmParameters);
     return 1;
 }

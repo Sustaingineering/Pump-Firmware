@@ -19,7 +19,6 @@
 #define TOTAL_MESSAGES_CAP (MAX_DATA_BYTES_SENT / MAX_MESSAGE_SIZE)
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
 #define TIME_BTWN_MESSAGES CEILING((TOTAL_SECONDS_DAY / MAX_OPERATIONS_PER_DAY), TOTAL_MESSAGES_CAP)
-//#define TIME_BTWN_MESSAGES CEILING((TOTAL_SECONDS_DAY / MAX_OPERATIONS_PER_DAY), TOTAL_MESSAGES_CAP)
 #define EEPROM_INITIAL_ADDRESS 10
 
 class Gsm
@@ -50,10 +49,10 @@ private:
         int maxHeaderSize;
     };
 
-    int max_operations_per_day = (gsmParameters.maxTotalOperations/NUM_DAYS_IN_MONTH)/gsmParameters.totalParticles;
-    int max_data_bytes_sent = (MAX_BYTES_PER_DATA_OPERATION - gsmParameters.maxHeaderSize);
-    int total_messages_cap = (max_data_bytes_sent / gsmParameters.maxMessageSize);
-    int time_btwn_messages = CEILING((TOTAL_SECONDS_DAY / max_operations_per_day), total_messages_cap);
+    int max_operations_per_day = 0;
+    int max_data_bytes_sent = 0;
+    int total_messages_cap = 0;
+    int time_btwn_messages = 0;
 
 public:
     Gsm(bool isConnected);
