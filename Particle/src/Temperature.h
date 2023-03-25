@@ -9,6 +9,8 @@
 #include "Temperature.h"
 #include "OneWire.h"
 #include "DS18.h"
+// Additions
+// #include "DallasTemperature.h"
 
 class Temperature : public FarmSensor
 {
@@ -21,3 +23,16 @@ public:
     Temperature(bool isConnected, int pin);
     bool initialize() override;
 };
+
+// class Temperature : public FarmSensor
+// {
+// private:
+//     OneWire oneWire;
+//     DallasTemperature m_sensor;
+//     bool checkConnection();
+// protected:
+//     float readRaw() override;
+// public:
+//     Temperature(bool isConnected, int pin);
+//     bool initialize() override;
+// };

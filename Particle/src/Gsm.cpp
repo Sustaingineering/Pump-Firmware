@@ -23,6 +23,8 @@ bool Gsm::initialize()
         return true;
     }
 
+    
+
     delimiter = ";";
     m_buffer = "";
     m_counter = 0;
@@ -86,7 +88,7 @@ String Gsm::Publish(String pumpId, String message)
         message = "ERROR: time between messages is less than 1";
         m_buffer += message;
         time_btwn_messages = TIME_BTWN_MESSAGES;
-        if (Particle.publish(pumpId, m_buffer.c_str()))
+        if (Particle.publish(pumpId, jsonArrayFormatting_(m_buffer).c_str()))
             {
                 LOGGER("Succesfully Published buffer: " + m_buffer);
                 String result = m_buffer;
@@ -122,7 +124,7 @@ String Gsm::Publish(String pumpId, String message)
         {
             // Publish method may block (20 secs - 10 mins)
             // https://docs.particle.io/reference/device-os/firmware/#particle-publish-
-            if (Particle.publish(pumpId, m_buffer.c_str()))
+            if (Particle.publish(pumpId, jsonArrayFormatting_(m_buffer).c_str()))
             {
                 LOGGER("Succesfully Published buffer: " + m_buffer);
                 String result = m_buffer;
@@ -139,6 +141,11 @@ String Gsm::Publish(String pumpId, String message)
     }
     LOGGER("Number of messages in buffer: " + String(m_counter));
     return String("");
+}
+
+String Gsm::jsonArrayFormatting_(String message)
+{
+    return ("\"a\":[" + message + "]");
 }
 
 int Gsm::getTotalDataUsage_()

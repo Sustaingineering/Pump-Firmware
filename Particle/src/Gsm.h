@@ -14,7 +14,8 @@
 #define MAX_MESSAGE_SIZE 60 // bytes, safe overestimate, typically 48-50 bytes at most
 #define MAX_BYTES_PER_DATA_OPERATION 622
 #define MAX_HEADER_SIZE 40
-#define MAX_DATA_BYTES_SENT (MAX_BYTES_PER_DATA_OPERATION - MAX_HEADER_SIZE)
+#define JSON_FORMATING_BUFFER_SIZE 6
+#define MAX_DATA_BYTES_SENT (MAX_BYTES_PER_DATA_OPERATION - MAX_HEADER_SIZE - JSON_FORMATING_BUFFER_SIZE)
 #define TOTAL_SECONDS_DAY 24 * 60 * 60
 #define TOTAL_MESSAGES_CAP (MAX_DATA_BYTES_SENT / MAX_MESSAGE_SIZE)
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
@@ -36,6 +37,14 @@ private:
      * @return int Number of bytes sent and received.
      */
     int getTotalDataUsage_();
+
+    /**
+     * @brief Formats the string into a JSON Array for Mustache Formatting.
+     * 
+     * @param String message: String containing data to be published by the Particle
+     * @return string Message to be sent to the particle cloud.
+     */
+    String jsonArrayFormatting_(String message);
 
     /**
      * @brief Defines the persistent data class

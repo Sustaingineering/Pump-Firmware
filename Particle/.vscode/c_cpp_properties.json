@@ -1,6 +1,6 @@
 {
     "configurations": [
-        {
+    {
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**"
@@ -20,7 +20,8 @@
         {
             "name": "AddingDallasTemperature",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/lib/DallasTemperature"
             ],
             "defines": [
                 "_DEBUG",
